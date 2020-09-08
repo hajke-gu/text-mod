@@ -6,11 +6,11 @@ Project for Gothenburg University(Course DIT827) and TIBCO Spotfire
 
 ## Authors
 
-* **Hartmut Fischer** - *Project owner* - @HarFis
-* **Karl Westgårdh** - *Project owner* - @Synoecism
-* **Jonatan Vaara** - *Project owner* - @JonatanVaara
-* **Alexander Strand** - *Project owner* - @strand93
-* **Emanuel Dellsen** - *Project owner* - @EmanuelDellsen
+* **Hartmut Fischer** - *Project owner* - [HarFis](https://github.com/HarFis)
+* **Karl Westgårdh** - *Project owner* - [Synoecism](https://github.com/Synoecism)
+* **Jonatan Vaara** - *Project owner* - [JonatanVaara](https://github.com/JonatanVaara)
+* **Alexander Strand** - *Project owner* - [strand93](https://github.com/strand93)
+* **Emanuel Dellsen** - *Project owner* - [EmanuelDellsen](https://github.com/EmanuelDellsen)
 
 ## License
 
