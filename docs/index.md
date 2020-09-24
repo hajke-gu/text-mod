@@ -1,7 +1,10 @@
-# Text Mod
+# >> Visualize your text data with TEXT MOD <<
 
-Project for Gothenburg University (Course DIT827) and TIBCO Spotfire
+Visualization of text data from a database in an easily readable and user's needs adaptable way.
 
+## Features
+
+* TBA
 
 ## Authors
 
@@ -11,6 +14,7 @@ Project for Gothenburg University (Course DIT827) and TIBCO Spotfire
 * **Alexander Strand** - *Project owner* - [strand93](https://github.com/strand93)
 * **Emanuel Dellsen** - *Project owner* - [EmanuelDellsen](https://github.com/EmanuelDellsen)
 
+A project between Gothenburg University (Course DIT827) and TIBCO® Spotfire
 
 ## License
 
