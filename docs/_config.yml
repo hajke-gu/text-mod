@@ -1,3 +1,36 @@
+# Theme
 remote_theme: vsoch/docsy-jekyll
 
-feedback: false
+# Project title
+title: Docsy Jekyll
+
+# GitHub
+repo: "https://github.com/hajke-gu/text-mod"
+github_user: "hajke-gu"
+github_repo: "text-mod"
+
+# Feedback button
+feedback: true
+
+# Color of navigation bar
+color: "#30638e"
+
+# Build settings
+markdown: kramdown
+
+# Color settings
+tag_color: primary # danger, success, warning, primary, info, secondary
+
+accentColor: red # purple, green, etc.
+themeColor: red # purple, green, blue, orange, purple, grey
+fixedNav: 'true' # true or false
+
+permalink: /:year/:title/
+markdown: kramdown
+exclude: [_site, CHANGELOG.md, LICENSE, README.md, vendor]
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path
