@@ -4,8 +4,7 @@ remote_theme: vsoch/docsy-jekyll
 # Project title
 title: Text Mod - Visualize your text data
 description: > # this means to ignore newlines until "baseurl:"
-  Visualization of text data in an easily readable and user’s needs adaptable way using Spotfire® Mods.
-  A project between Gothenburg University (course DIT827) and TIBCO® Spotfire.
+  Text visualization using Spotfire Mods. A project between Gothenburg University (course DIT827) and TIBCO® Spotfire.
 
 baseurl: "/text-mod"
 url: "https://hajke-gu.github.io"
