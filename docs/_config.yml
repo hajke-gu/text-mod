@@ -8,6 +8,7 @@ description: > # this means to ignore newlines until "baseurl:"
   A project between Gothenburg University (course DIT827) and TIBCO® Spotfire.
 
 baseurl: "/text-mod"
+url: "https://hajke-gu.github.io"
 
 # GitHub
 repo: "https://github.com/hajke-gu/text-mod"
