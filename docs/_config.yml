@@ -10,7 +10,7 @@ github_user: "hajke-gu"
 github_repo: "text-mod"
 
 # Feedback button
-feedback: true
+feedback: 'true'
 
 # Color of navigation bar
 color: "#5D6EFA"
@@ -23,6 +23,9 @@ tag_color: "#FF4E33" # danger, success, warning, primary, info, secondary
 
 accentColor: red # purple, green, etc.
 themeColor: red # purple, green, blue, orange, purple, grey
+
+# Navibar
+logo: "assets/img/logo.png"
 fixedNav: 'true' # true or false
 
 permalink: /:year/:title/
@@ -32,5 +35,5 @@ exclude: [_site, CHANGELOG.md, LICENSE, README.md, vendor]
 # Collections
 collections:
   docs:
-    output: true
+    output: 'true'
     permalink: /:collection/:path
