@@ -19,7 +19,7 @@ feedback: false
 
 
 # Color of navigation bar
-logo: "assets/images/logo.png"
+logo: "../assets/images/logo.png"
 logo_pixels: 32
 color: "#5D6EFA"
 
