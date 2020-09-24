@@ -1,6 +1,12 @@
-# >> Visualize your text data with TEXT MOD <<
+---
+layout: page
+title: Startpage
+permalink: /
+---
 
-Visualization of text data from a database in an easily readable and user's needs adaptable way.
+# >> Visualize your text data  <<
+
+Visualization of text data in an easily readable and adaptable way.
 
 ## Features
 
