@@ -10,16 +10,16 @@ github_user: "hajke-gu"
 github_repo: "text-mod"
 
 # Feedback button
-feedback: true
+feedback: false
 
 # Color of navigation bar
-color: "#30638e"
+color: "#5D6EFA"
 
 # Build settings
 markdown: kramdown
 
 # Color settings
-tag_color: primary # danger, success, warning, primary, info, secondary
+tag_color: "#FF4E33" # danger, success, warning, primary, info, secondary
 
 accentColor: red # purple, green, etc.
 themeColor: red # purple, green, blue, orange, purple, grey
