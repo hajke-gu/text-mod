@@ -1,11 +1,14 @@
-- title: Features
-  url: features
-- title: Examples
-  url: examples
-- title: Documentation
-  url: docs
-- title: About
-  url: about
+- title: Home
+  url: index
+  links:
+    - title: "Features"
+      url: features
+    - title: "Examples"
+      url: examples
+    - title: "Documentation"
+      url: docs
+    - title: About
+      url: about
   #links:
   #  - title: "About"
   #    url: "about"

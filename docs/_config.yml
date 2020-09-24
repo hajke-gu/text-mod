@@ -2,7 +2,7 @@
 remote_theme: vsoch/docsy-jekyll
 
 # Project title
-title: Text Mod - Visualize your text data
+title: Text Mod
 description: > # this means to ignore newlines until "baseurl:"
   Text visualization using Spotfire Mods. A project between Gothenburg University (course DIT827) and TIBCO® Spotfire.
 
@@ -16,9 +16,10 @@ github_repo: "text-mod"
 
 # Feedback button
 feedback: false
+editable: false
 
 # Color of navigation bar
-logo: "assets/img/logo.png"
+logo: "assets/images/logo.png"
 logo_pixels: 32
 color: "#5D6EFA"
 
@@ -41,3 +42,23 @@ collections:
   docs:
     output: true
     permalink: /:collection/:path
+
+# Defaults
+defaults:
+  - scope:
+      path: "_docs"
+      type: "docs"
+    values:
+      layout: page
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+  -
+    scope:
+      path: "posts"
+      type: "posts"
+    values:
+      layout: "post"
