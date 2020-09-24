@@ -10,8 +10,9 @@
           <div class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
           {% include sidebar.html %}
           </div>
-          <!--
+
           <div class="d-none d-xl-block col-xl-2 td-toc d-print-none">
+            <!--
               <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
                   {% include editable.html %}
               </div>
@@ -38,7 +39,7 @@
            </nav>
            <div class="td-content">
 	      {{ content }}	
-
+<!--
               {% if section.links %}<div class="section-index">
                <hr class="panel-line">{% for child in section.links %}
                  <div class="entry">
@@ -48,7 +49,7 @@
                     <p>{{ child.description }}</p>
                  </div>{% endfor %}
               </div>{% endif %}
-
+ -->
               {% include feedback.html %}
            </div>
           </main>
