@@ -10,7 +10,7 @@ github_user: "hajke-gu"
 github_repo: "text-mod"
 
 # Feedback button
-feedback: false
+feedback: true
 
 # Color of navigation bar
 color: "#5D6EFA"
