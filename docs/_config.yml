@@ -19,7 +19,7 @@ feedback: false
 
 
 # Color of navigation bar
-logo: "https://github.com/hajke-gu/text-mod/docs/assets/images/logo.png"
+logo: "/assets/images/logo.png"
 logo_pixels: 32
 color: "#5D6EFA"
 
@@ -38,26 +38,25 @@ markdown: kramdown
 exclude: [_site, CHANGELOG.md, LICENSE, README.md, vendor]
 
 # Collections
-collections:
-  docs:
-    output: true
-    permalink: /:collection/:path
+#collections:
+#  docs:
+#    output: true
+#    permalink: /:collection/:path
 
 # Defaults
 defaults:
   - scope:
-      path: "_docs"
-      type: "docs"
+      path: "assets/images"
     values:
-      layout: page
-  -
-    scope:
+      image: true
+      
+  - scope:
       path: ""
       type: "pages"
     values:
       layout: "page"
-  -
-    scope:
+  
+  - scope:
       path: "posts"
       type: "posts"
     values:
