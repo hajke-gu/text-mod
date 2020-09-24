@@ -16,7 +16,7 @@ github_repo: "text-mod"
 
 # Feedback button
 feedback: false
-editable: false
+
 
 # Color of navigation bar
 logo: "assets/images/logo.png"

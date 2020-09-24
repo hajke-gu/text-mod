@@ -1,7 +1,7 @@
 <header>
   <nav class="js-navbar-scroll navbar navbar-expand navbar-dark flex-column flex-md-row td-navbar">
     <a class="navbar-brand" href="{{ site.baseurl }}/">
-      <span class="navbar-logo"></span>{% include logo.svg %}<span class="text-uppercase font-weight-bold">{{ site.title }}</span>
+      <span class="navbar-logo"></span>{% include site.logo %}<span class="text-uppercase font-weight-bold">{{ site.title }}</span>
     </a>
     <div class="td-navbar-nav-scroll ml-md-auto" id="main_navbar">
       <ul class="navbar-nav mt-2 mt-lg-0">{% if site.repo %}
@@ -16,12 +16,14 @@
 
     <div class="navbar-nav d-none d-lg-block">
       <a class="gh-source" data-gh-source="github" href="{{ site.repo }}" title="Go to repository" data-md-state="done">
-        <div class="gh-source__repository">
+        <div class="gh-source__repository" style="overflow: unset;">
+        
           <i class="fab fa fa-github fa-2x" style='padding-right:20px; float:left; margin-top:5px'></i>
+   
           {{ site.github_user }}/{{ site.github_repo }}
-            <!--
+
           <ul class="gh-source__facts"><li class="gh-source__fact" id='stars'></li><li id="forks" class="gh-source__fact"></li></ul>
-            -->
+          
       </div></a>
     </div>
   </div>
