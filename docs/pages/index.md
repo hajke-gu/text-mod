@@ -15,7 +15,7 @@ Text visualization is useful to make sense of text data that might contain many 
 
 ## Features
 
-More details about the features can be found {% link features.md %}.
+More details about the features can be found {% include features.md name="here" %}.
 
 
 ## The project
