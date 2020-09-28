@@ -15,12 +15,12 @@ Text visualization is useful to make sense of text data that might contain many 
 
 ## Features
 
-More details about the features can be found [here](features).
+More details about the features can be found {% link features.md %}.
 
 
 ## The project
 
-More details about the project and the authors can be found [here](about).
+More details about the project and the authors can be found {% include about.md name="here" %}.
 
 
 ## License
