@@ -20,7 +20,7 @@ excluded_in_search: true
     padding-left: 1.2rem;
 }
 .gh-source:hover {
-    color: #7b4ac8;
+    color: #c84a58;
 }
 .gh-source__icon+.gh-source__repository {
     margin-left: -4.4rem;
