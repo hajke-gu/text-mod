@@ -6,23 +6,24 @@ permalink: /
 
 # >> Visualize your text data  <<
 
-Visualization of text data in an easily readable and adaptable way.
+Visualization of text data in an easily readable and customizable way.
+
+## Purpose
+
+Text visualization is useful to make sense of text data that might contain many words and long sentences. Through the use of visualization, text data can become more focused and applicable for the use case at hand. Text data is not possible to work with statistical approaches like with numerical data but text data can contain useful information for business decisions.
+
 
 ## Features
 
-* TBA
+More details about the features can be found [here](({{ site.baseurl }}/pages/features.md).
 
-## Authors
 
-* **Hartmut Fischer** - *Project owner* - [HarFis](https://github.com/HarFis)
-* **Karl Westgårdh** - *Project owner* - [Synoecism](https://github.com/Synoecism)
-* **Jonatan Vaara** - *Project owner* - [JonatanVaara](https://github.com/JonatanVaara)
-* **Alexander Strand** - *Project owner* - [strand93](https://github.com/strand93)
-* **Emanuel Dellsen** - *Project owner* - [EmanuelDellsen](https://github.com/EmanuelDellsen)
+## The project
 
-A project between Gothenburg University (Course DIT827) and TIBCO® Spotfire
+More details about the project and the authors can be found [here](({{ site.baseurl }}/pages/authors.md).
+
 
 ## License
 
-This project is licensed under the MIT License
+This project is licensed under the MIT License.
 
