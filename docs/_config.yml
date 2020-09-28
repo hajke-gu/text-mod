@@ -21,7 +21,7 @@ feedback: false
 # Color of navigation bar
 logo: "/assets/images/logo.png"
 logo_pixels: 32
-color: "#5D6EFA"
+color: "#4A58C8"
 
 # Build settings
 markdown: kramdown
