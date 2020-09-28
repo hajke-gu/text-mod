@@ -15,15 +15,15 @@ Text visualization is useful to make sense of text data that might contain many 
 
 ## Features
 
-More details about the features can be found [here]({{ site.baseurl }}/pages/features).
+More details about the features can be found [here](features).
 
 
 ## The project
 
-More details about the project and the authors can be found [here]({{ site.baseurl }}/pages/about).
+More details about the project and the authors can be found [here](about).
 
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 
