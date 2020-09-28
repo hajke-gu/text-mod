@@ -20,7 +20,7 @@ More details about the features can be found [here](features)
 
 ## The project
 
-More details about the project and the authors can be found .
+More details about the project and the authors can be found [here](about).
 
 
 ## License
