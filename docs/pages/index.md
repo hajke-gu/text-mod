@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Startpage
-permalink: /home
+permalink: /
 ---
 
 # >> Visualize your text data  <<
@@ -15,7 +15,7 @@ Text visualization is useful to make sense of text data that might contain many 
 
 ## Features
 
-More details about the features can be found [here]({% link features.md %})
+More details about the features can be found [here]({% link {{ site.baseurl }}/pages/features.md %})
 
 
 ## The project
