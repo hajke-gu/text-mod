@@ -4,11 +4,15 @@
 * in the license file that is distributed with this file.
 */
 
-body{
+body {
     margin: 0;
     overflow: hidden;
 }
 
 #mod-container {
     white-space: pre;
+}
+
+#text-card-container {
+    overflow: scroll;
 }

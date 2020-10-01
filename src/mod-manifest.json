@@ -4,13 +4,11 @@
     "name": "Mod starter",
     "id": "js-dev-starter",
     "icon": "icon.svg",
-    "properties": [
-        {
-            "name": "myProperty",
-            "type": "string",
-            "defaultValue": "myValue"
-        }
-    ],
+    "properties": [{
+        "name": "myProperty",
+        "type": "string",
+        "defaultValue": "myValue"
+    }],
     "dataViewDefinition": {
         "colorAxis": {
             "mode": "dual",
@@ -19,20 +17,13 @@
                 "description": "Color by {0}"
             }
         },
-        "axes": [
-            {
-                "name": "X",
-                "mode": "categorical",
-                "placement": "bottom",
-                "dropTarget": {
-                    "icon": "XAxis3D",
-                    "description": "Use {0} on the mod's X-axis"
-                }
+        "axes": [{
+                "name": "Review Text",
+                "mode": "categorical"
             },
             {
-                "name": "Y",
-                "mode": "continuous",
-                "placement": "left"
+                "name": "Title",
+                "mode": "categorical"
             }
         ]
     },
