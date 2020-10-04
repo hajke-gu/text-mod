@@ -6,11 +6,10 @@ on: [push]
 
 jobs:
     build:
-        name: Greeting
+        name: compilation test
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            - name: Run a multi-line script
+            - name: run nodejs test
               run: |
-                  echo Add other actions to build,
-                  echo test, and deploy your project.
+                  npm run test
