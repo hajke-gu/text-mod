@@ -148,7 +148,7 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
 
         textCardContent = getTextCardContent(rows[index])
 
-        var newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
+        let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
         newDiv.onclick = (e) => {
             console.log(newDiv.textContent)
             rows.forEach((element) => element.mark("Toggle")
