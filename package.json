@@ -4,7 +4,8 @@
     "description": "",
     "scripts": {
         "start": "npm install && npm run server",
-        "server": "node development-server.js src"
+        "server": "node development-server.js src",
+        "test": "npm install && npm run server"
     },
     "keywords": [],
     "author": "",
