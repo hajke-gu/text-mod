@@ -22,7 +22,7 @@
                 "mode": "categorical"
             },
             {
-                "name": "Title",
+                "name": "Annotation",
                 "mode": "categorical"
             }
         ]

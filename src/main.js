@@ -56,29 +56,14 @@ Spotfire.initialize(async (mod) => {
             // Don't clear the mod content here to avoid flickering.
             return;
         }
-        //window.addEventListener("resize", )
-        //rows.forEach(row => {
-        let reviewTextString = rows[0].categorical("Review Text").value()[0].key.toString()
-        //console.log(row.categorical("Title").value()[0].key)
 
-        //})
-        //let reviewTextAsString = rows[0].categorical("Review text").value()[0].key.toString()
-        //let newDiv = createDiv("text-card", reviewTextString);
-        let textCardHeight = "wrap-content";
-        let textCardWidth = "50%";
-        let textCardPadding = "2%"
-        let textCardMargin = "2%"
+        let textCardHeight = "fit-content";
+        let textCardWidth = windowSize.width * 0.5 + "px";
+        let textCardPadding = "1%"
+        let textCardMargin = "1%"
         let textCardBackgroundColor = rows[0].color().hexCode;
-        //document.body.appendChild(newDiv)
-        /**
-         * Print out to document
-         */
-        const container = document.querySelector("#mod-container");
-        container.textContent = `windowSize: ${windowSize.width}x${windowSize.height}\r\n`;
-        container.textContent += `should render: ${rows.length} rows\r\n`;
-        container.textContent += `${prop.name}: ${prop.value()}`;
-        modDiv.appendChild(renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor));
 
+        modDiv.appendChild(renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor));
         /**
          * Signal that the mod is ready for export.
          */
@@ -91,28 +76,43 @@ Spotfire.initialize(async (mod) => {
  * @param {string} className class name of the div element.
  * @param {string | HTMLElement} [content] Content inside the div
  */
-function createDiv(className, content, height, width, padding, margin, colour) {
-    let elem = document.createElement("div");
-    elem.classList.add(className);
-    if (typeof content === "string") {
-        elem.style.height = height;
-        elem.style.width = width;
-        elem.style.padding = padding;
-        elem.style.margin = margin;
+function createDiv(className, content, height, width, padding, margin, colour, annotation) {
+    var textCardDiv = document.createElement("div");
+    textCardDiv.style.height = height;
+    textCardDiv.style.width = width;
+    textCardDiv.style.padding = padding;
+    textCardDiv.style.margin = margin;
+    textCardDiv.style.float = "left"
+    textCardDiv.style.flex = "1 1 35%";
 
-        elem.style.backgroundColor = colour;
-        elem.appendChild(document.createTextNode(content));
+
+    console.log(annotation)
+    if (annotation !== null) {
+        var annotationDiv = document.createElement("div");
+        annotationDiv.textContent = annotation;
+        annotationDiv.style.padding = "inherit";
+
+        annotationDiv.style.backgroundColor = colour;
+
+        textCardDiv.appendChild(annotationDiv);
+    }
+    textCardDiv.classList.add(className);
+    if (typeof content === "string") {
+        var contentDiv = document.createElement("div");
+        contentDiv.style.padding = "inherit";
+        contentDiv.style.backgroundColor = colour;
+        contentDiv.style.opacity = "0.9"
+        contentDiv.textContent = content;
+
+        textCardDiv.appendChild(contentDiv);
+
         console.log("inside === string")
-    } else if (content) {
-        elem.style.height = height;
-        elem.style.width = width;
-        elem.style.padding = padding;
-        elem.style.color = colour;
-        elem.appendChild(content);
     }
 
 
-    return elem;
+
+
+    return textCardDiv;
 }
 
 function renderTextCards(rows, height, width, padding, margin, colour) {
@@ -123,13 +123,12 @@ function renderTextCards(rows, height, width, padding, margin, colour) {
     for (let index = 0; index < 10; index++) {
 
         let textCardContent = rows[index].categorical("Review Text").value()[0].key.toString();
-
-        let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
+        var truncatedTextCardContent = truncateString(textCardContent, 125)
+        var annotation = rows[index].categorical("Annotation").value()[0].key.toString();
+        let newDiv = createDiv("text-card", truncatedTextCardContent, height, width, padding, margin, colour, annotation);
         newDiv.onclick = (e) => {
-            console.log(newDiv.textContent)
-            rows.forEach((element) => element.mark("Toggle")
+            console.log(textCardContent)
 
-            );
 
         }
         fragment.appendChild(newDiv);
@@ -146,4 +145,14 @@ function findElem(selector) {
 
 function sayHello() {
     console.log("hello")
+}
+
+function truncateString(str, num) {
+    // If the length of str is less than or equal to num
+    // just return str--don't truncate it.
+    if (str.length <= num) {
+        return str
+    }
+    // Return str truncated with '...' concatenated to the end of str.
+    return str.slice(0, num) + '...'
 }
