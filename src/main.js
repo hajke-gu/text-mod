@@ -122,7 +122,7 @@ function renderTextCards(rows, height, width, padding, margin, colour) {
 
     for (let index = 0; index < 10; index++) {
 
-        let textCardContent = rows[index].categorical("Review Text").value()[0].key.toString();
+        let textCardContent = rows[index].categorical("Content").value()[0].key.toString();
         var truncatedTextCardContent = truncateString(textCardContent, 125)
         var annotation = rows[index].categorical("Annotation").value()[0].key.toString();
         let newDiv = createDiv("text-card", truncatedTextCardContent, height, width, padding, margin, colour, annotation);
