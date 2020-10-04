@@ -113,6 +113,11 @@ Spotfire.initialize(async (mod) => {
             }
         });
 
+        var x = document.getElementById("mod-container");
+        x.onclick = () => {
+            dataView.clearMarking();
+        }
+
         /**
          * Signal that the mod is ready for export.
          */
@@ -155,6 +160,7 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
 
     for (let index = 0; index < whatToLoad; index++) {
         if (index == rows.length + 1) { break }
+        console.log(index);
         colour = rows[index].color().hexCode;
         textCardContent = getTextCardContent(rows[index]);
 
@@ -163,7 +169,6 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
             console.log(newDiv.textContent);
             rows[index].mark();
         };
-        index += 1;
         fragment.appendChild(newDiv);
     }
     prevIndex = prevIndex + cardsToLoad;
