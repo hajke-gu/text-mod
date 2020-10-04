@@ -53,6 +53,7 @@ Spotfire.initialize(async (mod) => {
 
         modDiv.style.height = windowSize.height + "px";
 
+        console.log("Data View exp: " + (await dataView.hasExpired()));
         /**
          * Get rows from dataView
          */
@@ -113,8 +114,8 @@ Spotfire.initialize(async (mod) => {
             }
         });
 
-        var x = document.getElementById("mod-container");
-        x.onclick = () => {
+        var modContainer = document.getElementById("mod-container");
+        modContainer.onclick = () => {
             dataView.clearMarking();
         }
 
@@ -153,14 +154,14 @@ function createDiv(className, content, height, width, padding, margin, colour) {
 }
 
 function renderTextCards(rows, height, width, padding, margin, colour, prevIndex, cardsToLoad) {
-    document.querySelector("#text-card-container").innerHTML = "";
+    document.querySelector("#text-card-container").innerHTML = "";//Remove this to not reload everytime
     var fragment = document.createDocumentFragment();
     var textCardContent = null;
     var whatToLoad = prevIndex + cardsToLoad;
+    // Set index to prev index to not reload everytime
 
     for (let index = 0; index < whatToLoad; index++) {
         if (index == rows.length + 1) { break }
-        console.log(index);
         colour = rows[index].color().hexCode;
         textCardContent = getTextCardContent(rows[index]);
 
@@ -177,7 +178,8 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
 }
 
 function getTextCardContent(element) {
-    var textCardContent = element.categorical("Review Text").value()[0].key;
+    //console.log(element);
+    let textCardContent = element.categorical("Review Text").value()[0].key;
     if (textCardContent != null) {
         textCardContent = textCardContent.toString();
     } else {
