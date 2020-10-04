@@ -4,9 +4,7 @@
  * in the license file that is distributed with this file.
  */
 
-// TODO: REMOVE GLOBALS
-var prevIndex = 0;
-const cardsToLoad = 15
+
 
 //@ts-check - Get type warnings from the TypeScript language server. Remove if not wanted.
 
@@ -36,6 +34,12 @@ Spotfire.initialize(async (mod) => {
      * @param {Spotfire.ModProperty<string>} prop
      */
     async function render(dataView, windowSize, prop) {
+        /*
+         * NON-GLOBALS
+         */
+        var prevIndex = 0;
+        const cardsToLoad = 15
+
         /**
          * Check the data view for errors
          */
@@ -73,21 +77,24 @@ Spotfire.initialize(async (mod) => {
         let textCardPadding = "2%"
         let textCardMargin = "2%"
         let textCardBackgroundColor = rows[0].color().hexCode;
-    
+
         //document.body.appendChild(newDiv)
         /**
          * Print out to document
          */
-        modDiv.appendChild(renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor));
-        
+        var returnedObject = renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor, prevIndex, cardsToLoad)
+        modDiv.appendChild(returnedObject.fragment);
+        prevIndex = returnedObject.index;
+
 
         /*
          * Scroll Event Listener
          */
-        modDiv.addEventListener('scroll', function(e){
-            if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight+1) {
-                console.log("ASJKJASDH")
-                modDiv.appendChild(renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor));
+        modDiv.addEventListener('scroll', function (e) {
+            if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
+                var returnedObject = renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor, prevIndex, cardsToLoad)
+                modDiv.appendChild(returnedObject.fragment);
+                prevIndex = returnedObject.index;
             }
         })
 
@@ -96,7 +103,7 @@ Spotfire.initialize(async (mod) => {
          */
         context.signalRenderComplete();
     }
-    
+
 });
 
 
@@ -117,7 +124,6 @@ function createDiv(className, content, height, width, padding, margin, colour) {
 
         elem.style.backgroundColor = colour;
         elem.appendChild(document.createTextNode(content));
-        console.log("inside === string")
     } else if (content) {
         elem.style.height = height;
         elem.style.width = width;
@@ -130,7 +136,7 @@ function createDiv(className, content, height, width, padding, margin, colour) {
     return elem;
 }
 
-function renderTextCards(rows, height, width, padding, margin, colour) {
+function renderTextCards(rows, height, width, padding, margin, colour, prevIndex, cardsToLoad) {
 
     document.querySelector("#text-card-container").innerHTML = "";
     var fragment = document.createDocumentFragment();
@@ -138,8 +144,8 @@ function renderTextCards(rows, height, width, padding, margin, colour) {
     var whatToLoad = prevIndex + cardsToLoad;
     var index = 0;
 
-    while (index < rows.length && index < whatToLoad){
-        
+    while (index < rows.length && index < whatToLoad) {
+
         textCardContent = getTextCardContent(rows[index])
 
         var newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
@@ -152,11 +158,12 @@ function renderTextCards(rows, height, width, padding, margin, colour) {
         fragment.appendChild(newDiv);
     }
     prevIndex = index;
-    return fragment;
+    var returnObject = { fragment, index }
+    return returnObject;
 }
 
 function getTextCardContent(element) {
-    textCardContent = element.categorical("Review Text").value()[0].key
+    var textCardContent = element.categorical("Review Text").value()[0].key
     if (textCardContent != null) {
         textCardContent = textCardContent.toString();
     } else {
