@@ -4,6 +4,10 @@
  * in the license file that is distributed with this file.
  */
 
+// TODO: REMOVE GLOBALS
+var prevIndex = 0;
+const cardsToLoad = 15
+
 //@ts-check - Get type warnings from the TypeScript language server. Remove if not wanted.
 
 /**
@@ -69,22 +73,33 @@ Spotfire.initialize(async (mod) => {
         let textCardPadding = "2%"
         let textCardMargin = "2%"
         let textCardBackgroundColor = rows[0].color().hexCode;
+    
         //document.body.appendChild(newDiv)
         /**
          * Print out to document
          */
-        const container = document.querySelector("#mod-container");
-        container.textContent = `windowSize: ${windowSize.width}x${windowSize.height}\r\n`;
-        container.textContent += `should render: ${rows.length} rows\r\n`;
-        container.textContent += `${prop.name}: ${prop.value()}`;
         modDiv.appendChild(renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor));
+        
+
+        /*
+         * Scroll Event Listener
+         */
+        modDiv.addEventListener('scroll', function(e){
+            if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight+1) {
+                console.log("ASJKJASDH")
+                modDiv.appendChild(renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor));
+            }
+        })
 
         /**
          * Signal that the mod is ready for export.
          */
         context.signalRenderComplete();
     }
+    
 });
+
+
 
 /**
  * Create a div element.
@@ -118,26 +133,38 @@ function createDiv(className, content, height, width, padding, margin, colour) {
 function renderTextCards(rows, height, width, padding, margin, colour) {
 
     document.querySelector("#text-card-container").innerHTML = "";
-    let fragment = document.createDocumentFragment();
+    var fragment = document.createDocumentFragment();
+    var textCardContent = null
+    var whatToLoad = prevIndex + cardsToLoad;
+    var index = 0;
 
-    for (let index = 0; index < 10; index++) {
+    while (index < rows.length && index < whatToLoad){
+        
+        textCardContent = getTextCardContent(rows[index])
 
-        let textCardContent = rows[index].categorical("Review Text").value()[0].key.toString();
-
-        let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
+        var newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
         newDiv.onclick = (e) => {
             console.log(newDiv.textContent)
             rows.forEach((element) => element.mark("Toggle")
-
             );
-
         }
+        index += 1;
         fragment.appendChild(newDiv);
-
     }
-
+    prevIndex = index;
     return fragment;
 }
+
+function getTextCardContent(element) {
+    textCardContent = element.categorical("Review Text").value()[0].key
+    if (textCardContent != null) {
+        textCardContent = textCardContent.toString();
+    } else {
+        textCardContent = "Something went wrong while fetching the data"
+    }
+    return textCardContent
+}
+
 
 /** @returns {HTMLElement} */
 function findElem(selector) {
