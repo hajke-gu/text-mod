@@ -4,7 +4,7 @@
  * in the license file that is distributed with this file.
  */
 
-//@ts-check - Get type warnings from the TypeScript language server. Remove if not wanted.
+//@ts-check
 
 /**
  * Get access to the Spotfire Mod API by providing a callback to the initialize method.
@@ -16,7 +16,7 @@ Spotfire.initialize(async (mod) => {
      */
     const reader = mod.createReader(mod.visualization.data(), mod.windowSize(), mod.property("myProperty"));
 
-    const modDiv = findElem("#text-card-container")
+    const modDiv = findElem("#text-card-container");
     /**
      * Store the context.
      */
@@ -58,7 +58,7 @@ Spotfire.initialize(async (mod) => {
         }
         //window.addEventListener("resize", )
         //rows.forEach(row => {
-        let reviewTextString = rows[0].categorical("Review Text").value()[0].key.toString()
+        let reviewTextString = rows[0].categorical("Review Text").value()[0].key.toString();
         //console.log(row.categorical("Title").value()[0].key)
 
         //})
@@ -66,8 +66,8 @@ Spotfire.initialize(async (mod) => {
         //let newDiv = createDiv("text-card", reviewTextString);
         let textCardHeight = "wrap-content";
         let textCardWidth = "50%";
-        let textCardPadding = "2%"
-        let textCardMargin = "2%"
+        let textCardPadding = "2%";
+        let textCardMargin = "2%";
         let textCardBackgroundColor = rows[0].color().hexCode;
         //document.body.appendChild(newDiv)
         /**
@@ -77,7 +77,16 @@ Spotfire.initialize(async (mod) => {
         container.textContent = `windowSize: ${windowSize.width}x${windowSize.height}\r\n`;
         container.textContent += `should render: ${rows.length} rows\r\n`;
         container.textContent += `${prop.name}: ${prop.value()}`;
-        modDiv.appendChild(renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor));
+        modDiv.appendChild(
+            renderTextCards(
+                rows,
+                textCardHeight,
+                textCardWidth,
+                textCardPadding,
+                textCardMargin,
+                textCardBackgroundColor
+            )
+        );
 
         /**
          * Signal that the mod is ready for export.
@@ -89,7 +98,7 @@ Spotfire.initialize(async (mod) => {
 /**
  * Create a div element.
  * @param {string} className class name of the div element.
- * @param {string | HTMLElement} [content] Content inside the div
+ * @param {string | HTMLElement} content Content inside the div
  */
 function createDiv(className, content, height, width, padding, margin, colour) {
     let elem = document.createElement("div");
@@ -102,7 +111,7 @@ function createDiv(className, content, height, width, padding, margin, colour) {
 
         elem.style.backgroundColor = colour;
         elem.appendChild(document.createTextNode(content));
-        console.log("inside === string")
+        console.log("inside === string");
     } else if (content) {
         elem.style.height = height;
         elem.style.width = width;
@@ -111,29 +120,22 @@ function createDiv(className, content, height, width, padding, margin, colour) {
         elem.appendChild(content);
     }
 
-
     return elem;
 }
 
 function renderTextCards(rows, height, width, padding, margin, colour) {
-
     document.querySelector("#text-card-container").innerHTML = "";
     let fragment = document.createDocumentFragment();
 
     for (let index = 0; index < 10; index++) {
-
         let textCardContent = rows[index].categorical("Review Text").value()[0].key.toString();
 
         let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
         newDiv.onclick = (e) => {
-            console.log(newDiv.textContent)
-            rows.forEach((element) => element.mark("Toggle")
-
-            );
-
-        }
+            console.log(newDiv.textContent);
+            rows.forEach((element) => element.mark("Toggle"));
+        };
         fragment.appendChild(newDiv);
-
     }
 
     return fragment;
@@ -145,5 +147,5 @@ function findElem(selector) {
 }
 
 function sayHello() {
-    console.log("hello")
+    console.log("hello");
 }
