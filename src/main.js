@@ -91,7 +91,7 @@ Spotfire.initialize(async (mod) => {
             cardsToLoad
         );
         modDiv.appendChild(returnedObject.fragment);
-        prevIndex = returnedObject.index;
+        prevIndex = returnedObject.prevIndex;
 
         /*
          * Scroll Event Listener
@@ -109,7 +109,7 @@ Spotfire.initialize(async (mod) => {
                     cardsToLoad
                 );
                 modDiv.appendChild(returnedObject.fragment);
-                prevIndex = returnedObject.index;
+                prevIndex = returnedObject.prevIndex;
             }
         });
 
