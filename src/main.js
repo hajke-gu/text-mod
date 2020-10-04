@@ -4,8 +4,6 @@
  * in the license file that is distributed with this file.
  */
 
-
-
 //@ts-check - Get type warnings from the TypeScript language server. Remove if not wanted.
 
 /**
@@ -18,7 +16,7 @@ Spotfire.initialize(async (mod) => {
      */
     const reader = mod.createReader(mod.visualization.data(), mod.windowSize(), mod.property("myProperty"));
 
-    const modDiv = findElem("#text-card-container")
+    const modDiv = findElem("#text-card-container");
     /**
      * Store the context.
      */
@@ -38,7 +36,7 @@ Spotfire.initialize(async (mod) => {
          * NON-GLOBALS
          */
         var prevIndex = 0;
-        const cardsToLoad = 15
+        const cardsToLoad = 15;
 
         /**
          * Check the data view for errors
@@ -66,7 +64,7 @@ Spotfire.initialize(async (mod) => {
         }
         //window.addEventListener("resize", )
         //rows.forEach(row => {
-        let reviewTextString = rows[0].categorical("Review Text").value()[0].key.toString()
+        let reviewTextString = rows[0].categorical("Review Text").value()[0].key.toString();
         //console.log(row.categorical("Title").value()[0].key)
 
         //})
@@ -74,44 +72,58 @@ Spotfire.initialize(async (mod) => {
         //let newDiv = createDiv("text-card", reviewTextString);
         let textCardHeight = "wrap-content";
         let textCardWidth = "50%";
-        let textCardPadding = "2%"
-        let textCardMargin = "2%"
+        let textCardPadding = "2%";
+        let textCardMargin = "2%";
         let textCardBackgroundColor = rows[0].color().hexCode;
 
         //document.body.appendChild(newDiv)
         /**
          * Print out to document
          */
-        var returnedObject = renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor, prevIndex, cardsToLoad)
+        var returnedObject = renderTextCards(
+            rows,
+            textCardHeight,
+            textCardWidth,
+            textCardPadding,
+            textCardMargin,
+            textCardBackgroundColor,
+            prevIndex,
+            cardsToLoad
+        );
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.index;
-
 
         /*
          * Scroll Event Listener
          */
-        modDiv.addEventListener('scroll', function (e) {
+        modDiv.addEventListener("scroll", function (e) {
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
-                var returnedObject = renderTextCards(rows, textCardHeight, textCardWidth, textCardPadding, textCardMargin, textCardBackgroundColor, prevIndex, cardsToLoad)
+                var returnedObject = renderTextCards(
+                    rows,
+                    textCardHeight,
+                    textCardWidth,
+                    textCardPadding,
+                    textCardMargin,
+                    textCardBackgroundColor,
+                    prevIndex,
+                    cardsToLoad
+                );
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.index;
             }
-        })
+        });
 
         /**
          * Signal that the mod is ready for export.
          */
         context.signalRenderComplete();
     }
-
 });
-
-
 
 /**
  * Create a div element.
  * @param {string} className class name of the div element.
- * @param {string | HTMLElement} [content] Content inside the div
+ * @param {string | HTMLElement} content Content inside the div
  */
 function createDiv(className, content, height, width, padding, margin, colour) {
     let elem = document.createElement("div");
@@ -132,46 +144,41 @@ function createDiv(className, content, height, width, padding, margin, colour) {
         elem.appendChild(content);
     }
 
-
     return elem;
 }
 
 function renderTextCards(rows, height, width, padding, margin, colour, prevIndex, cardsToLoad) {
-
     document.querySelector("#text-card-container").innerHTML = "";
     var fragment = document.createDocumentFragment();
-    var textCardContent = null
+    var textCardContent = null;
     var whatToLoad = prevIndex + cardsToLoad;
     var index = 0;
 
     while (index < rows.length && index < whatToLoad) {
-
-        textCardContent = getTextCardContent(rows[index])
+        textCardContent = getTextCardContent(rows[index]);
 
         var newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
         newDiv.onclick = (e) => {
-            console.log(newDiv.textContent)
-            rows.forEach((element) => element.mark("Toggle")
-            );
-        }
+            console.log(newDiv.textContent);
+            rows.forEach((element) => element.mark("Toggle"));
+        };
         index += 1;
         fragment.appendChild(newDiv);
     }
     prevIndex = index;
-    var returnObject = { fragment, index }
+    var returnObject = { fragment, index };
     return returnObject;
 }
 
 function getTextCardContent(element) {
-    var textCardContent = element.categorical("Review Text").value()[0].key
+    var textCardContent = element.categorical("Review Text").value()[0].key;
     if (textCardContent != null) {
         textCardContent = textCardContent.toString();
     } else {
-        textCardContent = "Something went wrong while fetching the data"
+        textCardContent = "Something went wrong while fetching the data";
     }
-    return textCardContent
+    return textCardContent;
 }
-
 
 /** @returns {HTMLElement} */
 function findElem(selector) {
@@ -179,5 +186,5 @@ function findElem(selector) {
 }
 
 function sayHello() {
-    console.log("hello")
+    console.log("hello");
 }
