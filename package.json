@@ -8,7 +8,7 @@
         "test": "npm install && npm run server"
     },
     "keywords": [],
-    "author": "",
+    "author": "Emanuel Dellsén, Hartmut Fischer, Jonatan Vaara, Alexander Strand & Karl Västgård",
     "license": "ISC",
     "devDependencies": {
         "live-server": "^1.2.1"
