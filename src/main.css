@@ -15,4 +15,6 @@ body {
 
 #text-card-container {
     overflow: scroll;
+    display: flex;
+    flex-wrap: wrap;
 }

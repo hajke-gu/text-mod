@@ -21,11 +21,11 @@
         },
         "axes": [
             {
-                "name": "Review Text",
+                "name": "Content",
                 "mode": "categorical"
             },
             {
-                "name": "Title",
+                "name": "Annotation",
                 "mode": "categorical"
             }
         ]
