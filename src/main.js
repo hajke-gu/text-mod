@@ -152,21 +152,22 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
     var fragment = document.createDocumentFragment();
     var textCardContent = null;
     var whatToLoad = prevIndex + cardsToLoad;
-    var index = 0;
 
-    while (index < rows.length && index < whatToLoad) {
+    for (let index = 0; index < whatToLoad; index++) {
+        if (index == rows.length + 1) { break }
+        colour = rows[index].color().hexCode;
         textCardContent = getTextCardContent(rows[index]);
 
         let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
         newDiv.onclick = (e) => {
             console.log(newDiv.textContent);
-            rows.forEach((element) => element.mark("Toggle"));
+            rows[index].mark();
         };
         index += 1;
         fragment.appendChild(newDiv);
     }
-    prevIndex = index;
-    var returnObject = { fragment, index };
+    prevIndex = prevIndex + cardsToLoad;
+    var returnObject = { fragment, prevIndex };
     return returnObject;
 }
 
