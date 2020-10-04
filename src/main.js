@@ -53,6 +53,7 @@ Spotfire.initialize(async (mod) => {
 
         modDiv.style.height = windowSize.height + "px";
 
+        console.log("Data View exp: " + (await dataView.hasExpired()));
         /**
          * Get rows from dataView
          */
@@ -91,7 +92,7 @@ Spotfire.initialize(async (mod) => {
             cardsToLoad
         );
         modDiv.appendChild(returnedObject.fragment);
-        prevIndex = returnedObject.index;
+        prevIndex = returnedObject.prevIndex;
 
         /*
          * Scroll Event Listener
@@ -109,9 +110,14 @@ Spotfire.initialize(async (mod) => {
                     cardsToLoad
                 );
                 modDiv.appendChild(returnedObject.fragment);
-                prevIndex = returnedObject.index;
+                prevIndex = returnedObject.prevIndex;
             }
         });
+
+        var modContainer = document.getElementById("mod-container");
+        modContainer.onclick = () => {
+            dataView.clearMarking();
+        }
 
         /**
          * Signal that the mod is ready for export.
@@ -148,30 +154,32 @@ function createDiv(className, content, height, width, padding, margin, colour) {
 }
 
 function renderTextCards(rows, height, width, padding, margin, colour, prevIndex, cardsToLoad) {
-    document.querySelector("#text-card-container").innerHTML = "";
+    document.querySelector("#text-card-container").innerHTML = "";//Remove this to not reload everytime
     var fragment = document.createDocumentFragment();
     var textCardContent = null;
     var whatToLoad = prevIndex + cardsToLoad;
-    var index = 0;
+    // Set index to prev index to not reload everytime
 
-    while (index < rows.length && index < whatToLoad) {
+    for (let index = 0; index < whatToLoad; index++) {
+        if (index == rows.length + 1) { break }
+        colour = rows[index].color().hexCode;
         textCardContent = getTextCardContent(rows[index]);
 
         let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
         newDiv.onclick = (e) => {
             console.log(newDiv.textContent);
-            rows.forEach((element) => element.mark("Toggle"));
+            rows[index].mark();
         };
-        index += 1;
         fragment.appendChild(newDiv);
     }
-    prevIndex = index;
-    var returnObject = { fragment, index };
+    prevIndex = prevIndex + cardsToLoad;
+    var returnObject = { fragment, prevIndex };
     return returnObject;
 }
 
 function getTextCardContent(element) {
-    var textCardContent = element.categorical("Review Text").value()[0].key;
+    //console.log(element);
+    let textCardContent = element.categorical("Review Text").value()[0].key;
     if (textCardContent != null) {
         textCardContent = textCardContent.toString();
     } else {
