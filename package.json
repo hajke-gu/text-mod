@@ -17,7 +17,8 @@
         "pretty-quick": "^3.0.2"
     },
     "dependencies": {
-        "eslint": "^7.10.0"
+        "eslint": "^7.10.0",
+        "minify": "^6.0.0"
     },
     "husky": {
         "hooks": {
