@@ -4,11 +4,13 @@
     "name": "Mod starter",
     "id": "js-dev-starter",
     "icon": "icon.svg",
-    "properties": [{
-        "name": "myProperty",
-        "type": "string",
-        "defaultValue": "myValue"
-    }],
+    "properties": [
+        {
+            "name": "myProperty",
+            "type": "string",
+            "defaultValue": "myValue"
+        }
+    ],
     "dataViewDefinition": {
         "colorAxis": {
             "mode": "dual",
@@ -17,7 +19,8 @@
                 "description": "Color by {0}"
             }
         },
-        "axes": [{
+        "axes": [
+            {
                 "name": "Content",
                 "mode": "categorical"
             },
@@ -27,9 +30,5 @@
             }
         ]
     },
-    "files": [
-        "index.html",
-        "main.css",
-        "main.js"
-    ]
+    "files": ["index.html", "main.css", "main.js"]
 }
