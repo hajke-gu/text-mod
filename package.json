@@ -5,7 +5,7 @@
     "scripts": {
         "start": "npm install && npm run server",
         "server": "node development-server.js src",
-        "test": "npm install && npm run server"
+        "test": "npm install && node development-server.js src test"
     },
     "keywords": [],
     "author": "Emanuel Dellsén, Hartmut Fischer, Jonatan Vaara, Alexander Strand & Karl Västgård",

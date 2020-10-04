@@ -20,6 +20,7 @@ const readdir = promisify(fs.readdir);
 
 const manifestName = "mod-manifest.json";
 const rootDirectory = process.argv[2] || "./src/";
+const scenario = process.argv[3];
 
 // The development server tries to mimic the CSP policy used by the Spotfire runtime.
 const allowedExternalResources = new Set();
@@ -30,6 +31,12 @@ main();
 async function main() {
     await readExternalResourcesFromManifest();
 
+    // If test scenario, run the server for a short while
+    if (scenario === "test") {
+        setTimeout(function () {
+            return process.exit(0);
+        }, 5000);
+    }
     liveServer.start({
         port: 8090,
         noCssInject: true,
