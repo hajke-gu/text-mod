@@ -128,8 +128,9 @@ function renderTextCards(rows, height, width, padding, margin, colour) {
         let newDiv = createDiv("text-card", truncatedTextCardContent, height, width, padding, margin, colour, annotation);
         newDiv.onclick = (e) => {
             console.log(textCardContent)
-
-
+        }
+        newDiv.onmouseover = (e) => {
+            newDiv.style.border = "solid"
         }
         fragment.appendChild(newDiv);
 
@@ -141,10 +142,6 @@ function renderTextCards(rows, height, width, padding, margin, colour) {
 /** @returns {HTMLElement} */
 function findElem(selector) {
     return document.querySelector(selector);
-}
-
-function sayHello() {
-    console.log("hello")
 }
 
 function truncateString(str, num) {
