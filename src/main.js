@@ -4,7 +4,7 @@
  * in the license file that is distributed with this file.
  */
 
-//@ts-check
+//@ts-check - Get type warnings from the TypeScript language server. Remove if not wanted.
 
 /**
  * Get access to the Spotfire Mod API by providing a callback to the initialize method.
@@ -32,6 +32,12 @@ Spotfire.initialize(async (mod) => {
      * @param {Spotfire.ModProperty<string>} prop
      */
     async function render(dataView, windowSize, prop) {
+        /*
+         * NON-GLOBALS
+         */
+        var prevIndex = 0;
+        const cardsToLoad = 15;
+
         /**
          * Check the data view for errors
          */
@@ -69,24 +75,43 @@ Spotfire.initialize(async (mod) => {
         let textCardPadding = "2%";
         let textCardMargin = "2%";
         let textCardBackgroundColor = rows[0].color().hexCode;
+
         //document.body.appendChild(newDiv)
         /**
          * Print out to document
          */
-        const container = document.querySelector("#mod-container");
-        container.textContent = `windowSize: ${windowSize.width}x${windowSize.height}\r\n`;
-        container.textContent += `should render: ${rows.length} rows\r\n`;
-        container.textContent += `${prop.name}: ${prop.value()}`;
-        modDiv.appendChild(
-            renderTextCards(
-                rows,
-                textCardHeight,
-                textCardWidth,
-                textCardPadding,
-                textCardMargin,
-                textCardBackgroundColor
-            )
+        var returnedObject = renderTextCards(
+            rows,
+            textCardHeight,
+            textCardWidth,
+            textCardPadding,
+            textCardMargin,
+            textCardBackgroundColor,
+            prevIndex,
+            cardsToLoad
         );
+        modDiv.appendChild(returnedObject.fragment);
+        prevIndex = returnedObject.index;
+
+        /*
+         * Scroll Event Listener
+         */
+        modDiv.addEventListener("scroll", function (e) {
+            if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
+                var returnedObject = renderTextCards(
+                    rows,
+                    textCardHeight,
+                    textCardWidth,
+                    textCardPadding,
+                    textCardMargin,
+                    textCardBackgroundColor,
+                    prevIndex,
+                    cardsToLoad
+                );
+                modDiv.appendChild(returnedObject.fragment);
+                prevIndex = returnedObject.index;
+            }
+        });
 
         /**
          * Signal that the mod is ready for export.
@@ -111,7 +136,6 @@ function createDiv(className, content, height, width, padding, margin, colour) {
 
         elem.style.backgroundColor = colour;
         elem.appendChild(document.createTextNode(content));
-        console.log("inside === string");
     } else if (content) {
         elem.style.height = height;
         elem.style.width = width;
@@ -123,22 +147,37 @@ function createDiv(className, content, height, width, padding, margin, colour) {
     return elem;
 }
 
-function renderTextCards(rows, height, width, padding, margin, colour) {
+function renderTextCards(rows, height, width, padding, margin, colour, prevIndex, cardsToLoad) {
     document.querySelector("#text-card-container").innerHTML = "";
-    let fragment = document.createDocumentFragment();
+    var fragment = document.createDocumentFragment();
+    var textCardContent = null;
+    var whatToLoad = prevIndex + cardsToLoad;
+    var index = 0;
 
-    for (let index = 0; index < 10; index++) {
-        let textCardContent = rows[index].categorical("Review Text").value()[0].key.toString();
+    while (index < rows.length && index < whatToLoad) {
+        textCardContent = getTextCardContent(rows[index]);
 
-        let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
+        var newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour);
         newDiv.onclick = (e) => {
             console.log(newDiv.textContent);
             rows.forEach((element) => element.mark("Toggle"));
         };
+        index += 1;
         fragment.appendChild(newDiv);
     }
+    prevIndex = index;
+    var returnObject = { fragment, index };
+    return returnObject;
+}
 
-    return fragment;
+function getTextCardContent(element) {
+    var textCardContent = element.categorical("Review Text").value()[0].key;
+    if (textCardContent != null) {
+        textCardContent = textCardContent.toString();
+    } else {
+        textCardContent = "Something went wrong while fetching the data";
+    }
+    return textCardContent;
 }
 
 /** @returns {HTMLElement} */
