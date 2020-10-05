@@ -68,8 +68,8 @@ Spotfire.initialize(async (mod) => {
 
         let textCardHeight = "fit-content";
         let textCardWidth = windowSize.width * 0.5 + "px";
-        let textCardPadding = "1%";
-        let textCardMargin = "1%";
+        let textCardPadding = "0.5%";
+        let textCardMargin = "0.5%";
         let textCardBackgroundColor = rows[0].color().hexCode;
 
         var returnedObject = renderTextCards(
@@ -133,7 +133,7 @@ function createDiv(className, content, height, width, padding, margin, colour, a
     textCardDiv.style.padding = padding;
     textCardDiv.style.margin = margin;
     textCardDiv.style.float = "left";
-    textCardDiv.style.flex = "1 1 35%";
+    textCardDiv.style.flex = "1 1 25%";
 
     //console.log(annotation);
     if (annotation !== null) {
@@ -192,9 +192,12 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
         };
         newDiv.onmouseover = (e) => {
             newDiv.style.border = "solid";
+            newDiv.style.borderWidth = "thin";
+            //newDiv.style.margin = "";
         };
         newDiv.onmouseout = (e) => {
             newDiv.style.border = "";
+            //newDiv.style.margin = margin;
         };
         fragment.appendChild(newDiv);
     }
@@ -205,8 +208,14 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
 
 function getTextCardContent(element, string) {
     //console.log(element);
-    let result = element.categorical(string).value()[0].key;
-    if (result != null) {
+    var result = null;
+    try {
+        result = element.categorical(string).value()[0].key;
+    } catch (error) {
+        console.log(error.message);
+    }
+
+    if (result !== null) {
         result = result.toString();
     } else {
         if (string === "Content") {
