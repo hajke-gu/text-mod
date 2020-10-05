@@ -71,6 +71,7 @@ Spotfire.initialize(async (mod) => {
         let textCardPadding = "0.5%";
         let textCardMargin = "0";
         let textCardBackgroundColor = rows[0].color().hexCode;
+        var rerender = true;
 
         var returnedObject = renderTextCards(
             rows,
@@ -79,11 +80,14 @@ Spotfire.initialize(async (mod) => {
             textCardPadding,
             textCardMargin,
             textCardBackgroundColor,
-            prevIndex,
-            cardsToLoad
+            prevIndex, // When rerendering we always want to render everything
+            cardsToLoad,
+            rerender
         );
         modDiv.appendChild(returnedObject.fragment);
-        prevIndex = returnedObject.prevIndex;
+        prevIndex = returnedObject.startIndex;
+        console.log("previndex after init: " + prevIndex);
+
         /*          * Scroll Event Listener          */
         modDiv.addEventListener("scroll", async function (e) {
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
@@ -91,6 +95,7 @@ Spotfire.initialize(async (mod) => {
                 if (await dataView.hasExpired()) {
                     return;
                 }
+                var rerender = false;
 
                 var returnedObject = renderTextCards(
                     rows,
@@ -100,10 +105,12 @@ Spotfire.initialize(async (mod) => {
                     textCardMargin,
                     textCardBackgroundColor,
                     prevIndex,
-                    cardsToLoad
+                    cardsToLoad,
+                    rerender
                 );
                 modDiv.appendChild(returnedObject.fragment);
-                prevIndex = returnedObject.prevIndex;
+                prevIndex = returnedObject.startIndex;
+                console.log("prevIndex after scroll: " + prevIndex);
             }
         });
 
@@ -163,14 +170,26 @@ function createDiv(className, content, height, width, padding, margin, colour, a
     return textCardDiv;
 }
 
-function renderTextCards(rows, height, width, padding, margin, colour, prevIndex, cardsToLoad) {
-    document.querySelector("#text-card-container").innerHTML = ""; //Remove this to not reload everytime
+function renderTextCards(rows, height, width, padding, margin, colour, prevIndex, cardsToLoad, rerender) {
+    if (rerender) {
+        document.querySelector("#text-card-container").innerHTML = "";
+    }
+    // document.querySelector("#text-card-container").innerHTML = ""; //Remove this to not reload everytime
     var fragment = document.createDocumentFragment();
 
     var whatToLoad = prevIndex + cardsToLoad;
+    var startIndex = prevIndex;
     // Set index to prev index to not reload everytime
-
-    for (let index = 0; index < whatToLoad; index++) {
+    if (rerender) {
+        whatToLoad = prevIndex;
+        startIndex = 0;
+        console.log("in rerender");
+        if (prevIndex == 0) {
+            console.log("previndex is zero");
+            whatToLoad = cardsToLoad;
+        }
+    }
+    for (let index = startIndex; index < whatToLoad; index++) {
         if (index == rows.length) {
             break;
         }
@@ -191,8 +210,12 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
         };
         fragment.appendChild(newDiv);
     }
-    prevIndex = prevIndex + cardsToLoad;
-    var returnObject = { fragment, prevIndex };
+    if (!rerender || prevIndex == 0) {
+        prevIndex = prevIndex + cardsToLoad;
+    }
+
+    console.log("startindex + cardsToLoad: " + prevIndex);
+    var returnObject = { fragment, startIndex: prevIndex };
     return returnObject;
 }
 
