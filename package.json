@@ -11,6 +11,7 @@
     "author": "Emanuel Dellsén, Hartmut Fischer, Jonatan Vaara, Alexander Strand & Karl Västgård",
     "license": "ISC",
     "devDependencies": {
+        "clean-css": "^4.2.3",
         "husky": "^4.3.0",
         "live-server": "^1.2.1",
         "prettier": "^2.1.2",
@@ -18,6 +19,7 @@
     },
     "dependencies": {
         "eslint": "^7.10.0",
+        "html-minifier": "^4.0.0",
         "minify": "^6.0.0"
     },
     "husky": {

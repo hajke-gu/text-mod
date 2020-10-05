@@ -69,7 +69,7 @@ Spotfire.initialize(async (mod) => {
         let textCardHeight = "fit-content";
         let textCardWidth = windowSize.width * 0.5 + "px";
         let textCardPadding = "0.5%";
-        let textCardMargin = "0.5%";
+        let textCardMargin = "0";
         let textCardBackgroundColor = rows[0].color().hexCode;
 
         var returnedObject = renderTextCards(
@@ -132,26 +132,28 @@ function createDiv(className, content, height, width, padding, margin, colour, a
     textCardDiv.style.width = width;
     textCardDiv.style.padding = padding;
     textCardDiv.style.margin = margin;
-    textCardDiv.style.float = "left";
-    textCardDiv.style.flex = "1 1 25%";
+    //textCardDiv.style.float = "left";
+    textCardDiv.style.flex = "1 1 40%";
 
     //console.log(annotation);
     if (annotation !== null) {
-        var annotationDiv = document.createElement("div");
+        var annotationDiv = document.createElement("h4");
         annotationDiv.textContent = annotation;
-        annotationDiv.style.padding = "inherit";
-
+        annotationDiv.style.padding = padding;
         annotationDiv.style.backgroundColor = colour;
+        annotationDiv.style.margin = margin;
 
         textCardDiv.appendChild(annotationDiv);
     }
     textCardDiv.classList.add(className);
     if (typeof content === "string") {
-        var contentDiv = document.createElement("div");
-        contentDiv.style.padding = "inherit";
+        var contentDiv = document.createElement("p");
+        contentDiv.style.padding = padding;
+        contentDiv.style.margin = margin;
         contentDiv.style.backgroundColor = colour;
         contentDiv.style.opacity = "0.9";
         contentDiv.textContent = content;
+        //contentDiv.style.display = "inline-block";
 
         textCardDiv.appendChild(contentDiv);
 
@@ -176,28 +178,16 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
         let textCardContent = getTextCardContent(rows[index], "Content");
         var truncatedTextCardContent = truncateString(textCardContent, 125);
         var annotation = getTextCardContent(rows[index], "Annotation");
-        let newDiv = createDiv(
-            "text-card",
-            truncatedTextCardContent,
-            height,
-            width,
-            padding,
-            margin,
-            colour,
-            annotation
-        );
+        let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour, annotation);
         newDiv.onclick = (e) => {
             console.log(newDiv.textContent);
             rows[index].mark("Replace");
         };
         newDiv.onmouseover = (e) => {
-            newDiv.style.border = "solid";
-            newDiv.style.borderWidth = "thin";
-            //newDiv.style.margin = "";
+            newDiv.style.color = "black";
         };
         newDiv.onmouseout = (e) => {
-            newDiv.style.border = "";
-            //newDiv.style.margin = margin;
+            newDiv.style.color = "";
         };
         fragment.appendChild(newDiv);
     }
@@ -221,7 +211,7 @@ function getTextCardContent(element, string) {
         if (string === "Content") {
             result = "Something went wrong while fetching the data";
         } else {
-            return;
+            return result;
         }
     }
     return result;
