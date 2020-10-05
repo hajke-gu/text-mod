@@ -11,6 +11,8 @@
  * @param {Spotfire.Mod} mod - mod api
  */
 Spotfire.initialize(async (mod) => {
+
+    var prevIndex = 0;
     /**
      * Create the read function.
      */
@@ -35,7 +37,7 @@ Spotfire.initialize(async (mod) => {
         /*
          * NON-GLOBALS
          */
-        var prevIndex = 0;
+        
         const cardsToLoad = 15;
 
         /**
@@ -57,7 +59,8 @@ Spotfire.initialize(async (mod) => {
         /**
          * Get rows from dataView
          */
-        const rows = await dataView.allRows();
+        var rows = await dataView.allRows();
+        
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -83,8 +86,15 @@ Spotfire.initialize(async (mod) => {
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.prevIndex;
         /*          * Scroll Event Listener          */
-        modDiv.addEventListener("scroll", function (e) {
+        modDiv.addEventListener("scroll", async function (e) {
+
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
+
+                //Check if old data view
+                if (await dataView.hasExpired()) {
+                    return;   
+                }
+
                 var returnedObject = renderTextCards(
                     rows,
                     textCardHeight,
@@ -157,6 +167,8 @@ function createDiv(className, content, height, width, padding, margin, colour, a
 function renderTextCards(rows, height, width, padding, margin, colour, prevIndex, cardsToLoad) {
     document.querySelector("#text-card-container").innerHTML = ""; //Remove this to not reload everytime
     var fragment = document.createDocumentFragment();
+
+
     var whatToLoad = prevIndex + cardsToLoad;
     // Set index to prev index to not reload everytime
 
@@ -180,7 +192,7 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
         );
         newDiv.onclick = (e) => {
             console.log(newDiv.textContent);
-            rows[index].mark();
+            rows[index].mark("Replace");
         };
         newDiv.onmouseover = (e) => {
             newDiv.style.border = "solid";
