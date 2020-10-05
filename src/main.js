@@ -100,10 +100,12 @@ Spotfire.initialize(async (mod) => {
             }
         });
 
+        /*
         var modContainer = document.getElementById("mod-container");
         modContainer.onclick = () => {
             dataView.clearMarking();
         };
+        */
 
         /**
          * Signal that the mod is ready for export.
