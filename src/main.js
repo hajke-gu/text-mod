@@ -11,7 +11,6 @@
  * @param {Spotfire.Mod} mod - mod api
  */
 Spotfire.initialize(async (mod) => {
-
     var prevIndex = 0;
     /**
      * Create the read function.
@@ -37,7 +36,7 @@ Spotfire.initialize(async (mod) => {
         /*
          * NON-GLOBALS
          */
-        
+
         const cardsToLoad = 15;
 
         /**
@@ -60,7 +59,7 @@ Spotfire.initialize(async (mod) => {
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-        
+
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -87,12 +86,10 @@ Spotfire.initialize(async (mod) => {
         prevIndex = returnedObject.prevIndex;
         /*          * Scroll Event Listener          */
         modDiv.addEventListener("scroll", async function (e) {
-
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
-
                 //Check if old data view
                 if (await dataView.hasExpired()) {
-                    return;   
+                    return;
                 }
 
                 var returnedObject = renderTextCards(
@@ -168,18 +165,17 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
     document.querySelector("#text-card-container").innerHTML = ""; //Remove this to not reload everytime
     var fragment = document.createDocumentFragment();
 
-
     var whatToLoad = prevIndex + cardsToLoad;
     // Set index to prev index to not reload everytime
 
     for (let index = 0; index < whatToLoad; index++) {
-        if (index == rows.length + 1) {
+        if (index == rows.length) {
             break;
         }
         colour = rows[index].color().hexCode;
-        let textCardContent = rows[index].categorical("Content").value()[0].key.toString();
+        let textCardContent = getTextCardContent(rows[index], "Content");
         var truncatedTextCardContent = truncateString(textCardContent, 125);
-        var annotation = rows[index].categorical("Annotation").value()[0].key.toString();
+        var annotation = getTextCardContent(rows[index], "Annotation");
         let newDiv = createDiv(
             "text-card",
             truncatedTextCardContent,
@@ -197,6 +193,9 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
         newDiv.onmouseover = (e) => {
             newDiv.style.border = "solid";
         };
+        newDiv.onmouseout = (e) => {
+            newDiv.style.border = "";
+        };
         fragment.appendChild(newDiv);
     }
     prevIndex = prevIndex + cardsToLoad;
@@ -204,15 +203,19 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
     return returnObject;
 }
 
-function getTextCardContent(element) {
+function getTextCardContent(element, string) {
     //console.log(element);
-    let textCardContent = element.categorical("Review Text").value()[0].key;
-    if (textCardContent != null) {
-        textCardContent = textCardContent.toString();
+    let result = element.categorical(string).value()[0].key;
+    if (result != null) {
+        result = result.toString();
     } else {
-        textCardContent = "Something went wrong while fetching the data";
+        if (string === "Content") {
+            result = "Something went wrong while fetching the data";
+        } else {
+            return;
+        }
     }
-    return textCardContent;
+    return result;
 }
 
 /** @returns {HTMLElement} */
