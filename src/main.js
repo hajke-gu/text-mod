@@ -194,24 +194,25 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
             break;
         }
         colour = rows[index].color().hexCode;
-        let textCardContent = getTextCardContent(rows[index], "Content");
-        //if (textCardContent != null) {
-        var truncatedTextCardContent = truncateString(textCardContent, 125);
-        var annotation = getTextCardContent(rows[index], "Annotation");
+        let textCardContent = getRowContent(rows[index], "Content");
+        // textCard not NULL or UNDEFINED
+        if (textCardContent) {
+            //var truncatedTextCardContent = truncateString(textCardContent, 125);
+            var annotation = getRowContent(rows[index], "Annotation");
 
-        let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour, annotation);
-        newDiv.onclick = (e) => {
-            console.log(newDiv.textContent);
-            rows[index].mark("Replace");
-        };
-        newDiv.onmouseover = (e) => {
-            newDiv.style.color = "black";
-        };
-        newDiv.onmouseout = (e) => {
-            newDiv.style.color = "";
-        };
-        fragment.appendChild(newDiv);
-        //}
+            let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour, annotation);
+            newDiv.onclick = (e) => {
+                console.log(newDiv.textContent);
+                rows[index].mark("Replace");
+            };
+            newDiv.onmouseover = (e) => {
+                newDiv.style.color = "black";
+            };
+            newDiv.onmouseout = (e) => {
+                newDiv.style.color = "";
+            };
+            fragment.appendChild(newDiv);
+        }
     }
     if (!rerender || prevIndex == 0) {
         prevIndex = prevIndex + cardsToLoad;
@@ -222,7 +223,7 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
     return returnObject;
 }
 
-function getTextCardContent(element, string) {
+function getRowContent(element, string) {
     //console.log(element);
     var result = null;
     try {
@@ -231,14 +232,10 @@ function getTextCardContent(element, string) {
         console.log(error.message);
     }
 
-    if (result !== null) {
+    if (result != null) {
         result = result.toString();
     } else {
-        if (string === "Content") {
-            result = "Something went wrong while fetching the data";
-        } else {
-            return result;
-        }
+        return result;
     }
     return result;
 }
