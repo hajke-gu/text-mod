@@ -195,8 +195,10 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
         }
         colour = rows[index].color().hexCode;
         let textCardContent = getTextCardContent(rows[index], "Content");
+        //if (textCardContent != null) {
         var truncatedTextCardContent = truncateString(textCardContent, 125);
         var annotation = getTextCardContent(rows[index], "Annotation");
+
         let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour, annotation);
         newDiv.onclick = (e) => {
             console.log(newDiv.textContent);
@@ -209,6 +211,7 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
             newDiv.style.color = "";
         };
         fragment.appendChild(newDiv);
+        //}
     }
     if (!rerender || prevIndex == 0) {
         prevIndex = prevIndex + cardsToLoad;
