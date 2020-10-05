@@ -53,7 +53,7 @@ Spotfire.initialize(async (mod) => {
 
         modDiv.style.height = windowSize.height + "px";
 
-        console.log("Data View exp: " + (await dataView.hasExpired()));
+        //console.log("Data View exp: " + (await dataView.hasExpired()));
         /**
          * Get rows from dataView
          */
@@ -128,7 +128,7 @@ function createDiv(className, content, height, width, padding, margin, colour, a
     textCardDiv.style.float = "left";
     textCardDiv.style.flex = "1 1 35%";
 
-    console.log(annotation);
+    //console.log(annotation);
     if (annotation !== null) {
         var annotationDiv = document.createElement("div");
         annotationDiv.textContent = annotation;
@@ -148,7 +148,7 @@ function createDiv(className, content, height, width, padding, margin, colour, a
 
         textCardDiv.appendChild(contentDiv);
 
-        console.log("inside === string");
+        //console.log("inside === string");
     }
 
     return textCardDiv;
