@@ -137,21 +137,23 @@ function createDiv(className, content, height, width, padding, margin, colour, a
 
     //console.log(annotation);
     if (annotation !== null) {
-        var annotationDiv = document.createElement("div");
+        var annotationDiv = document.createElement("h4");
         annotationDiv.textContent = annotation;
-        annotationDiv.style.padding = "inherit";
-
+        annotationDiv.style.padding = padding;
         annotationDiv.style.backgroundColor = colour;
+        annotationDiv.style.margin = margin;
 
         textCardDiv.appendChild(annotationDiv);
     }
     textCardDiv.classList.add(className);
     if (typeof content === "string") {
-        var contentDiv = document.createElement("div");
-        contentDiv.style.padding = "inherit";
+        var contentDiv = document.createElement("p");
+        contentDiv.style.padding = padding;
+        contentDiv.style.margin = margin;
         contentDiv.style.backgroundColor = colour;
         contentDiv.style.opacity = "0.9";
         contentDiv.textContent = content;
+        //contentDiv.style.display = "inline-block";
 
         textCardDiv.appendChild(contentDiv);
 
@@ -221,7 +223,7 @@ function getTextCardContent(element, string) {
         if (string === "Content") {
             result = "Something went wrong while fetching the data";
         } else {
-            return;
+            return result;
         }
     }
     return result;
