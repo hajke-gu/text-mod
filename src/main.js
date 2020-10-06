@@ -193,13 +193,12 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
         if (index == rows.length) {
             break;
         }
-        colour = rows[index].color().hexCode;
-        let textCardContent = getRowContent(rows[index], "Content");
+        let textCardContent = getDataValue(rows[index], "Content");
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
             //var truncatedTextCardContent = truncateString(textCardContent, 125);
-            var annotation = getRowContent(rows[index], "Annotation");
-
+            var annotation = getDataValue(rows[index], "Annotation");
+            colour = rows[index].color().hexCode;
             let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, colour, annotation);
             newDiv.onclick = (e) => {
                 console.log(newDiv.textContent);
@@ -223,7 +222,7 @@ function renderTextCards(rows, height, width, padding, margin, colour, prevIndex
     return returnObject;
 }
 
-function getRowContent(element, string) {
+function getDataValue(element, string) {
     //console.log(element);
     var result = null;
     try {
