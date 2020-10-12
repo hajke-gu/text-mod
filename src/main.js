@@ -54,7 +54,6 @@ Spotfire.initialize(async (mod) => {
 
         modDiv.style.height = windowSize.height + "px";
 
-        //console.log("Data View exp: " + (await dataView.hasExpired()));
         /**
          * Get rows from dataView
          */
@@ -66,25 +65,16 @@ Spotfire.initialize(async (mod) => {
             return;
         }
 
-        let textCardHeight = "fit-content";
-        let textCardWidth = windowSize.width * 0.5 + "px";
-        let textCardPadding = "0.5%";
-        let textCardMargin = "0";
         var rerender = true;
 
         var returnedObject = renderTextCards(
             rows,
-            textCardHeight,
-            textCardWidth,
-            textCardPadding,
-            textCardMargin,
             prevIndex, // When rerendering we always want to render everything
             cardsToLoad,
             rerender
         );
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.startIndex;
-        //console.log("previndex after init: " + prevIndex);
 
         /*          * Scroll Event Listener          */
         modDiv.addEventListener("scroll", async function (e) {
@@ -95,28 +85,11 @@ Spotfire.initialize(async (mod) => {
                 }
                 var rerender = false;
 
-                var returnedObject = renderTextCards(
-                    rows,
-                    textCardHeight,
-                    textCardWidth,
-                    textCardPadding,
-                    textCardMargin,
-                    prevIndex,
-                    cardsToLoad,
-                    rerender
-                );
+                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender);
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.startIndex;
-                //console.log("prevIndex after scroll: " + prevIndex);
             }
         });
-
-        /*
-        var modContainer = document.getElementById("mod-container");
-        modContainer.onclick = () => {
-            dataView.clearMarking();
-        };
-        */
 
         /**
          * Signal that the mod is ready for export.
@@ -127,47 +100,42 @@ Spotfire.initialize(async (mod) => {
 
 /**
  * Create a div element.
- * @param {string} className class name of the div element.
  * @param {string | HTMLElement} content Content inside the div
  */
-function createDiv(className, content, height, width, padding, margin, colour, annotation) {
+function createTextCard(content, colour, annotation) {
+    //create textCard
     var textCardDiv = document.createElement("div");
-    textCardDiv.style.height = height;
-    textCardDiv.style.width = width;
-    textCardDiv.style.padding = padding;
-    textCardDiv.style.margin = margin;
-    //textCardDiv.style.float = "left";
-    textCardDiv.style.flex = "1 1 40%";
+    textCardDiv.setAttribute("id", "text-card");
 
-    //console.log(annotation);
+    //add sidebar to text card
+    var sidebar = document.createElement("div");
+    sidebar.setAttribute("id", "text-card-sidebar");
+    sidebar.style.backgroundColor = colour;
+
+    textCardDiv.appendChild(sidebar);
+
+    //add annotation to text card
     if (annotation !== null) {
-        var annotationDiv = document.createElement("h4");
-        annotationDiv.textContent = annotation;
-        annotationDiv.style.padding = padding;
-        annotationDiv.style.backgroundColor = colour;
-        annotationDiv.style.margin = margin;
+        var header = document.createElement("h4");
+        header.textContent = annotation;
+        //header.style.backgroundColor = colour;
 
-        textCardDiv.appendChild(annotationDiv);
+        textCardDiv.appendChild(header);
     }
-    textCardDiv.classList.add(className);
+
+    //add paragraph to text card
     if (typeof content === "string") {
-        var contentDiv = document.createElement("p");
-        contentDiv.style.padding = padding;
-        contentDiv.style.margin = margin;
-        contentDiv.style.backgroundColor = colour;
-        contentDiv.style.opacity = "0.9";
-        contentDiv.textContent = content;
-        //contentDiv.style.display = "inline-block";
+        var contentParagraph = document.createElement("p");
+        contentParagraph.setAttribute("id", "text-card-paragraph");
+        contentParagraph.textContent = content;
 
-        textCardDiv.appendChild(contentDiv);
-
-        //console.log("inside === string");
+        textCardDiv.appendChild(contentParagraph);
     }
 
     return textCardDiv;
 }
 
-function renderTextCards(rows, height, width, padding, margin, prevIndex, cardsToLoad, rerender) {
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -178,9 +146,7 @@ function renderTextCards(rows, height, width, padding, margin, prevIndex, cardsT
     if (rerender) {
         whatToLoad = prevIndex;
         startIndex = 0;
-        //console.log("in rerender");
         if (prevIndex == 0) {
-            //console.log("previndex is zero");
             whatToLoad = cardsToLoad;
         }
     }
@@ -191,12 +157,10 @@ function renderTextCards(rows, height, width, padding, margin, prevIndex, cardsT
         let textCardContent = getDataValue(rows[index], "Content");
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
-            //var truncatedTextCardContent = truncateString(textCardContent, 125);
             var annotation = getDataValue(rows[index], "Annotation");
             var color = rows[index].color().hexCode;
-            let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, color, annotation);
+            let newDiv = createTextCard(textCardContent, color, annotation);
             newDiv.onclick = (e) => {
-                //console.log(newDiv.textContent);
                 rows[index].mark("Replace");
             };
             newDiv.onmouseover = (e) => {
@@ -212,13 +176,11 @@ function renderTextCards(rows, height, width, padding, margin, prevIndex, cardsT
         prevIndex = prevIndex + cardsToLoad;
     }
 
-    //console.log("startindex + cardsToLoad: " + prevIndex);
     var returnObject = { fragment, startIndex: prevIndex };
     return returnObject;
 }
 
 function getDataValue(element, string) {
-    //console.log(element);
     var result = null;
     try {
         result = element.categorical(string).value()[0].key;
