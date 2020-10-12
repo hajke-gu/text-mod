@@ -37,7 +37,7 @@ Spotfire.initialize(async (mod) => {
          * NON-GLOBALS
          */
 
-        const cardsToLoad = 15;
+        const cardsToLoad = 100;
 
         /**
          * Check the data view for errors
