@@ -185,7 +185,8 @@ function renderTextCards(rows, height, width, padding, margin, prevIndex, cardsT
         }
     }
     for (let index = startIndex; index < whatToLoad; index++) {
-        if (index == rows.length) {
+        // console.log("Rows: " + rows.length)
+        if (index >= rows.length) {
             break;
         }
         let textCardContent = getDataValue(rows[index], "Content");
