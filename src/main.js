@@ -76,6 +76,13 @@ Spotfire.initialize(async (mod) => {
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.startIndex;
 
+        /*          * De-mark on click on something that isn't text card *   */
+
+        var modContainer = document.getElementById("text-card-container");
+        modContainer.onclick = () => {
+            dataView.clearMarking();
+        };
+
         /*          * Scroll Event Listener          */
         modDiv.addEventListener("scroll", async function (e) {
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
@@ -162,7 +169,8 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender) {
             var color = rows[index].color().hexCode;
             let newDiv = createTextCard(textCardContent, color, annotation);
             newDiv.onclick = (e) => {
-                rows[index].mark("Replace");
+                e.stopPropagation();
+                rows[index].mark("Toggle");
             };
             newDiv.onmouseover = (e) => {
                 newDiv.style.color = "black";
