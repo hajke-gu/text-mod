@@ -66,6 +66,19 @@ Spotfire.initialize(async (mod) => {
             return;
         }
 
+        if ((await dataView.categoricalAxis("Sorting")) != null) {
+            rows.sort(function (a, b) {
+                var sortValueA = a.categorical("Sorting").value()[0].key;
+                var sortValueB = b.categorical("Sorting").value()[0].key;
+
+                if (sortValueA < sortValueB) return 1;
+
+                if (sortValueA > sortValueB) return -1;
+
+                return 0;
+            });
+        }
+
         let textCardHeight = "fit-content";
         let textCardWidth = windowSize.width * 0.5 + "px";
         let textCardPadding = "0.5%";
