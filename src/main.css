@@ -22,7 +22,7 @@ body {
 #text-card {
     box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     padding: 10px;
     border-radius: 5px; /* 5px rounded corners */
