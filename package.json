@@ -4,8 +4,7 @@
     "description": "",
     "scripts": {
         "start": "npm install && npm run server",
-        "server": "node development-server.js src",
-        "test": "npm install && node development-server.js src test"
+        "server": "node development-server.js src"
     },
     "keywords": [],
     "author": "Emanuel Dellsén, Hartmut Fischer, Jonatan Vaara, Alexander Strand & Karl Västgård",
@@ -21,6 +20,7 @@
         "eslint": "^7.10.0",
         "html-minifier": "^4.0.0",
         "minify": "^6.0.0",
+        "minimist": "^1.2.5",
         "puppeteer": "^5.3.1"
     },
     "husky": {
