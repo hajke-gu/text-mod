@@ -71,7 +71,8 @@ Spotfire.initialize(async (mod) => {
             rows,
             prevIndex, // When rerendering we always want to render everything
             cardsToLoad,
-            rerender
+            rerender,
+            windowSize
         );
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.startIndex;
@@ -92,7 +93,7 @@ Spotfire.initialize(async (mod) => {
                 }
                 var rerender = false;
 
-                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender);
+                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize);
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.startIndex;
             }
@@ -109,7 +110,7 @@ Spotfire.initialize(async (mod) => {
  * Create a div element.
  * @param {string | HTMLElement} content Content inside the div
  */
-function createTextCard(content, colour, annotation) {
+function createTextCard(content, colour, annotation, windowSize) {
     //create textCard
     var textCardDiv = document.createElement("div");
     textCardDiv.setAttribute("id", "text-card");
@@ -136,13 +137,18 @@ function createTextCard(content, colour, annotation) {
         contentParagraph.setAttribute("id", "text-card-paragraph");
         contentParagraph.textContent = content;
 
+        contentParagraph.style.height = "fit-content"; //
+        contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+        contentParagraph.style.overflowY = "auto";
+        contentParagraph.style.overflowX = "hidden";
+
         textCardDiv.appendChild(contentParagraph);
     }
 
     return textCardDiv;
 }
 
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender) {
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -167,7 +173,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender) {
         if (textCardContent) {
             var annotation = getDataValue(rows[index], "Annotation");
             var color = rows[index].color().hexCode;
-            let newDiv = createTextCard(textCardContent, color, annotation);
+            let newDiv = createTextCard(textCardContent, color, annotation, windowSize);
             newDiv.onclick = (e) => {
                 e.stopPropagation();
                 rows[index].mark("Toggle");
