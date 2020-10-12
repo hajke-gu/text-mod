@@ -78,8 +78,9 @@ Spotfire.initialize(async (mod) => {
         prevIndex = returnedObject.startIndex;
 
         /*          * De-mark on click on something that isn't text card *   */
-
         var modContainer = document.getElementById("text-card-container");
+        
+    
         modContainer.onclick = () => {
             dataView.clearMarking();
         };
@@ -114,7 +115,7 @@ function createTextCard(content, colour, annotation, windowSize) {
     //create textCard
     var textCardDiv = document.createElement("div");
     textCardDiv.setAttribute("id", "text-card");
-
+    
     //add sidebar to text card
     var sidebar = document.createElement("div");
     sidebar.setAttribute("id", "text-card-sidebar");
@@ -175,8 +176,18 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
             var color = rows[index].color().hexCode;
             let newDiv = createTextCard(textCardContent, color, annotation, windowSize);
             newDiv.onclick = (e) => {
-                e.stopPropagation();
-                rows[index].mark("Toggle");
+                var selectedText = getSelectedText();
+                console.log(selectedText, "before if")
+                if(selectedText !== ''){
+                    console.log(selectedText)
+                    console.log("inside if")
+                    selectedText = '';
+                } else {
+                    console.log("inside else")
+                    e.stopPropagation();
+                    rows[index].mark("Toggle");
+                }
+            
             };
             newDiv.onmouseover = (e) => {
                 newDiv.style.color = "black";
@@ -184,6 +195,9 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
             newDiv.onmouseout = (e) => {
                 newDiv.style.color = "";
             };
+            
+                
+
             fragment.appendChild(newDiv);
         }
     }
@@ -225,3 +239,20 @@ function truncateString(str, num) {
     // Return str truncated with '...' concatenated to the end of str.
     return str.slice(0, num) + "...";
 }
+
+function getSelectedText() { 
+                var selectedText = ''; 
+  
+                // window.getSelection 
+                if (window.getSelection) { 
+                    selectedText = window.getSelection().toString(); 
+                } 
+                // document.getSelection 
+                 if (document.getSelection) { 
+                    selectedText = document.getSelection().toString(); 
+                } 
+                // document.selection 
+            
+                  return selectedText; 
+
+            }
