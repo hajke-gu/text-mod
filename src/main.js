@@ -86,6 +86,13 @@ Spotfire.initialize(async (mod) => {
         prevIndex = returnedObject.startIndex;
         //console.log("previndex after init: " + prevIndex);
 
+        /*          * De-mark on click on something that isn't text card *   */
+
+        var modContainer = document.getElementById("text-card-container");
+        modContainer.onclick = () => {
+            dataView.clearMarking();
+        };
+
         /*          * Scroll Event Listener          */
         modDiv.addEventListener("scroll", async function (e) {
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
@@ -110,13 +117,6 @@ Spotfire.initialize(async (mod) => {
                 //console.log("prevIndex after scroll: " + prevIndex);
             }
         });
-
-        /*
-        var modContainer = document.getElementById("mod-container");
-        modContainer.onclick = () => {
-            dataView.clearMarking();
-        };
-        */
 
         /**
          * Signal that the mod is ready for export.
@@ -197,8 +197,8 @@ function renderTextCards(rows, height, width, padding, margin, prevIndex, cardsT
             var color = rows[index].color().hexCode;
             let newDiv = createDiv("text-card", textCardContent, height, width, padding, margin, color, annotation);
             newDiv.onclick = (e) => {
-                //console.log(newDiv.textContent);
-                rows[index].mark("Replace");
+                e.stopPropagation();
+                rows[index].mark("Toggle");
             };
             newDiv.onmouseover = (e) => {
                 newDiv.style.color = "black";
