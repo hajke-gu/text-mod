@@ -84,6 +84,7 @@ Spotfire.initialize(async (mod) => {
         modContainer.onclick = () => {
             dataView.clearMarking();
         };
+
         document.onkeydown = (e) => {
             console.log(e.key.toString());
             var selectedText = getSelectedText();
@@ -99,7 +100,7 @@ Spotfire.initialize(async (mod) => {
             if (e.key === "ArrowDown") {
                 modContainer.scrollBy(0, 100);
             } else {
-                console.log("ctrl not pressed");
+                console.log(e.key, " pressed");
             }
         };
 
