@@ -206,7 +206,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             newDiv.onmouseover = (e) => {
                 newDiv.style.color = "black";
                 mod.controls.tooltip.show(
-                    getColumnName(rows[index], "Sentiment") + ": " + getDataValue(rows[index], "Sentiment")
+                    getColumnName(rows[index], "Toolbar") + ": " + getDataValue(rows[index], "Toolbar")
                 );
             };
             newDiv.onmouseout = (e) => {
@@ -243,8 +243,12 @@ function getDataValue(element, string) {
 
 function getColumnName(element, string) {
     var result = null;
+    //var result2 = null;
     try {
         result = element.categorical(string).value()[0]._node.__hierarchy.levels[0].name;
+        //if we want the user to have more on the tooltip you have to loop over and change the "levels" incrementally
+        //result2 = element.categorical(string).value()[0]._node.__hierarchy.levels[1].name;
+        //console.log(result2)
     } catch (error) {
         console.log(error.message);
     }

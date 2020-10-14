@@ -29,7 +29,7 @@
                 "mode": "categorical"
             },
             {
-                "name": "Sentiment",
+                "name": "Toolbar",
                 "mode": "categorical"
             }
         ]
