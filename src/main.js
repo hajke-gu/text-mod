@@ -18,6 +18,7 @@ Spotfire.initialize(async (mod) => {
     const reader = mod.createReader(mod.visualization.data(), mod.windowSize(), mod.property("myProperty"));
 
     const modDiv = findElem("#text-card-container");
+
     /**
      * Store the context.
      */
@@ -79,10 +80,22 @@ Spotfire.initialize(async (mod) => {
 
         /*          * De-mark on click on something that isn't text card *   */
         var modContainer = document.getElementById("text-card-container");
-        
-    
+
         modContainer.onclick = () => {
             dataView.clearMarking();
+        };
+
+        document.onkeydown = (e) => {
+            console.log(e.key.toString());
+            var selectedText = getSelectedText();
+            if (e.ctrlKey && e.key === "c" && selectedText !== "") {
+                console.log(selectedText);
+                console.log("inside if");
+                textToClipboard(selectedText);
+                selectedText = "";
+            } else {
+                console.log("ctrl not pressed");
+            }
         };
 
         /*          * Scroll Event Listener          */
@@ -115,7 +128,7 @@ function createTextCard(content, colour, annotation, windowSize) {
     //create textCard
     var textCardDiv = document.createElement("div");
     textCardDiv.setAttribute("id", "text-card");
-    
+
     //add sidebar to text card
     var sidebar = document.createElement("div");
     sidebar.setAttribute("id", "text-card-sidebar");
@@ -177,19 +190,12 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
             let newDiv = createTextCard(textCardContent, color, annotation, windowSize);
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
-                console.log(selectedText, "before if")
-                if(selectedText !== ''){
-                    console.log(selectedText)
-                    console.log("inside if")
-                    textToClipboard(selectedText)
-
-                    selectedText = '';
-                } else {
-                    console.log("inside else")
+                console.log(selectedText, "before if");
+                if (selectedText === "") {
+                    console.log("inside else");
                     e.stopPropagation();
                     rows[index].mark("Toggle");
                 }
-    
             };
             newDiv.onmouseover = (e) => {
                 newDiv.style.color = "black";
@@ -197,8 +203,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
             newDiv.onmouseout = (e) => {
                 newDiv.style.color = "";
             };
-            
-                
 
             fragment.appendChild(newDiv);
         }
@@ -242,28 +246,27 @@ function truncateString(str, num) {
     return str.slice(0, num) + "...";
 }
 
-function getSelectedText() { 
-                var selectedText = ''; 
-  
-                // window.getSelection 
-                if (window.getSelection) { 
-                    selectedText = window.getSelection().toString(); 
-                } 
-                // document.getSelection 
-                 if (document.getSelection) { 
-                    selectedText = document.getSelection().toString(); 
-                } 
-                // document.selection 
-            
-                  return selectedText; 
+function getSelectedText() {
+    var selectedText = "";
 
-            }
+    // window.getSelection
+    if (window.getSelection) {
+        selectedText = window.getSelection().toString();
+    }
+    // document.getSelection
+    if (document.getSelection) {
+        selectedText = document.getSelection().toString();
+    }
+    // document.selection
 
-            function textToClipboard (text) {
-                var temporaryCopyElement = document.createElement("textarea");
-                document.body.appendChild(temporaryCopyElement);
-                temporaryCopyElement.value = text;
-                temporaryCopyElement.select();
-                document.execCommand("copy");
-                document.body.removeChild(temporaryCopyElement);
-            }
+    return selectedText;
+}
+
+function textToClipboard(text) {
+    var temporaryCopyElement = document.createElement("textarea");
+    document.body.appendChild(temporaryCopyElement);
+    temporaryCopyElement.value = text;
+    temporaryCopyElement.select();
+    document.execCommand("copy");
+    document.body.removeChild(temporaryCopyElement);
+}
