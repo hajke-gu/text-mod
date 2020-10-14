@@ -18,6 +18,7 @@ Spotfire.initialize(async (mod) => {
     const reader = mod.createReader(mod.visualization.data(), mod.windowSize(), mod.property("myProperty"));
 
     const modDiv = findElem("#text-card-container");
+
     /**
      * Store the context.
      */
@@ -95,10 +96,29 @@ Spotfire.initialize(async (mod) => {
         prevIndex = returnedObject.startIndex;
 
         /*          * De-mark on click on something that isn't text card *   */
-
         var modContainer = document.getElementById("text-card-container");
+
         modContainer.onclick = () => {
             dataView.clearMarking();
+        };
+
+        document.onkeydown = (e) => {
+            console.log(e.key.toString());
+            var selectedText = getSelectedText();
+            if (e.ctrlKey && e.key === "c" && selectedText !== "") {
+                console.log(selectedText);
+                console.log("inside if");
+                textToClipboard(selectedText);
+                selectedText = "";
+            }
+            if (e.key === "ArrowUp") {
+                modContainer.scrollBy(0, -100);
+            }
+            if (e.key === "ArrowDown") {
+                modContainer.scrollBy(0, 100);
+            } else {
+                console.log(e.key, " pressed");
+            }
         };
 
         /*          * Scroll Event Listener          */
@@ -192,8 +212,13 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
             var color = rows[index].color().hexCode;
             let newDiv = createTextCard(textCardContent, color, annotation, windowSize);
             newDiv.onclick = (e) => {
-                e.stopPropagation();
-                rows[index].mark("Toggle");
+                var selectedText = getSelectedText();
+                console.log(selectedText, "before if");
+                if (selectedText === "") {
+                    console.log("inside else");
+                    e.stopPropagation();
+                    rows[index].mark("Toggle");
+                }
             };
             newDiv.onmouseover = (e) => {
                 newDiv.style.color = "black";
@@ -201,6 +226,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
             newDiv.onmouseout = (e) => {
                 newDiv.style.color = "";
             };
+
             fragment.appendChild(newDiv);
         }
     }
@@ -241,4 +267,29 @@ function truncateString(str, num) {
     }
     // Return str truncated with '...' concatenated to the end of str.
     return str.slice(0, num) + "...";
+}
+
+function getSelectedText() {
+    var selectedText = "";
+
+    // window.getSelection
+    if (window.getSelection) {
+        selectedText = window.getSelection().toString();
+    }
+    // document.getSelection
+    if (document.getSelection) {
+        selectedText = document.getSelection().toString();
+    }
+    // document.selection
+
+    return selectedText;
+}
+
+function textToClipboard(text) {
+    var temporaryCopyElement = document.createElement("textarea");
+    document.body.appendChild(temporaryCopyElement);
+    temporaryCopyElement.value = text;
+    temporaryCopyElement.select();
+    document.execCommand("copy");
+    document.body.removeChild(temporaryCopyElement);
 }
