@@ -8,11 +8,11 @@ permalink: /change-log/
 
 Here we will describe the changes and updates of the Text Mod.
 
-<ul>
+
   {% for post in site.posts %}
-    <li>
-      <a href="{{ post.url }}">{{ post.title }}</a>
+  <h5>{{ post.title }}</h5>
         <p> {{ post.content }} </p>
-    </li>
+            <hr class="panel-line">
+
   {% endfor %}
-</ul>
+
