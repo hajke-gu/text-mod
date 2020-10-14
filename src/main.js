@@ -181,13 +181,15 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
                 if(selectedText !== ''){
                     console.log(selectedText)
                     console.log("inside if")
+                    textToClipboard(selectedText)
+
                     selectedText = '';
                 } else {
                     console.log("inside else")
                     e.stopPropagation();
                     rows[index].mark("Toggle");
                 }
-            
+    
             };
             newDiv.onmouseover = (e) => {
                 newDiv.style.color = "black";
@@ -255,4 +257,13 @@ function getSelectedText() {
             
                   return selectedText; 
 
+            }
+
+            function textToClipboard (text) {
+                var temporaryCopyElement = document.createElement("textarea");
+                document.body.appendChild(temporaryCopyElement);
+                temporaryCopyElement.value = text;
+                temporaryCopyElement.select();
+                document.execCommand("copy");
+                document.body.removeChild(temporaryCopyElement);
             }
