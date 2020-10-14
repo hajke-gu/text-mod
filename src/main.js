@@ -73,7 +73,8 @@ Spotfire.initialize(async (mod) => {
             prevIndex, // When rerendering we always want to render everything
             cardsToLoad,
             rerender,
-            windowSize
+            windowSize,
+            mod
         );
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.startIndex;
@@ -168,7 +169,7 @@ function createTextCard(content, colour, annotation, windowSize) {
     return textCardDiv;
 }
 
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -196,18 +197,21 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
             let newDiv = createTextCard(textCardContent, color, annotation, windowSize);
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
-                console.log(selectedText, "before if");
                 if (selectedText === "") {
-                    console.log("inside else");
+                    console.log("inside marking if");
                     e.stopPropagation();
                     rows[index].mark("Toggle");
                 }
             };
             newDiv.onmouseover = (e) => {
                 newDiv.style.color = "black";
+                mod.controls.tooltip.show(
+                    getColumnName(rows[index], "Sentiment") + ": " + getDataValue(rows[index], "Sentiment")
+                );
             };
             newDiv.onmouseout = (e) => {
                 newDiv.style.color = "";
+                mod.controls.tooltip.hide();
             };
 
             fragment.appendChild(newDiv);
@@ -225,6 +229,22 @@ function getDataValue(element, string) {
     var result = null;
     try {
         result = element.categorical(string).value()[0].key;
+    } catch (error) {
+        console.log(error.message);
+    }
+
+    if (result != null) {
+        result = result.toString();
+    } else {
+        return result;
+    }
+    return result;
+}
+
+function getColumnName(element, string) {
+    var result = null;
+    try {
+        result = element.categorical(string).value()[0]._node.__hierarchy.levels[0].name;
     } catch (error) {
         console.log(error.message);
     }

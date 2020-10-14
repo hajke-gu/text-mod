@@ -27,6 +27,10 @@
             {
                 "name": "Annotation",
                 "mode": "categorical"
+            },
+            {
+                "name": "Sentiment",
+                "mode": "categorical"
             }
         ]
     },
