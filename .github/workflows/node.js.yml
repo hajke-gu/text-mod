@@ -10,7 +10,15 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            - name: run nodejs test
-              run: |
-                  npm run start & 
-                  bash tester.sh
+            - name: run test
+              env:
+                  USERNAME: ${{ secrets.USERNAME }}
+                  PASSWORD: ${{ secrets.PASSWORD }}
+              run: | # run server, then run puppeteer script
+                  npm run start &
+                  node puppeteer.js -u $USERNAME -p $PASSWORD
+            - name: upload result
+              uses: actions/upload-artifact@v2
+              with:
+                  name: result
+                  path: result.pdf
