@@ -31,6 +31,10 @@
             {
                 "name": "Sorting",
                 "mode": "categorical"
+            },
+            {
+                "name": "Toolbar",
+                "mode": "categorical"
             }
         ]
     },
