@@ -100,7 +100,7 @@ Spotfire.initialize(async (mod) => {
         var modContainer = document.getElementById("text-card-container");
 
         modContainer.onclick = () => {
-            console.log("inside clearmarking")
+            console.log("inside clearmarking");
             dataView.clearMarking();
         };
 
@@ -224,7 +224,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             newDiv.onmouseover = (e) => {
                 newDiv.style.color = "black";
                 mod.controls.tooltip.show(
-                    getColumnName(rows[index], "Toolbar") + ": " + getDataValue(rows[index], "Toolbar")
+                    getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
                 );
             };
             newDiv.onmouseout = (e) => {

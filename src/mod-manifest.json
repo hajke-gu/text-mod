@@ -33,7 +33,7 @@
                 "mode": "categorical"
             },
             {
-                "name": "Toolbar",
+                "name": "Tooltip",
                 "mode": "categorical"
             }
         ]
