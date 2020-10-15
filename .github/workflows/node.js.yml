@@ -12,4 +12,4 @@ jobs:
             - uses: actions/checkout@v2
             - name: run nodejs test
               run: |
-                  npm run test
+                  bash tester.sh

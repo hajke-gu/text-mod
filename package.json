@@ -21,7 +21,8 @@
         "html-minifier": "^4.0.0",
         "minify": "^6.0.0",
         "minimist": "^1.2.5",
-        "puppeteer": "^5.3.1"
+        "puppeteer": "^5.3.1",
+        "ttab": "^0.7.0"
     },
     "husky": {
         "hooks": {

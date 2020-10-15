@@ -3,15 +3,15 @@ var argv = require("minimist")(process.argv.slice(2));
 
 (async () => {
     /* setup */
-    var headlessOption;
+    var headless;
 
     if (argv.h) {
         // check if running headless
-        headlessOption = true;
+        headless = true;
     } else {
-        headlessOption = false;
+        headless = false;
     }
-    const browser = await puppeteer.launch({ headless: headlessOption });
+    const browser = await puppeteer.launch({ headless: headless });
     const page = await browser.newPage();
     var username;
     var password;
@@ -86,7 +86,10 @@ var argv = require("minimist")(process.argv.slice(2));
     await new Promise((r) => setTimeout(r, 4000)); // wait for loading
 
     /* show results */
-    await page.pdf({ path: "result.pdf", format: "A4" });
+    if (headless) {
+        // cannot use pdf when not running true headless
+        await page.pdf({ path: "result.pdf", format: "A4" });
+    }
 
     // continue here with tests
 
