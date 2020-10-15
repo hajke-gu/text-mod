@@ -100,13 +100,14 @@ Spotfire.initialize(async (mod) => {
         var modContainer = document.getElementById("text-card-container");
 
         modContainer.onclick = () => {
+            console.log("inside clearmarking")
             dataView.clearMarking();
         };
 
         document.onkeydown = (e) => {
             console.log(e.key.toString());
             var selectedText = getSelectedText();
-            if (e.ctrlKey && e.key === "c" && selectedText !== "") {
+            if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
                 console.log(selectedText);
                 console.log("inside if");
                 textToClipboard(selectedText);
