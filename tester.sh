@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt-get install gnome-terminal
+sudo apt-get install gnome-terminal
 npm i
 USERNAME=$1
 PASSWORD=$2
