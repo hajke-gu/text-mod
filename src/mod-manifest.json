@@ -29,7 +29,11 @@
                 "mode": "categorical"
             },
             {
-                "name": "Toolbar",
+                "name": "Sorting",
+                "mode": "categorical"
+            },
+            {
+                "name": "Tooltip",
                 "mode": "categorical"
             }
         ]
