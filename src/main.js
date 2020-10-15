@@ -342,5 +342,6 @@ function createCopyButton(newDiv) {
     newButton.style.zIndex = "10";
     newButton.style.verticalAlign = "top";
     newButton.style.float = "left";
+    newButton.title = "Copy to clipboard";
     newDiv.appendChild(newButton);
 }
