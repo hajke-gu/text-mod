@@ -221,17 +221,19 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                     rows[index].mark("Toggle");
                 }
             };
-            newDiv.onmouseover = (e) => {
+            newDiv.onmouseenter = (e) => {
                 newDiv.style.color = "black";
                 mod.controls.tooltip.show(
                     getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
                 );
+                createCopyButton(newDiv);
             };
-            newDiv.onmouseout = (e) => {
+            newDiv.onmouseleave = (e) => {
                 newDiv.style.color = "";
                 mod.controls.tooltip.hide();
+                var button = document.getElementById("image-button");
+                newDiv.removeChild(button);
             };
-
             fragment.appendChild(newDiv);
         }
     }
@@ -317,4 +319,29 @@ function textToClipboard(text) {
     temporaryCopyElement.select();
     document.execCommand("copy");
     document.body.removeChild(temporaryCopyElement);
+}
+
+function createCopyButton(newDiv) {
+    var newButton = document.createElement("button");
+    newButton.setAttribute("id", "image-button");
+    var myImage = document.createElement("img");
+    myImage.src = "assets/copy-icon.svg";
+    myImage.style.height = "3em";
+    myImage.style.width = "2em";
+
+    newButton.appendChild(myImage);
+    newButton.onclick = (e) => {
+        var text = document.getElementById("text-card-paragraph").textContent;
+        textToClipboard(text);
+    };
+    newButton.style.height = "3em";
+    newButton.style.width = "3em";
+    newButton.style.position = "absolute";
+    //newButton.style.left="0px";
+    newButton.style.bottom = "1em";
+    newButton.style.zIndex = "10";
+    newButton.style.verticalAlign = "top";
+    newButton.style.float = "left";
+    newButton.title = "Copy to clipboard";
+    newDiv.appendChild(newButton);
 }
