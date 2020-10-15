@@ -18,6 +18,7 @@ Spotfire.initialize(async (mod) => {
     const reader = mod.createReader(mod.visualization.data(), mod.windowSize(), mod.property("myProperty"));
 
     const modDiv = findElem("#text-card-container");
+
     /**
      * Store the context.
      */
@@ -65,6 +66,23 @@ Spotfire.initialize(async (mod) => {
             return;
         }
 
+        if ((await dataView.categoricalAxis("Sorting")) != null) {
+            rows.sort(function (a, b) {
+                var sortValueA = a.categorical("Sorting").value()[0].key;
+                var sortValueB = b.categorical("Sorting").value()[0].key;
+
+                if (sortValueA < sortValueB) return 1;
+
+                if (sortValueA > sortValueB) return -1;
+
+                return 0;
+            });
+        }
+
+        let textCardHeight = "fit-content";
+        let textCardWidth = windowSize.width * 0.5 + "px";
+        let textCardPadding = "0.5%";
+        let textCardMargin = "0";
         var rerender = true;
 
         var returnedObject = renderTextCards(
@@ -72,16 +90,37 @@ Spotfire.initialize(async (mod) => {
             prevIndex, // When rerendering we always want to render everything
             cardsToLoad,
             rerender,
-            windowSize
+            windowSize,
+            mod
         );
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.startIndex;
 
         /*          * De-mark on click on something that isn't text card *   */
-
         var modContainer = document.getElementById("text-card-container");
+
         modContainer.onclick = () => {
+            console.log("inside clearmarking");
             dataView.clearMarking();
+        };
+
+        document.onkeydown = (e) => {
+            console.log(e.key.toString());
+            var selectedText = getSelectedText();
+            if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
+                console.log(selectedText);
+                console.log("inside if");
+                textToClipboard(selectedText);
+                selectedText = "";
+            }
+            if (e.key === "ArrowUp") {
+                modContainer.scrollBy(0, -100);
+            }
+            if (e.key === "ArrowDown") {
+                modContainer.scrollBy(0, 100);
+            } else {
+                console.log(e.key, " pressed");
+            }
         };
 
         /*          * Scroll Event Listener          */
@@ -148,7 +187,7 @@ function createTextCard(content, colour, annotation, windowSize) {
     return textCardDiv;
 }
 
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -175,14 +214,25 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize) {
             var color = rows[index].color().hexCode;
             let newDiv = createTextCard(textCardContent, color, annotation, windowSize);
             newDiv.onclick = (e) => {
-                e.stopPropagation();
-                rows[index].mark("Toggle");
+                var selectedText = getSelectedText();
+                if (selectedText === "") {
+                    console.log("inside marking if");
+                    e.stopPropagation();
+                    rows[index].mark("Toggle");
+                }
             };
-            newDiv.onmouseover = (e) => {
+            newDiv.onmouseenter = (e) => {
                 newDiv.style.color = "black";
+                mod.controls.tooltip.show(
+                    getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
+                );
+                createCopyButton(newDiv);
             };
-            newDiv.onmouseout = (e) => {
+            newDiv.onmouseleave = (e) => {
                 newDiv.style.color = "";
+                mod.controls.tooltip.hide();
+                var button = document.getElementById("image-button");
+                newDiv.removeChild(button);
             };
             fragment.appendChild(newDiv);
         }
@@ -211,6 +261,26 @@ function getDataValue(element, string) {
     return result;
 }
 
+function getColumnName(element, string) {
+    var result = null;
+    //var result2 = null;
+    try {
+        result = element.categorical(string).value()[0]._node.__hierarchy.levels[0].name;
+        //if we want the user to have more on the tooltip you have to loop over and change the "levels" incrementally
+        //result2 = element.categorical(string).value()[0]._node.__hierarchy.levels[1].name;
+        //console.log(result2)
+    } catch (error) {
+        console.log(error.message);
+    }
+
+    if (result != null) {
+        result = result.toString();
+    } else {
+        return result;
+    }
+    return result;
+}
+
 /** @returns {HTMLElement} */
 function findElem(selector) {
     return document.querySelector(selector);
@@ -224,4 +294,54 @@ function truncateString(str, num) {
     }
     // Return str truncated with '...' concatenated to the end of str.
     return str.slice(0, num) + "...";
+}
+
+function getSelectedText() {
+    var selectedText = "";
+
+    // window.getSelection
+    if (window.getSelection) {
+        selectedText = window.getSelection().toString();
+    }
+    // document.getSelection
+    if (document.getSelection) {
+        selectedText = document.getSelection().toString();
+    }
+    // document.selection
+
+    return selectedText;
+}
+
+function textToClipboard(text) {
+    var temporaryCopyElement = document.createElement("textarea");
+    document.body.appendChild(temporaryCopyElement);
+    temporaryCopyElement.value = text;
+    temporaryCopyElement.select();
+    document.execCommand("copy");
+    document.body.removeChild(temporaryCopyElement);
+}
+
+function createCopyButton(newDiv) {
+    var newButton = document.createElement("button");
+    newButton.setAttribute("id", "image-button");
+    var myImage = document.createElement("img");
+    myImage.src = "assets/copy-icon.svg";
+    myImage.style.height = "3em";
+    myImage.style.width = "2em";
+
+    newButton.appendChild(myImage);
+    newButton.onclick = (e) => {
+        var text = document.getElementById("text-card-paragraph").textContent;
+        textToClipboard(text);
+    };
+    newButton.style.height = "3em";
+    newButton.style.width = "3em";
+    newButton.style.position = "absolute";
+    //newButton.style.left="0px";
+    newButton.style.bottom = "1em";
+    newButton.style.zIndex = "10";
+    newButton.style.verticalAlign = "top";
+    newButton.style.float = "left";
+    newButton.title = "Copy to clipboard";
+    newDiv.appendChild(newButton);
 }

@@ -27,6 +27,14 @@
             {
                 "name": "Annotation",
                 "mode": "categorical"
+            },
+            {
+                "name": "Sorting",
+                "mode": "categorical"
+            },
+            {
+                "name": "Tooltip",
+                "mode": "categorical"
             }
         ]
     },
