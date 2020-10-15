@@ -15,9 +15,7 @@ jobs:
                   USERNAME: ${{ secrets.USERNAME }}
                   PASSWORD: ${{ secrets.PASSWORD }}
               run: | # run server, then run puppeteer script
-                  npm i puppeteer --save & 
-                  npm run start &
-                  node puppeteer.js -u $USERNAME -p $PASSWORD -h
+                  npm i puppeteer --save
             - name: upload result
               uses: actions/upload-artifact@v2
               with:
