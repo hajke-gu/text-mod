@@ -11,7 +11,7 @@ var argv = require("minimist")(process.argv.slice(2));
     } else {
         headless = false;
     }
-    const browser = await puppeteer.launch({ headless: headless });
+    const browser = await puppeteer.launch({ headless: headless, defaultViewport: null });
     const page = await browser.newPage();
     var username;
     var password;
