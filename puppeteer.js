@@ -88,7 +88,7 @@ var argv = require("minimist")(process.argv.slice(2));
     /* show results */
     if (headless) {
         // cannot use pdf when not running true headless
-        await page.pdf({ path: "result.pdf", format: "A4" });
+        await page.pdf({ path: "result.pdf", landscape: true });
     }
 
     // continue here with tests
