@@ -8,34 +8,39 @@
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>Spotfire Mod Example</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="stylesheet" type="text/css" media="all" href="main.css" />
-    </head>
 
-    <body>
-        <div id="text-card-container">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Spotfire Mod Example</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="all" href="main.css" />
+</head>
+
+<body>
+    <div id="text-card-container">
+        <div id="text-card-wrapper">
             <div id="text-card"></div>
+            <div id="text-card-sidebar"></div>
         </div>
-        <script id="spotfire-loader">
-            var Spotfire = (function (e) {
-                "use strict";
-                return (
-                    (e.initialize = function (e) {
-                        var t = "sfTemp" + 1e4 * Math.random() + "Cb",
-                            a = window;
-                        a[t] = e;
-                        var r = {
-                            subject: "GetUrl",
-                            callbackId: -1,
-                            options: {
-                                cbId: t
-                            }
-                        };
-                        a.addEventListener("message", function e(t) {
+
+    </div>
+    <script id="spotfire-loader">
+        var Spotfire = (function (e) {
+            "use strict";
+            return (
+                (e.initialize = function (e) {
+                    var t = "sfTemp" + 1e4 * Math.random() + "Cb",
+                        a = window;
+                    a[t] = e;
+                    var r = {
+                        subject: "GetUrl",
+                        callbackId: -1,
+                        options: {
+                            cbId: t
+                        }
+                    };
+                    a.addEventListener("message", function e(t) {
                             if (t.source === a.parent && t.data.src) {
                                 a.removeEventListener("message", e);
                                 var r = document,
@@ -43,12 +48,13 @@
                                 (n.src = t.data.src), (r.head || r.body).appendChild(n);
                             }
                         }),
-                            a.parent.postMessage(r, "*");
-                    }),
-                    e
-                );
-            })({});
-        </script>
-        <script src="main.js"></script>
-    </body>
+                        a.parent.postMessage(r, "*");
+                }),
+                e
+            );
+        })({});
+    </script>
+    <script src="main.js"></script>
+</body>
+
 </html>
