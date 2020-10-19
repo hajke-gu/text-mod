@@ -87,6 +87,7 @@ Spotfire.initialize(async (mod) => {
             windowSize,
             mod
         );
+
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.startIndex;
 
@@ -145,6 +146,8 @@ Spotfire.initialize(async (mod) => {
  */
 function createTextCard(content, colour, annotation, windowSize) {
     //create textCard
+    var textCardWrapper = document.createElement("div");
+    textCardWrapper.setAttribute("id", "text-card-wrapper");
     var textCardDiv = document.createElement("div");
     textCardDiv.setAttribute("id", "text-card");
 
@@ -152,7 +155,6 @@ function createTextCard(content, colour, annotation, windowSize) {
     var sidebar = document.createElement("div");
     sidebar.setAttribute("id", "text-card-sidebar");
     sidebar.style.backgroundColor = colour;
-
     textCardDiv.appendChild(sidebar);
 
     //add annotation to text card
@@ -160,6 +162,7 @@ function createTextCard(content, colour, annotation, windowSize) {
         var header = document.createElement("h4");
         header.textContent = annotation;
         //header.style.backgroundColor = colour;
+        header.style.borderBottom = "grey";
 
         textCardDiv.appendChild(header);
     }
@@ -170,7 +173,7 @@ function createTextCard(content, colour, annotation, windowSize) {
         contentParagraph.setAttribute("id", "text-card-paragraph");
         contentParagraph.textContent = content;
 
-        contentParagraph.style.height = "fit-content"; //
+        contentParagraph.style.height = "auto"; //
         contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
         contentParagraph.style.overflowY = "auto";
         contentParagraph.style.overflowX = "hidden";
@@ -178,7 +181,12 @@ function createTextCard(content, colour, annotation, windowSize) {
         textCardDiv.appendChild(contentParagraph);
     }
 
-    return textCardDiv;
+    requestAnimationFrame(() => {
+        sidebar.style.height = textCardWrapper.scrollHeight + "px";
+    });
+    textCardWrapper.appendChild(textCardDiv);
+
+    return textCardWrapper;
 }
 
 function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
@@ -207,6 +215,9 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             var annotation = getDataValue(rows[index], "Annotation");
             var color = rows[index].color().hexCode;
             let newDiv = createTextCard(textCardContent, color, annotation, windowSize);
+
+            //document.getElementById("text-card-sidebar").style.height = newDiv.style.height;
+
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
                 if (selectedText === "") {
@@ -328,14 +339,18 @@ function createCopyButton(newDiv) {
         var text = document.getElementById("text-card-paragraph").textContent;
         textToClipboard(text);
     };
-    newButton.style.height = "3em";
-    newButton.style.width = "3em";
+    var buttonHeight = "3em";
+    var buttonWidth = "3em";
+    newButton.style.height = buttonHeight;
+    newButton.style.width = buttonWidth;
     newButton.style.position = "absolute";
     //newButton.style.left="0px";
     newButton.style.bottom = "1em";
     newButton.style.zIndex = "10";
-    newButton.style.verticalAlign = "top";
-    newButton.style.float = "left";
+    // newButton.style.verticalAlign = "top";
+    newButton.style.float = "right";
+    newButton.style.right = "2em";
+    newButton.style.top = "2em";
     newButton.title = "Copy to clipboard";
     newDiv.appendChild(newButton);
 }

@@ -16,7 +16,8 @@ body {
 #text-card-container {
     overflow-y: scroll;
     overflow-x: hidden;
-    text-align: start;
+    text-align: justify;
+    padding: 2px 16px;
 }
 
 #text-card {
@@ -29,17 +30,18 @@ body {
     padding: 10px;
     border-radius: 8px; /* 5px rounded corners */
     position: relative;
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 8px;
+    height: auto;
 }
 
-#text-card:hover {
-    /* transition: 0.5s; */
-    box-shadow: 0 0 0 3px red, 0 0 0 7px white, 0 0 0 10px green;
+#text-card-wrapper {
 }
 
 #text-card-sidebar {
-    height: 10px;
-}
-
-#text-card-container {
-    padding: 2px 16px;
+    float: left;
+    width: 8px;
+    margin-right: 2px;
 }
