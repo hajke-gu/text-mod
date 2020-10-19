@@ -328,14 +328,18 @@ function createCopyButton(newDiv) {
         var text = document.getElementById("text-card-paragraph").textContent;
         textToClipboard(text);
     };
-    newButton.style.height = "3em";
-    newButton.style.width = "3em";
+    var buttonHeight = "3em";
+    var buttonWidth = "3em";
+    newButton.style.height = buttonHeight;
+    newButton.style.width = buttonWidth;
     newButton.style.position = "absolute";
     //newButton.style.left="0px";
     newButton.style.bottom = "1em";
     newButton.style.zIndex = "10";
-    newButton.style.verticalAlign = "top";
-    newButton.style.float = "left";
+    // newButton.style.verticalAlign = "top";
+    newButton.style.float = "right";
+    newButton.style.right = "2em";
+    newButton.style.top = "2em";
     newButton.title = "Copy to clipboard";
     newDiv.appendChild(newButton);
 }
