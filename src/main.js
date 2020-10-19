@@ -66,17 +66,11 @@ Spotfire.initialize(async (mod) => {
             return;
         }
 
+        /**
+         * Sort rows
+         */
         if ((await dataView.categoricalAxis("Sorting")) != null) {
-            rows.sort(function (a, b) {
-                var sortValueA = a.categorical("Sorting").value()[0].key;
-                var sortValueB = b.categorical("Sorting").value()[0].key;
-
-                if (sortValueA < sortValueB) return 1;
-
-                if (sortValueA > sortValueB) return -1;
-
-                return 0;
-            });
+            sortRows(rows);
         }
 
         let textCardHeight = "fit-content";
@@ -344,4 +338,21 @@ function createCopyButton(newDiv) {
     newButton.style.float = "left";
     newButton.title = "Copy to clipboard";
     newDiv.appendChild(newButton);
+}
+
+/**
+ * Sort rows
+ * @param {*} rows
+ */
+function sortRows(rows) {
+    rows.sort(function (a, b) {
+        var sortValueA = Number(a.categorical("Sorting").value()[0].key);
+        var sortValueB = Number(b.categorical("Sorting").value()[0].key);
+
+        if (sortValueA < sortValueB) return 1;
+
+        if (sortValueA > sortValueB) return -1;
+
+        return 0;
+    });
 }
