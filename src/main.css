@@ -16,20 +16,17 @@ body {
 #text-card-container {
     overflow-y: scroll;
     overflow-x: hidden;
-    text-align: justify;
-    padding: 2px 16px;
+    text-align: start;
+    padding: 16px 16px;
 }
 
 #text-card {
-    box-shadow: 0 0 0 3px red, 0 0 0 7px transparent, 0 0 0 10px transparent;
-    /*border-style: solid;
-    border-width: 0.5px;
-    border-color: #c2c6d1; */
+    box-shadow: 0 0 0 1px red, 0 0 0 2px transparent, 0 0 0 3px transparent;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 10px;
-    border-radius: 8px; /* 5px rounded corners */
+    border-radius: 5px; /* 5px rounded corners */
     position: relative;
+    padding: 8px;
     padding-left: 0px;
     padding-top: 0px;
     padding-bottom: 0px;
@@ -37,7 +34,12 @@ body {
     height: auto;
 }
 
+#text-card:hover {
+    box-shadow: 0 0 0 1px red, 0 0 0 2px white, 0 0 0 3px blue;
+}
+
 #text-card-wrapper {
+    margin-bottom: 14px; /* 16px = 14px + 2* 1px transparent */
 }
 
 #text-card-sidebar {
