@@ -26,6 +26,7 @@ body {
     border-radius: 5px; /* 5px rounded corners */
     position: relative;
     height: auto;
+    color: #313336;
 }
 
 #text-card:hover {
@@ -40,14 +41,6 @@ body {
 #text-card-sidebar {
     float: left;
     width: 4px;
-}
-
-.thin_hr {
-    margin-top: 0;
-    margin-bottom: 0;
-    border: 0;
-    height: 1px;
-    background-color: #dcdfe8; /* must set in js */
 }
 
 .annotation-container {
@@ -68,6 +61,14 @@ body {
     white-space: nowrap;
     text-overflow: ellipsis;
     font-weight: bold;
+}
+
+.thin_hr {
+    margin-top: 0;
+    margin-bottom: 0;
+    border: 0;
+    height: 1px;
+    background-color: #dcdfe8; /* must set in js */
 }
 
 #text-card-paragraph {

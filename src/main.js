@@ -37,7 +37,6 @@ Spotfire.initialize(async (mod) => {
         /*
          * NON-GLOBALS
          */
-
         const cardsToLoad = 100;
 
         /**
@@ -146,7 +145,7 @@ function createTextCard(content, colour, annotation, windowSize) {
     textCardWrapper.setAttribute("id", "text-card-wrapper");
     var textCardDiv = document.createElement("div");
     textCardDiv.setAttribute("id", "text-card");
-
+    textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;";
     //add sidebar to text card
     var sidebar = document.createElement("div");
     sidebar.setAttribute("id", "text-card-sidebar");
@@ -367,9 +366,4 @@ function sortRows(rows) {
 
         return 0;
     });
-}
-
-// invert color (https://stackoverflow.com/a/54569758)
-function invertHex(hex) {
-    return (Number(`0x1${hex}`) ^ 0xffffff).toString(16).substr(1).toUpperCase();
 }
