@@ -53,7 +53,7 @@ Spotfire.initialize(async (mod) => {
         }
         mod.controls.errorOverlay.hide();
 
-        modDiv.style.height = windowSize.height + "px";
+        modDiv.style.height = windowSize.height - 8 + "px";
 
         /**
          * Get rows from dataView
@@ -73,10 +73,6 @@ Spotfire.initialize(async (mod) => {
             sortRows(rows);
         }
 
-        let textCardHeight = "fit-content";
-        let textCardWidth = windowSize.width * 0.5 + "px";
-        let textCardPadding = "0.5%";
-        let textCardMargin = "0";
         var rerender = true;
 
         var returnedObject = renderTextCards(
@@ -159,24 +155,27 @@ function createTextCard(content, colour, annotation, windowSize) {
 
     //add annotation to text card
     if (annotation !== null) {
-        var header = document.createElement("h4");
-        header.textContent = annotation;
+        var header = document.createElement("div");
+        header.setAttribute("class", "annotation-container");
+        var headerContent = document.createElement("div");
+        headerContent.setAttribute("class", "annotation-content");
+        headerContent.textContent = annotation;
         //header.style.backgroundColor = colour;
-        header.style.borderBottom = "grey";
-
+        //header.style.borderBottom = "grey";
+        header.appendChild(headerContent);
         textCardDiv.appendChild(header);
+
+        var line = document.createElement("hr");
+        line.setAttribute("class", "thin_hr");
+        textCardDiv.appendChild(line);
     }
 
     //add paragraph to text card
     if (typeof content === "string") {
-        var contentParagraph = document.createElement("p");
+        var contentParagraph = document.createElement("div");
         contentParagraph.setAttribute("id", "text-card-paragraph");
         contentParagraph.textContent = content;
-
-        contentParagraph.style.height = "auto"; //
         contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
-        contentParagraph.style.overflowY = "auto";
-        contentParagraph.style.overflowX = "hidden";
 
         textCardDiv.appendChild(contentParagraph);
     }
@@ -227,14 +226,12 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
-                newDiv.style.color = "black";
                 mod.controls.tooltip.show(
                     getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
                 );
                 createCopyButton(newDiv);
             };
             newDiv.onmouseleave = (e) => {
-                newDiv.style.color = "";
                 mod.controls.tooltip.hide();
                 var button = document.getElementById("image-button");
                 newDiv.removeChild(button);
@@ -370,4 +367,9 @@ function sortRows(rows) {
 
         return 0;
     });
+}
+
+// invert color (https://stackoverflow.com/a/54569758)
+function invertHex(hex) {
+    return (Number(`0x1${hex}`) ^ 0xffffff).toString(16).substr(1).toUpperCase();
 }
