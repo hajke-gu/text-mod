@@ -16,34 +16,66 @@ body {
 #text-card-container {
     overflow-y: scroll;
     overflow-x: hidden;
-    text-align: justify;
-    padding: 2px 16px;
-
+    padding: 16px 24px 16px 24px;
 }
 
 #text-card {
-    box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.2);
-    transition: 0.3s;
-    overflow-y: auto;
+    box-shadow: 0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;
+    overflow-y: hidden;
     overflow-x: hidden;
-    padding: 10px;
     border-radius: 5px; /* 5px rounded corners */
     position: relative;
-    padding-left: 0px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    margin-bottom: 8px;
-    height:auto
+    height: auto;
+    color: #313336;
+}
+
+#text-card:hover {
+    box-shadow: 0 0 0 1px #c2c6d1, 0 0 0 2px white, 0 0 0 3px #313336;
 }
 
 #text-card-wrapper {
-    
+    margin-bottom: 8px;
+    padding-bottom: 8px;
 }
 
 #text-card-sidebar {
-        float:left;
-    width:8px;
-    margin-right: 2px;
-    
+    float: left;
+    width: 4px;
 }
 
+.annotation-container {
+    height: 32px;
+}
+
+.annotation-content {
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+
+    padding-left: 16px;
+    padding-right: 16px;
+
+    /* limits annotations content to text card width, adds ... if too long */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-weight: bold;
+}
+
+.thin_hr {
+    margin-top: 0;
+    margin-bottom: 0;
+    border: 0;
+    height: 1px;
+    background-color: #dcdfe8; /* must set in js */
+}
+
+#text-card-paragraph {
+    height: auto;
+    padding-left: 16px;
+    margin-top: 8px;
+    padding-right: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
