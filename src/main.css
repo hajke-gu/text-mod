@@ -57,5 +57,6 @@ p {
 #text-card-paragraph {
     margin-top: 8px;
     margin-bottom: 8px;
+    padding-right: 16px;
     overflow-y: auto;
 }
