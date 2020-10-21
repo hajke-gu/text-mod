@@ -160,6 +160,10 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
         headerContent.textContent = annotation;
         //header.style.backgroundColor = colour;
         //header.style.borderBottom = "grey";
+
+        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
+        if (!markObject.row && !markObject.allRows) header.style.color = "rgba(0, 0, 0, 0.5)";
+
         header.appendChild(headerContent);
         textCardDiv.appendChild(header);
 
@@ -175,8 +179,7 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
         contentParagraph.textContent = content;
         contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
 
-        //Check if row is marked and check if all rows are marked
-        //If row is not marked and all rows are not marked, decrease opacity
+        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
         if (!markObject.row && !markObject.allRows) contentParagraph.style.color = "rgba(0, 0, 0, 0.5)";
 
         textCardDiv.appendChild(contentParagraph);
@@ -191,6 +194,15 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
     return textCardWrapper;
 }
 
+/**
+ * Render Text Cards
+ * @param {*} rows
+ * @param {*} prevIndex
+ * @param {*} cardsToLoad
+ * @param {*} rerender
+ * @param {*} windowSize
+ * @param {*} mod
+ */
 function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
@@ -207,9 +219,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         }
     }
 
-    /**
-     * Check all if all rows are marked
-     */
+    //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
 
     for (let index = startIndex; index < whatToLoad; index++) {
