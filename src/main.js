@@ -59,11 +59,6 @@ Spotfire.initialize(async (mod) => {
          */
         var rows = await dataView.allRows();
 
-        /**
-         * Check all if all rows are marked
-         */
-        var allRowsMarked = isAllRowsMarked(rows);
-
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -143,7 +138,7 @@ Spotfire.initialize(async (mod) => {
  * Create a div element.
  * @param {string | HTMLElement} content Content inside the div
  */
-function createTextCard(content, colour, annotation, windowSize) {
+function createTextCard(content, colour, annotation, windowSize, markObject) {
     //create textCard
     var textCardWrapper = document.createElement("div");
     textCardWrapper.setAttribute("id", "text-card-wrapper");
@@ -180,6 +175,10 @@ function createTextCard(content, colour, annotation, windowSize) {
         contentParagraph.textContent = content;
         contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
 
+        //Check if row is marked and check if all rows are marked
+        //If row is not marked and all rows are not marked, decrease opacity
+        if (!markObject.row && !markObject.allRows) contentParagraph.style.color = "rgba(0, 0, 0, 0.5)";
+
         textCardDiv.appendChild(contentParagraph);
     }
 
@@ -207,6 +206,12 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             whatToLoad = cardsToLoad;
         }
     }
+
+    /**
+     * Check all if all rows are marked
+     */
+    var allRowsMarked = isAllRowsMarked(rows);
+
     for (let index = startIndex; index < whatToLoad; index++) {
         // console.log("Rows: " + rows.length)
         if (index >= rows.length) {
@@ -217,7 +222,11 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         if (textCardContent) {
             var annotation = getDataValue(rows[index], "Annotation");
             var color = rows[index].color().hexCode;
-            let newDiv = createTextCard(textCardContent, color, annotation, windowSize);
+            var markObject = {
+                row: rows[index].isMarked(),
+                allRows: allRowsMarked
+            };
+            let newDiv = createTextCard(textCardContent, color, annotation, windowSize, markObject);
 
             //document.getElementById("text-card-sidebar").style.height = newDiv.style.height;
 
