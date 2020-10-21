@@ -190,7 +190,6 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
     });
 
     textCardWrapper.appendChild(textCardDiv);
-
     return textCardWrapper;
 }
 
@@ -251,12 +250,13 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 mod.controls.tooltip.show(
                     getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
                 );
-                createCopyButton(newDiv);
+                createCopyButton(newDiv.firstChild);
+
             };
             newDiv.onmouseleave = (e) => {
                 mod.controls.tooltip.hide();
-                var button = document.getElementById("image-button");
-                newDiv.removeChild(button);
+                var button = document.getElementById("img-button");
+                newDiv.firstChild.removeChild(button);
             };
             fragment.appendChild(newDiv);
         }
@@ -340,37 +340,36 @@ function textToClipboard(text) {
     var temporaryCopyElement = document.createElement("textarea");
     document.body.appendChild(temporaryCopyElement);
     temporaryCopyElement.value = text;
+    console.log(text);
     temporaryCopyElement.select();
     document.execCommand("copy");
     document.body.removeChild(temporaryCopyElement);
 }
 
 function createCopyButton(newDiv) {
+    // BUTTON
     var newButton = document.createElement("button");
-    newButton.setAttribute("id", "image-button");
-    var myImage = document.createElement("img");
-    myImage.src = "assets/copy-icon.svg";
-    myImage.style.height = "3em";
-    myImage.style.width = "2em";
-
-    newButton.appendChild(myImage);
     newButton.onclick = (e) => {
-        var text = document.getElementById("text-card-paragraph").textContent;
+        // var text = document.getElementById("text-card-paragraph").textContent;
+        var text = newDiv.querySelector("#text-card-paragraph").textContent;
         textToClipboard(text);
     };
-    var buttonHeight = "3em";
-    var buttonWidth = "3em";
-    newButton.style.height = buttonHeight;
-    newButton.style.width = buttonWidth;
-    newButton.style.position = "absolute";
-    //newButton.style.left="0px";
-    newButton.style.bottom = "1em";
-    newButton.style.zIndex = "10";
-    // newButton.style.verticalAlign = "top";
-    newButton.style.float = "right";
-    newButton.style.right = "2em";
-    newButton.style.top = "2em";
-    newButton.title = "Copy to clipboard";
+    newButton.title = "Copy to Clipboard";
+    newButton.setAttribute("id", "img-button");
+
+    //TODO: Create SVG here
+    var svgNode = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svgNode.setAttributeNS(null, 'viewBox', '0 0 16 16');
+
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    svg.setAttributeNS(null, 'width', '100%')
+    svg.setAttributeNS(null, 'height', '100%')
+    svg.setAttributeNS(null, "d", "M11.259 1H6v3H2v11h10v-3h2V4.094zM8 4h2v1H8zm3 10H3V5h3v7h5zm1-5H8V8h4zm0-2H8V6h4z");
+
+
+    svgNode.appendChild(svg);
+
+    newButton.appendChild(svgNode);
     newDiv.appendChild(newButton);
 }
 

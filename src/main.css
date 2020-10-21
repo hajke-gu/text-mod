@@ -79,3 +79,12 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+#img-button {
+    height: 24px;
+    width: 24px;
+    right: 8px;
+    top: 8px;
+    position: absolute;
+    border: none;
+}
