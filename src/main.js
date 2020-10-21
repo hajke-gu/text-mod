@@ -122,7 +122,7 @@ Spotfire.initialize(async (mod) => {
                 }
                 var rerender = false;
 
-                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize);
+                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod);
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.startIndex;
             }
@@ -182,6 +182,7 @@ function createTextCard(content, colour, annotation, windowSize) {
     requestAnimationFrame(() => {
         sidebar.style.height = textCardWrapper.scrollHeight + "px";
     });
+
     textCardWrapper.appendChild(textCardDiv);
 
     return textCardWrapper;
