@@ -251,7 +251,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                     getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
                 );
                 createCopyButton(newDiv.firstChild);
-
             };
             newDiv.onmouseleave = (e) => {
                 mod.controls.tooltip.hide();
@@ -349,23 +348,39 @@ function textToClipboard(text) {
 function createCopyButton(newDiv) {
     // BUTTON
     var newButton = document.createElement("button");
-    newButton.onclick = (e) => {
-        // var text = document.getElementById("text-card-paragraph").textContent;
-        var text = newDiv.querySelector("#text-card-paragraph").textContent;
-        textToClipboard(text);
-    };
+
     newButton.title = "Copy to Clipboard";
     newButton.setAttribute("id", "img-button");
 
     //TODO: Create SVG here
-    var svgNode = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svgNode.setAttributeNS(null, 'viewBox', '0 0 16 16');
+    var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgNode.setAttributeNS(null, "viewBox", "0 0 16 16");
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    svg.setAttributeNS(null, 'width', '100%')
-    svg.setAttributeNS(null, 'height', '100%')
+    svg.setAttributeNS(null, "width", "100%");
+    svg.setAttributeNS(null, "height", "100%");
+    svg.setAttributeNS(null, "fill", "#797b85");
     svg.setAttributeNS(null, "d", "M11.259 1H6v3H2v11h10v-3h2V4.094zM8 4h2v1H8zm3 10H3V5h3v7h5zm1-5H8V8h4zm0-2H8V6h4z");
 
+    newButton.onclick = (e) => {
+        svg.setAttributeNS(null, "fill", "#61646b");
+        // var text = document.getElementById("text-card-paragraph").textContent;
+        var text = newDiv.querySelector("#text-card-paragraph").textContent;
+        textToClipboard(text);
+        e.stopPropagation();
+    };
+    newButton.onmouseover = (e) => {
+        svg.setAttributeNS(null, "fill", "#61646b");
+    };
+    newButton.onfocus = (e) => {
+        svg.setAttributeNS(null, "fill", "#797b85");
+    };
+    newButton.onmouseleave = (e) => {
+        svg.setAttributeNS(null, "fill", "#797b85");
+    };
+    newButton.onselect = (e) => {
+        svg.setAttributeNS(null, "fill", "#3050EF");
+    };
 
     svgNode.appendChild(svg);
 
