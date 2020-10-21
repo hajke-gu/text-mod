@@ -90,7 +90,6 @@ Spotfire.initialize(async (mod) => {
         var modContainer = document.getElementById("text-card-container");
 
         modContainer.onclick = () => {
-            console.log("inside clearmarking");
             dataView.clearMarking();
         };
 
@@ -98,8 +97,8 @@ Spotfire.initialize(async (mod) => {
             console.log(e.key.toString());
             var selectedText = getSelectedText();
             if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
-                console.log(selectedText);
-                console.log("inside if");
+                //console.log(selectedText);
+                //console.log("inside if");
                 textToClipboard(selectedText);
                 selectedText = "";
             }
@@ -139,7 +138,7 @@ Spotfire.initialize(async (mod) => {
  * Create a div element.
  * @param {string | HTMLElement} content Content inside the div
  */
-function createTextCard(content, colour, annotation, windowSize) {
+function createTextCard(content, colour, annotation, windowSize, markObject) {
     //create textCard
     var textCardWrapper = document.createElement("div");
     textCardWrapper.setAttribute("id", "text-card-wrapper");
@@ -161,6 +160,10 @@ function createTextCard(content, colour, annotation, windowSize) {
         headerContent.textContent = annotation;
         //header.style.backgroundColor = colour;
         //header.style.borderBottom = "grey";
+
+        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
+        if (!markObject.row && !markObject.allRows) header.style.color = "rgba(0, 0, 0, 0.5)";
+
         header.appendChild(headerContent);
         textCardDiv.appendChild(header);
 
@@ -176,6 +179,9 @@ function createTextCard(content, colour, annotation, windowSize) {
         contentParagraph.textContent = content;
         contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
 
+        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
+        if (!markObject.row && !markObject.allRows) contentParagraph.style.color = "rgba(0, 0, 0, 0.5)";
+
         textCardDiv.appendChild(contentParagraph);
     }
 
@@ -188,6 +194,15 @@ function createTextCard(content, colour, annotation, windowSize) {
     return textCardWrapper;
 }
 
+/**
+ * Render Text Cards
+ * @param {*} rows
+ * @param {*} prevIndex
+ * @param {*} cardsToLoad
+ * @param {*} rerender
+ * @param {*} windowSize
+ * @param {*} mod
+ */
 function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
@@ -203,6 +218,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             whatToLoad = cardsToLoad;
         }
     }
+
+    //Check if all row are marked
+    var allRowsMarked = isAllRowsMarked(rows);
+
     for (let index = startIndex; index < whatToLoad; index++) {
         // console.log("Rows: " + rows.length)
         if (index >= rows.length) {
@@ -213,14 +232,17 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         if (textCardContent) {
             var annotation = getDataValue(rows[index], "Annotation");
             var color = rows[index].color().hexCode;
-            let newDiv = createTextCard(textCardContent, color, annotation, windowSize);
+            var markObject = {
+                row: rows[index].isMarked(),
+                allRows: allRowsMarked
+            };
+            let newDiv = createTextCard(textCardContent, color, annotation, windowSize, markObject);
 
             //document.getElementById("text-card-sidebar").style.height = newDiv.style.height;
 
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
                 if (selectedText === "") {
-                    console.log("inside marking if");
                     e.stopPropagation();
                     rows[index].mark("Toggle");
                 }
@@ -367,4 +389,15 @@ function sortRows(rows) {
 
         return 0;
     });
+}
+
+/**
+ * Check if all rows are marked
+ * @param {*} rows
+ */
+function isAllRowsMarked(rows) {
+    for (var i = 0; i < rows.length; i++) {
+        if (rows[i].isMarked()) return false;
+    }
+    return true;
 }
