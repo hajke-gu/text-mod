@@ -59,6 +59,11 @@ Spotfire.initialize(async (mod) => {
          */
         var rows = await dataView.allRows();
 
+        /**
+         * Check all if all rows are marked
+         */
+        var allRowsMarked = isAllRowsMarked(rows);
+
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -90,7 +95,6 @@ Spotfire.initialize(async (mod) => {
         var modContainer = document.getElementById("text-card-container");
 
         modContainer.onclick = () => {
-            console.log("inside clearmarking");
             dataView.clearMarking();
         };
 
@@ -98,8 +102,8 @@ Spotfire.initialize(async (mod) => {
             console.log(e.key.toString());
             var selectedText = getSelectedText();
             if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
-                console.log(selectedText);
-                console.log("inside if");
+                //console.log(selectedText);
+                //console.log("inside if");
                 textToClipboard(selectedText);
                 selectedText = "";
             }
@@ -220,7 +224,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
                 if (selectedText === "") {
-                    console.log("inside marking if");
                     e.stopPropagation();
                     rows[index].mark("Toggle");
                 }
@@ -367,4 +370,15 @@ function sortRows(rows) {
 
         return 0;
     });
+}
+
+/**
+ * Check if all rows are marked
+ * @param {*} rows
+ */
+function isAllRowsMarked(rows) {
+    for (var i = 0; i < rows.length; i++) {
+        if (rows[i].isMarked()) return false;
+    }
+    return true;
 }
