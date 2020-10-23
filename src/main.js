@@ -236,12 +236,12 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 mod.controls.tooltip.show(
                     getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
                 );
-                createCopyButton(newDiv.firstChild);
+                createCopyButton(newDiv);
             };
             newDiv.onmouseleave = (e) => {
                 mod.controls.tooltip.hide();
                 var button = document.getElementById("img-button");
-                newDiv.firstChild.removeChild(button);
+                newDiv.removeChild(button);
             };
             fragment.appendChild(newDiv);
         }
