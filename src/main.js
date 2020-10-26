@@ -136,23 +136,20 @@ Spotfire.initialize(async (mod) => {
     }
 });
 
-
 /**
  * Create a text card.
  * @param content Content inside the div
  * @param colour Colour of the border on left side of each textcard
  * @param annotation Annotation data from axis chosen by the user
  * @param windowSize Windowsize of the mod
- * @param markObject MarkObject contains information about if the object and/or rows is marked 
+ * @param markObject MarkObject contains information about if the object and/or rows is marked
  */
 
-function createTextCard(content, colour, annotation, windowSize, markObject) {
+function createTextCard(content, colour, annotation, windowSize, markObject, fontStyling) {
     //create textCard
-    var textCardWrapper = createTextCardWrapper();
-    var textCardDiv = createTextCardDiv(colour);
+    var textCardDiv = createTextCardDiv(colour, fontStyling);
     //textCardDiv.setAttribute("id", "text-card");
     //textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;";
-    
 
     //add annotation to text card
     if (annotation !== null) {
@@ -177,7 +174,7 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
 
     //add paragraph to text card
     if (typeof content === "string") {
-        var contentParagraph = createTextCardContentParagraph(windowSize, content);
+        var contentParagraph = createTextCardContentParagraph(windowSize, content, fontStyling);
         //contentParagraph.setAttribute("id", "text-card-paragraph");
         //contentParagraph.textContent = content;
         //contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
@@ -193,12 +190,12 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
 
 /**
  * Render Text Cards
- * @param {*} rows All the rows from the dataset 
+ * @param {*} rows All the rows from the dataset
  * @param {*} prevIndex Index of the previously rendered text card
  * @param {*} cardsToLoad Number of cards to render at one time
- * @param {*} rerender Boolean to check if the text cards needs to be rerendered 
+ * @param {*} rerender Boolean to check if the text cards needs to be rerendered
  * @param {*} windowSize WindowSize of the mod in pixels
- * @param {*} mod The mod object that will be used to add a tooltip using the "controls" 
+ * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
 function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
     if (rerender) {
@@ -217,24 +214,22 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     }
 
     // Get and group styling attributes
-    const styling1 = mod.getRenderContext().styling.general;
-    const stylingVariables1 = {
-        fontSize: styling1.font.fontSize,
-        fontName: styling1.font.fontFamily,
-        fontColor: styling1.font.color,
-        modBackgroundColor: styling1.backgroundColor
+    const styling = mod.getRenderContext().styling;
+    // general fonts styling
+    const fontStyling = {
+        fontSize: styling.general.font.fontSize,
+        fontFamily: styling.general.font.fontFamily,
+        fontColor: styling.general.font.color,
+        fontStyle: styling.general.fontStyle,
+        fontWeight: styling.general.fontWeight
     };
-    console.log(stylingVariables1);
+    // additional styling for scales
+    const stylingMisc = {
+        modBackgroundColor: styling.general.backgroundColor,
+        line: styling.scales.line.stroke,
+        tickMark: styling.scales.tick.stroke
+    };
 
-    const styling2 = mod.getRenderContext().styling.scales;
-    const stylingVariables2 = {
-        fontSize: styling2.font.fontSize,
-        fontName: styling2.font.fontFamily,
-        fontColor: styling2.font.color,
-        lineAll: styling2.line.stroke,
-        tickAll: styling2.line.tick
-    };
-    console.log(stylingVariables2);
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
 
@@ -252,7 +247,8 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 row: rows[index].isMarked(),
                 allRows: allRowsMarked
             };
-            let newDiv = createTextCard(textCardContent, color, annotation, windowSize, markObject);
+            let newDiv = createTextCard(textCardContent, color, annotation, windowSize, markObject, fontStyling);
+            newDiv.style.boxShadow = "0 0 0 1px " + stylingMisc.line + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
 
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
@@ -262,12 +258,15 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
+                newDiv.style.boxShadow = "0 0 0 1px " + stylingMisc.line + ", 0 0 0 2px white, 0 0 0 3px #313336";
                 mod.controls.tooltip.show(
                     getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
                 );
                 createCopyButton(newDiv);
             };
             newDiv.onmouseleave = (e) => {
+                newDiv.style.boxShadow =
+                    "0 0 0 1px " + stylingMisc.line + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
                 mod.controls.tooltip.hide();
                 var button = document.getElementById("img-button");
                 newDiv.removeChild(button);
@@ -421,60 +420,63 @@ function isAllRowsMarked(rows) {
     return true;
 }
 
-
-
-function createTextCardWrapper(){
-   
-    var textCardWrapper = document.createElement("div");
-    textCardWrapper.setAttribute("id", "text-card-wrapper");
-    return textCardWrapper;
-}
 /**
  * @param {*} colour Colour passed from the dataView object of specific row through the mod API
+ * @param fontStyling Font specifications from API
  */
-function createTextCardDiv(colour){
-var textCardDiv = document.createElement("div");
-textCardDiv.setAttribute("id", "text-card");
-textCardDiv.style.borderLeftColor = colour
-return textCardDiv;
+function createTextCardDiv(colour, fontStyling) {
+    var textCardDiv = document.createElement("div");
+
+    textCardDiv.setAttribute("id", "text-card");
+    textCardDiv.style.borderLeftColor = colour;
+    //textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent";
+    /*
+     * Adapting font Color, size, family from API (theme)
+     */
+    // should be color #313336
+    textCardDiv.style.color = fontStyling.fontColor;
+    textCardDiv.style.fontSize = fontStyling.fontSize;
+    textCardDiv.style.fontFamily = fontStyling.fontFamily;
+    return textCardDiv;
 }
 
-
-function createTextCardHeader(){
-var header = document.createElement("div");
+function createTextCardHeader() {
+    var header = document.createElement("div");
     header.setAttribute("class", "annotation-container");
     return header;
 }
 
 /**
-* 
-* @param annotation Content of the header based on information from user choice of annotation
-*/
+ *
+ * @param annotation Content of the header based on information from user choice of annotation
+ */
 
-function createHeaderContent(annotation){
-var headerContent = document.createElement("div");
+function createHeaderContent(annotation) {
+    var headerContent = document.createElement("div");
     headerContent.setAttribute("class", "annotation-content");
     headerContent.textContent = annotation;
     return headerContent;
 }
 
-function createLineDividerInTextCard(){
-var line = document.createElement("hr");
+function createLineDividerInTextCard() {
+    var line = document.createElement("hr");
     line.setAttribute("class", "thin_hr");
     return line;
 }
 
 /**
-* 
-* @param windowSize WindowSize of the mod  
-* @param content Content of the row that will be in the paragraph
-*/
+ *
+ * @param windowSize WindowSize of the mod
+ * @param content Content of the row that will be in the paragraph
+ */
 
-function createTextCardContentParagraph(windowSize, content){
-var contentParagraph = document.createElement("div");
-contentParagraph.setAttribute("id", "text-card-paragraph");
-contentParagraph.textContent = content;
-contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+function createTextCardContentParagraph(windowSize, content, fontStyling) {
+    var contentParagraph = document.createElement("div");
+    contentParagraph.setAttribute("id", "text-card-paragraph");
+    contentParagraph.textContent = content;
+    contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+    contentParagraph.style.fontStyle = fontStyling.fontStyle;
+    contentParagraph.style.fontWeight = fontStyling.fontWeight;
 
-return contentParagraph;
+    return contentParagraph;
 }
