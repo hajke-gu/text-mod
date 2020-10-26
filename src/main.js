@@ -214,10 +214,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         if (index >= rows.length) {
             break;
         }
-        let textCardContent = getDataValue(rows[index], "Content");
+        let textCardContent = getDataValue(rows[index], "Content", 0);
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
-            var annotation = getDataValue(rows[index], "Annotation");
+            var annotation = getDataValue(rows[index], "Annotation", 0);
             var color = rows[index].color().hexCode;
             var markObject = {
                 row: rows[index].isMarked(),
@@ -233,9 +233,30 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
-                mod.controls.tooltip.show(
-                    getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
-                );
+                var nrOfTooltipChoices = rows[index].categorical("Tooltip").value()[0]._node.__hierarchy.levels.length;
+                var tooltipCollection = [];
+                var tooltipString = '';
+                var i = null;
+                for ( i = 0; i < nrOfTooltipChoices; i++) {
+                    //console.log(i)
+
+                    var columnName = getColumnName(rows[index], "Tooltip", i).toString();
+                    //console.log(columnName)
+                    var dataValue = getDataValue(rows[index], "Tooltip", i);
+                    //console.log(dataValue)
+                    var tooltipObj = {
+                        columnName: columnName,
+                        dataValue: dataValue
+                    }
+                    tooltipCollection.push(tooltipObj)
+                    tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
+                    
+                }
+
+
+                
+                  mod.controls.tooltip.show(tooltipString)
+                
                 createCopyButton(newDiv);
             };
             newDiv.onmouseleave = (e) => {
@@ -254,10 +275,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     return returnObject;
 }
 
-function getDataValue(element, string) {
+function getDataValue(element, string, index) {
     var result = null;
     try {
-        result = element.categorical(string).value()[0].key;
+        result = element.categorical(string).value()[index].key;
     } catch (error) {
         console.log(error.message);
     }
@@ -270,11 +291,11 @@ function getDataValue(element, string) {
     return result;
 }
 
-function getColumnName(element, string) {
+function getColumnName(element, string, index) {
     var result = null;
     //var result2 = null;
     try {
-        result = element.categorical(string).value()[0]._node.__hierarchy.levels[0].name;
+        result = element.categorical(string).value()[0]._node.__hierarchy.levels[index].name;
         //if we want the user to have more on the tooltip you have to loop over and change the "levels" incrementally
         //result2 = element.categorical(string).value()[0]._node.__hierarchy.levels[1].name;
         //console.log(result2)
