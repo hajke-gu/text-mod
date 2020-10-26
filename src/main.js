@@ -151,9 +151,11 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
     //textCardDiv.setAttribute("id", "text-card");
     //textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;";
     //add sidebar to text card
-    var sidebar = createSidebar(colour);
-    //sidebar.setAttribute("id", "text-card-sidebar");
-    //sidebar.style.backgroundColor = colour;
+    
+    //var sidebar = createSidebar(colour);
+    var sidebar = document.createElement("div");
+    sidebar.setAttribute("id", "text-card-sidebar");
+    sidebar.style.backgroundColor = colour;
     textCardDiv.appendChild(sidebar);
 
     //add annotation to text card
@@ -190,12 +192,7 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
         textCardDiv.appendChild(contentParagraph);
     }
 
-    requestAnimationFrame(() => {
-        sidebar.style.height = textCardWrapper.scrollHeight + "px";
-    });
-
-    textCardWrapper.appendChild(textCardDiv);
-    return textCardWrapper;
+    return textCardDiv;
 }
 
 /**
@@ -242,8 +239,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             };
             let newDiv = createTextCard(textCardContent, color, annotation, windowSize, markObject);
 
-            //document.getElementById("text-card-sidebar").style.height = newDiv.style.height;
-
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
                 if (selectedText === "") {
@@ -255,12 +250,12 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 mod.controls.tooltip.show(
                     getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
                 );
-                createCopyButton(newDiv.firstChild);
+                createCopyButton(newDiv);
             };
             newDiv.onmouseleave = (e) => {
                 mod.controls.tooltip.hide();
                 var button = document.getElementById("img-button");
-                newDiv.firstChild.removeChild(button);
+                newDiv.removeChild(button);
             };
             fragment.appendChild(newDiv);
         }
@@ -314,16 +309,6 @@ function findElem(selector) {
     return document.querySelector(selector);
 }
 
-function truncateString(str, num) {
-    // If the length of str is less than or equal to num
-    // just return str--don't truncate it.
-    if (str.length <= num) {
-        return str;
-    }
-    // Return str truncated with '...' concatenated to the end of str.
-    return str.slice(0, num) + "...";
-}
-
 function getSelectedText() {
     var selectedText = "";
 
@@ -369,7 +354,7 @@ function createCopyButton(newDiv) {
 
     newButton.onclick = (e) => {
         svg.setAttributeNS(null, "fill", "#61646b");
-        // var text = document.getElementById("text-card-paragraph").textContent;
+        //var text = newDiv.getElementById("text-card-paragraph").textContent;
         var text = newDiv.querySelector("#text-card-paragraph").textContent;
         textToClipboard(text);
         e.stopPropagation();
