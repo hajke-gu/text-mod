@@ -138,7 +138,7 @@ Spotfire.initialize(async (mod) => {
 /**
  * Create a text card.
  * @param content Content inside the div
- * @param colour Colour of sidebar
+ * @param colour Colour of the border on left side of each textcard
  * @param annotation Annotation data from axis chosen by the user
  * @param windowSize Windowsize of the mod
  * @param markObject MarkObject contains information about if the object and/or rows is marked 
@@ -147,16 +147,10 @@ Spotfire.initialize(async (mod) => {
 function createTextCard(content, colour, annotation, windowSize, markObject) {
     //create textCard
     var textCardWrapper = createTextCardWrapper();
-    var textCardDiv = createTextCardDiv();
+    var textCardDiv = createTextCardDiv(colour);
     //textCardDiv.setAttribute("id", "text-card");
     //textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;";
-    //add sidebar to text card
     
-    //var sidebar = createSidebar(colour);
-    var sidebar = document.createElement("div");
-    sidebar.setAttribute("id", "text-card-sidebar");
-    sidebar.style.backgroundColor = colour;
-    textCardDiv.appendChild(sidebar);
 
     //add annotation to text card
     if (annotation !== null) {
@@ -414,23 +408,16 @@ function createTextCardWrapper(){
     textCardWrapper.setAttribute("id", "text-card-wrapper");
     return textCardWrapper;
 }
-
-function createTextCardDiv(){
+/**
+ * @param {*} colour Colour passed from the dataView object of specific row through the mod API
+ */
+function createTextCardDiv(colour){
 var textCardDiv = document.createElement("div");
 textCardDiv.setAttribute("id", "text-card");
+textCardDiv.style.borderLeftColor = colour
 return textCardDiv;
 }
 
-/**
-* 
-* @param {*} colour Colour passed from the dataView object of specific row through the mod API
-*/
-function createSidebar(colour){
-var sidebar = document.createElement("div");
-sidebar.setAttribute("id", "text-card-sidebar");
-sidebar.style.backgroundColor = colour;
-return sidebar;
-}
 
 function createTextCardHeader(){
 var header = document.createElement("div");
