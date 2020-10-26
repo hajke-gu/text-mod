@@ -134,30 +134,35 @@ Spotfire.initialize(async (mod) => {
     }
 });
 
+
 /**
- * Create a div element.
- * @param {string | HTMLElement} content Content inside the div
+ * Create a text card.
+ * @param content Content inside the div
+ * @param colour Colour of sidebar
+ * @param annotation Annotation data from axis chosen by the user
+ * @param windowSize Windowsize of the mod
+ * @param markObject MarkObject contains information about if the object and/or rows is marked 
  */
+
 function createTextCard(content, colour, annotation, windowSize, markObject) {
     //create textCard
-    var textCardWrapper = document.createElement("div");
-    textCardWrapper.setAttribute("id", "text-card-wrapper");
-    var textCardDiv = document.createElement("div");
-    textCardDiv.setAttribute("id", "text-card");
-    textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;";
+    var textCardWrapper = createTextCardWrapper();
+    var textCardDiv = createTextCardDiv();
+    //textCardDiv.setAttribute("id", "text-card");
+    //textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;";
     //add sidebar to text card
-    var sidebar = document.createElement("div");
-    sidebar.setAttribute("id", "text-card-sidebar");
-    sidebar.style.backgroundColor = colour;
+    var sidebar = createSidebar(colour);
+    //sidebar.setAttribute("id", "text-card-sidebar");
+    //sidebar.style.backgroundColor = colour;
     textCardDiv.appendChild(sidebar);
 
     //add annotation to text card
     if (annotation !== null) {
-        var header = document.createElement("div");
-        header.setAttribute("class", "annotation-container");
-        var headerContent = document.createElement("div");
-        headerContent.setAttribute("class", "annotation-content");
-        headerContent.textContent = annotation;
+        var header = createTextCardHeader();
+        //header.setAttribute("class", "annotation-container");
+        var headerContent = createHeaderContent(annotation);
+        //headerContent.setAttribute("class", "annotation-content");
+        //headerContent.textContent = annotation;
         //header.style.backgroundColor = colour;
         //header.style.borderBottom = "grey";
 
@@ -167,17 +172,17 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
         header.appendChild(headerContent);
         textCardDiv.appendChild(header);
 
-        var line = document.createElement("hr");
-        line.setAttribute("class", "thin_hr");
+        var line = createLineDividerInTextCard();
+        //line.setAttribute("class", "thin_hr");
         textCardDiv.appendChild(line);
     }
 
     //add paragraph to text card
     if (typeof content === "string") {
-        var contentParagraph = document.createElement("div");
-        contentParagraph.setAttribute("id", "text-card-paragraph");
-        contentParagraph.textContent = content;
-        contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+        var contentParagraph = createTextCardContentParagraph(windowSize, content);
+        //contentParagraph.setAttribute("id", "text-card-paragraph");
+        //contentParagraph.textContent = content;
+        //contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
 
         //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
         if (!markObject.row && !markObject.allRows) contentParagraph.style.color = "rgba(0, 0, 0, 0.5)";
@@ -195,12 +200,12 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
 
 /**
  * Render Text Cards
- * @param {*} rows
- * @param {*} prevIndex
- * @param {*} cardsToLoad
- * @param {*} rerender
- * @param {*} windowSize
- * @param {*} mod
+ * @param {*} rows All the rows from the dataset 
+ * @param {*} prevIndex Index of the previously rendered text card
+ * @param {*} cardsToLoad Number of cards to render at one time
+ * @param {*} rerender Boolean to check if the text cards needs to be rerendered 
+ * @param {*} windowSize WindowSize of the mod in pixels
+ * @param {*} mod The mod object that will be used to add a tooltip using the "controls" 
  */
 function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
     if (rerender) {
@@ -414,4 +419,69 @@ function isAllRowsMarked(rows) {
         if (rows[i].isMarked()) return false;
     }
     return true;
+}
+
+
+
+function createTextCardWrapper(){
+   
+    var textCardWrapper = document.createElement("div");
+    textCardWrapper.setAttribute("id", "text-card-wrapper");
+    return textCardWrapper;
+}
+
+function createTextCardDiv(){
+var textCardDiv = document.createElement("div");
+textCardDiv.setAttribute("id", "text-card");
+return textCardDiv;
+}
+
+/**
+* 
+* @param {*} colour Colour passed from the dataView object of specific row through the mod API
+*/
+function createSidebar(colour){
+var sidebar = document.createElement("div");
+sidebar.setAttribute("id", "text-card-sidebar");
+sidebar.style.backgroundColor = colour;
+return sidebar;
+}
+
+function createTextCardHeader(){
+var header = document.createElement("div");
+    header.setAttribute("class", "annotation-container");
+    return header;
+}
+
+/**
+* 
+* @param annotation Content of the header based on information from user choice of annotation
+*/
+
+function createHeaderContent(annotation){
+var headerContent = document.createElement("div");
+    headerContent.setAttribute("class", "annotation-content");
+    headerContent.textContent = annotation;
+    return headerContent;
+}
+
+function createLineDividerInTextCard(){
+var line = document.createElement("hr");
+    line.setAttribute("class", "thin_hr");
+    return line;
+}
+
+/**
+* 
+* @param windowSize WindowSize of the mod  
+* @param content Content of the row that will be in the paragraph
+*/
+
+function createTextCardContentParagraph(windowSize, content){
+var contentParagraph = document.createElement("div");
+contentParagraph.setAttribute("id", "text-card-paragraph");
+contentParagraph.textContent = content;
+contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+
+return contentParagraph;
 }
