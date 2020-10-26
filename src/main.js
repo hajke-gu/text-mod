@@ -112,7 +112,9 @@ Spotfire.initialize(async (mod) => {
             }
         };
 
-        /*          * Scroll Event Listener          */
+        /*
+         * Scroll Event Listener
+         */
         modDiv.addEventListener("scroll", async function (e) {
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
                 //Check if old data view
@@ -127,7 +129,7 @@ Spotfire.initialize(async (mod) => {
             }
         });
 
-        /**
+        /*
          * Signal that the mod is ready for export.
          */
         context.signalRenderComplete();
@@ -206,6 +208,25 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         }
     }
 
+    // Get and group styling attributes
+    const styling1 = mod.getRenderContext().styling.general;
+    const stylingVariables1 = {
+        fontSize: styling1.font.fontSize,
+        fontName: styling1.font.fontFamily,
+        fontColor: styling1.font.color,
+        modBackgroundColor: styling1.backgroundColor
+    };
+    console.log(stylingVariables1);
+
+    const styling2 = mod.getRenderContext().styling.scales;
+    const stylingVariables2 = {
+        fontSize: styling2.font.fontSize,
+        fontName: styling2.font.fontFamily,
+        fontColor: styling2.font.color,
+        lineAll: styling2.line.stroke,
+        tickAll: styling2.line.tick
+    };
+    console.log(stylingVariables2);
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
 
