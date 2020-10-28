@@ -144,7 +144,6 @@ Spotfire.initialize(async (mod) => {
  */
 
 function createTextCard(content, colour, annotation, windowSize, markObject) {
-    var textCardWrapper = createTextCardWrapper();
     var textCardDiv = createTextCardDiv(colour);
     //add annotation to text card
     if (annotation !== null) {
@@ -400,11 +399,6 @@ function isAllRowsMarked(rows) {
     return true;
 }
 
-function createTextCardWrapper() {
-    var textCardWrapper = document.createElement("div");
-    textCardWrapper.setAttribute("id", "text-card-wrapper");
-    return textCardWrapper;
-}
 /**
  * @param {*} colour Colour passed from the dataView object of specific row through the mod API
  */
