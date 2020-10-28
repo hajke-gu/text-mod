@@ -24,21 +24,16 @@ body {
     overflow-y: hidden;
     overflow-x: hidden;
 
-    border-radius: 4px; /* 4px rounded corners must be same as border left width!*/
+    border-radius: 4px; /*4px rounded corners must be same as border left width!*/
 
     /*colored sidebar */
-    border-left-width: 4px;
-    border-left: solid;
+    border-left: 4px solid;
 
     position: relative;
     height: auto;
 
     margin-bottom: 16px;
     padding-bottom: 8px;
-}
-
-#text-card:hover {
-    /*box-shadow: 0 0 0 1px #c2c6d1, 0 0 0 2px white, 0 0 0 3px #313336; */
 }
 
 .annotation-container {
@@ -66,7 +61,7 @@ body {
     margin-bottom: 0;
     border: 0;
     height: 1px;
-    background-color: #dcdfe8; /* must set in js */
+    /* background-color: #dcdfe8; must set in js */
 }
 
 #text-card-paragraph {

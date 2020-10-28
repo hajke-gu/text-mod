@@ -139,49 +139,36 @@ Spotfire.initialize(async (mod) => {
 /**
  * Create a text card.
  * @param content Content inside the div
- * @param colour Colour of the border on left side of each textcard
  * @param annotation Annotation data from axis chosen by the user
  * @param windowSize Windowsize of the mod
  * @param markObject MarkObject contains information about if the object and/or rows is marked
  */
 
-function createTextCard(content, colour, annotation, windowSize, markObject, fontStyling) {
+function createTextCard(content, annotation, windowSize, markObject, fontStyling, lineDividerColor) {
     //create textCard
-    var textCardDiv = createTextCardDiv(colour, fontStyling);
+    var textCardDiv = createTextCardDiv(fontStyling);
     //textCardDiv.setAttribute("id", "text-card");
-    //textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;";
+
+    //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity (= add 99 to hexcolor => 60% opacity)
+    // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
+    if (!markObject.row && !markObject.allRows) textCardDiv.style.color = fontStyling.fontColor + "99";
 
     //add annotation to text card
     if (annotation !== null) {
         var header = createTextCardHeader();
-        //header.setAttribute("class", "annotation-container");
         var headerContent = createHeaderContent(annotation);
-        //headerContent.setAttribute("class", "annotation-content");
-        //headerContent.textContent = annotation;
-        //header.style.backgroundColor = colour;
-        //header.style.borderBottom = "grey";
-
-        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
-        if (!markObject.row && !markObject.allRows) header.style.color = "rgba(0, 0, 0, 0.5)";
 
         header.appendChild(headerContent);
         textCardDiv.appendChild(header);
 
-        var line = createLineDividerInTextCard();
-        //line.setAttribute("class", "thin_hr");
+        //add divider line to text card
+        var line = createLineDividerInTextCard(lineDividerColor);
         textCardDiv.appendChild(line);
     }
 
     //add paragraph to text card
     if (typeof content === "string") {
         var contentParagraph = createTextCardContentParagraph(windowSize, content, fontStyling);
-        //contentParagraph.setAttribute("id", "text-card-paragraph");
-        //contentParagraph.textContent = content;
-        //contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
-
-        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
-        if (!markObject.row && !markObject.allRows) contentParagraph.style.color = "rgba(0, 0, 0, 0.5)";
-
         textCardDiv.appendChild(contentParagraph);
     }
 
@@ -223,12 +210,15 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         fontStyle: styling.general.fontStyle,
         fontWeight: styling.general.fontWeight
     };
+    console.log(fontStyling);
     // additional styling for scales
-    const stylingMisc = {
+    const scalesStyling = {
         modBackgroundColor: styling.general.backgroundColor,
-        line: styling.scales.line.stroke,
-        tickMark: styling.scales.tick.stroke
+        fontColor: styling.scales.font.color,
+        lineColor: styling.scales.line.stroke,
+        tickMarkColor: styling.scales.tick.stroke
     };
+    console.log(scalesStyling);
 
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
@@ -247,8 +237,19 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 row: rows[index].isMarked(),
                 allRows: allRowsMarked
             };
-            let newDiv = createTextCard(textCardContent, color, annotation, windowSize, markObject, fontStyling);
-            newDiv.style.boxShadow = "0 0 0 1px " + stylingMisc.line + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
+            let newDiv = createTextCard(
+                textCardContent,
+                annotation,
+                windowSize,
+                markObject,
+                fontStyling,
+                scalesStyling.tickMarkColor
+            );
+            newDiv.setAttribute("id", "text-card");
+
+            newDiv.style.boxShadow =
+                "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
+            newDiv.style.borderLeftColor = color;
 
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
@@ -258,15 +259,18 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
-                newDiv.style.boxShadow = "0 0 0 1px " + stylingMisc.line + ", 0 0 0 2px white, 0 0 0 3px #313336";
+                //TODO: white has to be background color
+                newDiv.style.boxShadow =
+                    "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px white, 0 0 0 3px " + fontStyling.fontColor;
                 mod.controls.tooltip.show(
                     getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
                 );
                 createCopyButton(newDiv);
             };
+
             newDiv.onmouseleave = (e) => {
                 newDiv.style.boxShadow =
-                    "0 0 0 1px " + stylingMisc.line + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
+                    "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
                 mod.controls.tooltip.hide();
                 var button = document.getElementById("img-button");
                 newDiv.removeChild(button);
@@ -421,15 +425,10 @@ function isAllRowsMarked(rows) {
 }
 
 /**
- * @param {*} colour Colour passed from the dataView object of specific row through the mod API
  * @param fontStyling Font specifications from API
  */
-function createTextCardDiv(colour, fontStyling) {
+function createTextCardDiv(fontStyling) {
     var textCardDiv = document.createElement("div");
-
-    textCardDiv.setAttribute("id", "text-card");
-    textCardDiv.style.borderLeftColor = colour;
-    //textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent";
     /*
      * Adapting font Color, size, family from API (theme)
      */
@@ -458,9 +457,10 @@ function createHeaderContent(annotation) {
     return headerContent;
 }
 
-function createLineDividerInTextCard() {
+function createLineDividerInTextCard(lineColor) {
     var line = document.createElement("hr");
     line.setAttribute("class", "thin_hr");
+    line.style.backgroundColor = lineColor;
     return line;
 }
 
@@ -475,6 +475,9 @@ function createTextCardContentParagraph(windowSize, content, fontStyling) {
     contentParagraph.setAttribute("id", "text-card-paragraph");
     contentParagraph.textContent = content;
     contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+    /*
+     * Apply styling of font Weight and Style only on Textcard Content (not on annotation line)
+     */
     contentParagraph.style.fontStyle = fontStyling.fontStyle;
     contentParagraph.style.fontWeight = fontStyling.fontWeight;
 
