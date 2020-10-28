@@ -37,7 +37,6 @@ Spotfire.initialize(async (mod) => {
         /*
          * NON-GLOBALS
          */
-        const cardsToLoad = 100;
 
         /**
          * Check the data view for errors
@@ -52,13 +51,17 @@ Spotfire.initialize(async (mod) => {
         }
         mod.controls.errorOverlay.hide();
 
-        modDiv.style.height = windowSize.height - 8 + "px";
+        modDiv.style.height = windowSize.height - 32 + "px";
 
         /**
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-
+        var cardHeight = 300;
+        //modDiv.style.height = rows.length * cardHeight + "px";
+        var cardsToLoad = 9;
+        console.log(modDiv.scrollTop, "scrolltop");
+        console.log(cardsToLoad);
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -73,25 +76,28 @@ Spotfire.initialize(async (mod) => {
         }
 
         var rerender = true;
+        //var firstEmptyDiv = document.getElementById("firstEmptyDiv");
+        //firstEmptyDiv.style.height = modDiv.scrollTop + "px";
+
+        //modDiv.appendChild(firstEmptyDiv);
 
         var returnedObject = renderTextCards(
             rows,
-            prevIndex, // When rerendering we always want to render everything
+            prevIndex,
             cardsToLoad,
-            rerender,
+            rerender, // When rerendering we always want to render everything
             windowSize,
             mod
         );
-
         modDiv.appendChild(returnedObject.fragment);
-        prevIndex = returnedObject.startIndex;
+
+        modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", (rows.length - cardsToLoad) * cardHeight));
 
         /**
          * De-mark on click on something that isn't text card *
          */
-        var modContainer = document.getElementById("text-card-container");
 
-        modContainer.onclick = () => {
+        modDiv.onclick = () => {
             dataView.clearMarking();
         };
 
@@ -103,33 +109,47 @@ Spotfire.initialize(async (mod) => {
                 selectedText = "";
             }
             if (e.key === "ArrowUp") {
-                modContainer.scrollBy(0, -100);
+                modDiv.scrollBy(0, -100);
             }
             if (e.key === "ArrowDown") {
-                modContainer.scrollBy(0, 100);
+                modDiv.scrollBy(0, 100);
             } else {
                 console.log(e.key, " pressed");
             }
         };
 
-        /*          * Scroll Event Listener          */
+        /*
+         *        Scroll Event Listener
+         */
         modDiv.addEventListener("scroll", async function (e) {
-            if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
+            if (modDiv.scrollTop > 0) {
                 //Check if old data view
                 if (await dataView.hasExpired()) {
                     return;
                 }
-                var rerender = false;
 
+                var startNode = Math.floor(modDiv.scrollTop / cardHeight);
+                startNode = Math.max(0, startNode);
+                console.log(startNode, "startnode");
+                //var rerender = false;
+                var translateString = "transform: translateY(" + modDiv.scrollTop + ")px";
+                console.log(prevIndex, "previndex in event");
+                console.log(modDiv.childNodes[0]);
+                modDiv.childNodes[0].style.transform = "translateY(" + modDiv.scrollTop + "px)";
+                //console.log(modDiv.firstElementChild.getAttribute("transform").replace("transform", translateString))
+                //style.translate = "";
+                console.log(cardsToLoad, "cardstoload in event");
+                console.log(modDiv.scrollTop, "shanghai in scroll");
                 var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod);
                 modDiv.appendChild(returnedObject.fragment);
+                modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", (rows.length - cardsToLoad) * cardHeight));
+
                 prevIndex = returnedObject.startIndex;
             }
         });
 
-        /**
-         * Signal that the mod is ready for export.
-         */
+        console.log(prevIndex, "prevIndex");
+
         context.signalRenderComplete();
     }
 });
@@ -180,25 +200,28 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
 function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
-    if (rerender) {
-        document.querySelector("#text-card-container").innerHTML = "";
-    }
+    //if (rerender) {
+    document.querySelector("#text-card-container").innerHTML = "";
+    //}
     var fragment = document.createDocumentFragment();
 
     var whatToLoad = prevIndex + cardsToLoad;
     var startIndex = prevIndex;
-    if (rerender) {
+    console.log(prevIndex, "prevIndex");
+    console.log(whatToLoad, "whatToLoad");
+    console.log(startIndex, "startIndex");
+    /*if (rerender) {
         whatToLoad = prevIndex;
         startIndex = 0;
         if (prevIndex == 0) {
             whatToLoad = cardsToLoad;
         }
     }
-
+*/
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
-
-    for (let index = startIndex; index < whatToLoad; index++) {
+    var index = prevIndex;
+    for (; index < whatToLoad; index++) {
         // console.log("Rows: " + rows.length)
         if (index >= rows.length) {
             break;
@@ -234,11 +257,13 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             fragment.appendChild(newDiv);
         }
     }
-    if (!rerender || prevIndex === 0) {
+    prevIndex = index;
+    /*if (!rerender || prevIndex === 0) {
         prevIndex = prevIndex + cardsToLoad;
-    }
+    }*/
 
     var returnObject = { fragment, startIndex: prevIndex };
+    console.log(returnObject);
     return returnObject;
 }
 
@@ -465,4 +490,12 @@ function createTooltipString(specificRow) {
     }
 
     return tooltipString;
+}
+
+function renderSanghaiDiv(name, height) {
+    var shanghaiDiv = document.createElement("div");
+    shanghaiDiv.setAttribute("id", name);
+    shanghaiDiv.style.height = height + "px";
+    console.log(shanghaiDiv);
+    return shanghaiDiv;
 }
