@@ -86,7 +86,9 @@ Spotfire.initialize(async (mod) => {
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.startIndex;
 
-        /*          * De-mark on click on something that isn't text card *   */
+        /**
+         * De-mark on click on something that isn't text card *
+         */
         var modContainer = document.getElementById("text-card-container");
 
         modContainer.onclick = () => {
@@ -97,8 +99,6 @@ Spotfire.initialize(async (mod) => {
             console.log(e.key.toString());
             var selectedText = getSelectedText();
             if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
-                //console.log(selectedText);
-                //console.log("inside if");
                 textToClipboard(selectedText);
                 selectedText = "";
             }
@@ -134,51 +134,32 @@ Spotfire.initialize(async (mod) => {
     }
 });
 
-
 /**
  * Create a text card.
  * @param content Content inside the div
  * @param colour Colour of the border on left side of each textcard
  * @param annotation Annotation data from axis chosen by the user
  * @param windowSize Windowsize of the mod
- * @param markObject MarkObject contains information about if the object and/or rows is marked 
+ * @param markObject MarkObject contains information about if the object and/or rows is marked
  */
 
 function createTextCard(content, colour, annotation, windowSize, markObject) {
-    //create textCard
-    var textCardWrapper = createTextCardWrapper();
     var textCardDiv = createTextCardDiv(colour);
-    //textCardDiv.setAttribute("id", "text-card");
-    //textCardDiv.style.boxShadow = "0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;";
-    
-
     //add annotation to text card
     if (annotation !== null) {
         var header = createTextCardHeader();
-        //header.setAttribute("class", "annotation-container");
         var headerContent = createHeaderContent(annotation);
-        //headerContent.setAttribute("class", "annotation-content");
-        //headerContent.textContent = annotation;
-        //header.style.backgroundColor = colour;
-        //header.style.borderBottom = "grey";
-
         //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
         if (!markObject.row && !markObject.allRows) header.style.color = "rgba(0, 0, 0, 0.5)";
-
         header.appendChild(headerContent);
         textCardDiv.appendChild(header);
-
         var line = createLineDividerInTextCard();
-        //line.setAttribute("class", "thin_hr");
         textCardDiv.appendChild(line);
     }
 
     //add paragraph to text card
     if (typeof content === "string") {
         var contentParagraph = createTextCardContentParagraph(windowSize, content);
-        //contentParagraph.setAttribute("id", "text-card-paragraph");
-        //contentParagraph.textContent = content;
-        //contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
 
         //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
         if (!markObject.row && !markObject.allRows) contentParagraph.style.color = "rgba(0, 0, 0, 0.5)";
@@ -191,12 +172,12 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
 
 /**
  * Render Text Cards
- * @param {*} rows All the rows from the dataset 
+ * @param {*} rows All the rows from the dataset
  * @param {*} prevIndex Index of the previously rendered text card
  * @param {*} cardsToLoad Number of cards to render at one time
- * @param {*} rerender Boolean to check if the text cards needs to be rerendered 
+ * @param {*} rerender Boolean to check if the text cards needs to be rerendered
  * @param {*} windowSize WindowSize of the mod in pixels
- * @param {*} mod The mod object that will be used to add a tooltip using the "controls" 
+ * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
 function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
     if (rerender) {
@@ -241,30 +222,8 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
-                var nrOfTooltipChoices = rows[index].categorical("Tooltip").value()[0]._node.__hierarchy.levels.length;
-                var tooltipCollection = [];
-                var tooltipString = '';
-                var i = null;
-                for ( i = 0; i < nrOfTooltipChoices; i++) {
-                    //console.log(i)
-
-                    var columnName = getColumnName(rows[index], "Tooltip", i).toString();
-                    //console.log(columnName)
-                    var dataValue = getDataValue(rows[index], "Tooltip", i);
-                    //console.log(dataValue)
-                    var tooltipObj = {
-                        columnName: columnName,
-                        dataValue: dataValue
-                    }
-                    tooltipCollection.push(tooltipObj)
-                    tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
-                    
-                }
-
-
-                
-                  mod.controls.tooltip.show(tooltipString)
-                
+                var tooltipString = createTooltipString(rows[index]);
+                mod.controls.tooltip.show(tooltipString);
                 createCopyButton(newDiv);
             };
             newDiv.onmouseleave = (e) => {
@@ -275,13 +234,20 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             fragment.appendChild(newDiv);
         }
     }
-    if (!rerender || prevIndex == 0) {
+    if (!rerender || prevIndex === 0) {
         prevIndex = prevIndex + cardsToLoad;
     }
 
     var returnObject = { fragment, startIndex: prevIndex };
     return returnObject;
 }
+
+/**
+ *
+ * @param  element The row that will be used to get the specific value
+ * @param {*} string String that represent the axis where the value will come from
+ * @param {*} index Index of the column within the chosen axis to get the value from
+ */
 
 function getDataValue(element, string, index) {
     var result = null;
@@ -299,14 +265,17 @@ function getDataValue(element, string, index) {
     return result;
 }
 
+/**
+ *
+ * @param  element The row that will be used to get the specific column name
+ * @param {*} string String that represent the axis where the column name will come from
+ * @param {*} index Index of the column within the chosen axis to get the column name from
+ */
+
 function getColumnName(element, string, index) {
     var result = null;
-    //var result2 = null;
     try {
         result = element.categorical(string).value()[0]._node.__hierarchy.levels[index].name;
-        //if we want the user to have more on the tooltip you have to loop over and change the "levels" incrementally
-        //result2 = element.categorical(string).value()[0]._node.__hierarchy.levels[1].name;
-        //console.log(result2)
     } catch (error) {
         console.log(error.message);
     }
@@ -340,6 +309,10 @@ function getSelectedText() {
     return selectedText;
 }
 
+/**
+ *
+ * @param text Text is the value that the user has chosen, either through selection or copy entire text card
+ */
 function textToClipboard(text) {
     var temporaryCopyElement = document.createElement("textarea");
     document.body.appendChild(temporaryCopyElement);
@@ -349,6 +322,11 @@ function textToClipboard(text) {
     document.execCommand("copy");
     document.body.removeChild(temporaryCopyElement);
 }
+
+/**
+ *
+ * @param newDiv newDiv is the div element which the button will be added to
+ */
 
 function createCopyButton(newDiv) {
     // BUTTON
@@ -421,60 +399,70 @@ function isAllRowsMarked(rows) {
     return true;
 }
 
-
-
-function createTextCardWrapper(){
-   
-    var textCardWrapper = document.createElement("div");
-    textCardWrapper.setAttribute("id", "text-card-wrapper");
-    return textCardWrapper;
-}
 /**
  * @param {*} colour Colour passed from the dataView object of specific row through the mod API
  */
-function createTextCardDiv(colour){
-var textCardDiv = document.createElement("div");
-textCardDiv.setAttribute("id", "text-card");
-textCardDiv.style.borderLeftColor = colour
-return textCardDiv;
+function createTextCardDiv(colour) {
+    var textCardDiv = document.createElement("div");
+    textCardDiv.setAttribute("id", "text-card");
+    textCardDiv.style.borderLeftColor = colour;
+    return textCardDiv;
 }
 
-
-function createTextCardHeader(){
-var header = document.createElement("div");
+function createTextCardHeader() {
+    var header = document.createElement("div");
     header.setAttribute("class", "annotation-container");
     return header;
 }
 
 /**
-* 
-* @param annotation Content of the header based on information from user choice of annotation
-*/
+ *
+ * @param annotation Content of the header based on information from user choice of annotation
+ */
 
-function createHeaderContent(annotation){
-var headerContent = document.createElement("div");
+function createHeaderContent(annotation) {
+    var headerContent = document.createElement("div");
     headerContent.setAttribute("class", "annotation-content");
     headerContent.textContent = annotation;
     return headerContent;
 }
 
-function createLineDividerInTextCard(){
-var line = document.createElement("hr");
+function createLineDividerInTextCard() {
+    var line = document.createElement("hr");
     line.setAttribute("class", "thin_hr");
     return line;
 }
 
 /**
-* 
-* @param windowSize WindowSize of the mod  
-* @param content Content of the row that will be in the paragraph
-*/
+ *
+ * @param windowSize WindowSize of the mod
+ * @param content Content of the row that will be in the paragraph
+ */
 
-function createTextCardContentParagraph(windowSize, content){
-var contentParagraph = document.createElement("div");
-contentParagraph.setAttribute("id", "text-card-paragraph");
-contentParagraph.textContent = content;
-contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+function createTextCardContentParagraph(windowSize, content) {
+    var contentParagraph = document.createElement("div");
+    contentParagraph.setAttribute("id", "text-card-paragraph");
+    contentParagraph.textContent = content;
+    contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
 
-return contentParagraph;
+    return contentParagraph;
+}
+
+function createTooltipString(specificRow) {
+    var nrOfTooltipChoices = specificRow.categorical("Tooltip").value()[0]._node.__hierarchy.levels.length;
+    var tooltipCollection = [];
+    var tooltipString = "";
+    var i = null;
+    for (i = 0; i < nrOfTooltipChoices; i++) {
+        var columnName = getColumnName(specificRow, "Tooltip", i);
+        var dataValue = getDataValue(specificRow, "Tooltip", i);
+        var tooltipObj = {
+            columnName: columnName,
+            dataValue: dataValue
+        };
+        tooltipCollection.push(tooltipObj);
+        tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
+    }
+
+    return tooltipString;
 }
