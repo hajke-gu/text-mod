@@ -66,19 +66,16 @@ body {
     padding-left: 16px;
     margin-top: 8px;
     margin-bottom: 8px;
-    padding-right: 16px;
+    padding-right: 24px;
     overflow-y: visible;
     overflow-x: hidden;
 }
 
 #img-button {
-    height: 24px;
-    width: 24px;
-    right: 8px;
-    top: 8px;
     position: absolute;
-    border: none;
-    border-radius: 2px;
-    background: transparent;
+    top: 6px;
+    right: 8px;
+    border: 0;
+    border-radius: 4px;
     cursor: pointer;
 }

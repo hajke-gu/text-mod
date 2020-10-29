@@ -271,8 +271,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                     var tooltipString = createTooltipString(rows[index]);
                     mod.controls.tooltip.show(tooltipString);
                 }
-
-                createCopyButton(newDiv);
+                createCopyButton(newDiv, scalesStyling.lineColor, fontStyling.fontColor);
             };
 
             newDiv.onmouseleave = (e) => {
@@ -379,43 +378,41 @@ function textToClipboard(text) {
 /**
  *
  * @param newDiv newDiv is the div element which the button will be added to
+ * @param defaultColor default color for copy button
+ * @param mouseOverColor color on mouse over
  */
 
-function createCopyButton(newDiv) {
+function createCopyButton(newDiv, defaultColor, mouseOverColor) {
     // BUTTON
-    var newButton = document.createElement("div");
+    var newButton = document.createElement("svg");
 
     newButton.title = "Copy to Clipboard";
     newButton.setAttribute("id", "img-button");
 
     //TODO: Create SVG here
     var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    //svgNode.setAttributeNS(null, "viewBox", "0 0 16 16");
+    svgNode.setAttributeNS(null, "width", "16");
+    svgNode.setAttributeNS(null, "height", "16");
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    svg.setAttributeNS(null, "width", "100%");
-    svg.setAttributeNS(null, "height", "100%");
-    svg.setAttributeNS(null, "fill", "#797b85");
+    // 60% opacity of font color
+    svg.setAttributeNS(null, "fill", mouseOverColor + "99");
+    svg.setAttributeNS(null, "viewBox", "0 0 16 16");
     svg.setAttributeNS(null, "d", "M11.259 1H6v3H2v11h10v-3h2V4.094zM8 4h2v1H8zm3 10H3V5h3v7h5zm1-5H8V8h4zm0-2H8V6h4z");
 
     newButton.onclick = (e) => {
-        svg.setAttributeNS(null, "fill", "#61646b");
+        svg.setAttributeNS(null, "fill", mouseOverColor);
         //var text = newDiv.getElementById("text-card-paragraph").textContent;
-        var text = newDiv.querySelector("#text-card-paragraph").textContent;
+        var text = newDiv.querySelector("#text-card-content").textContent;
         textToClipboard(text);
         e.stopPropagation();
     };
     newButton.onmouseover = (e) => {
-        svg.setAttributeNS(null, "fill", "#61646b");
+        svg.setAttributeNS(null, "fill", mouseOverColor);
     };
-    newButton.onfocus = (e) => {
-        svg.setAttributeNS(null, "fill", "#797b85");
-    };
+
     newButton.onmouseleave = (e) => {
-        svg.setAttributeNS(null, "fill", "#797b85");
-    };
-    newButton.onselect = (e) => {
-        svg.setAttributeNS(null, "fill", "#3050EF");
+        svg.setAttributeNS(null, "fill", mouseOverColor + "99");
     };
 
     svgNode.appendChild(svg);
@@ -460,7 +457,6 @@ function createTextCardDiv(fontStyling) {
     /*
      * Adapting font Color, size, family from API (theme)
      */
-    // should be color #313336
     textCardDiv.style.color = fontStyling.fontColor;
     textCardDiv.style.fontSize = fontStyling.fontSize;
     textCardDiv.style.fontFamily = fontStyling.fontFamily;
@@ -500,17 +496,17 @@ function createLineDividerInTextCard(lineColor) {
  */
 
 function createTextCardContentParagraph(windowSize, content, fontStyling) {
-    var contentParagraph = document.createElement("div");
-    contentParagraph.setAttribute("id", "text-card-paragraph");
-    contentParagraph.textContent = content;
-    contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+    var paragraph = document.createElement("div");
+    paragraph.setAttribute("id", "text-card-paragraph");
+    paragraph.textContent = content;
+    paragraph.style.maxHeight = windowSize.height * 0.5 + "px";
     /*
      * Apply styling of font Weight and Style only on Textcard Content (not on annotation line)
      */
-    contentParagraph.style.fontStyle = fontStyling.fontStyle;
-    contentParagraph.style.fontWeight = fontStyling.fontWeight;
+    paragraph.style.fontStyle = fontStyling.fontStyle;
+    paragraph.style.fontWeight = fontStyling.fontWeight;
 
-    return contentParagraph;
+    return paragraph;
 }
 
 function createTooltipString(specificRow) {
