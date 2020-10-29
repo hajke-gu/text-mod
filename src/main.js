@@ -57,7 +57,7 @@ Spotfire.initialize(async (mod) => {
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-        var cardHeight = 300;
+        var cardHeight = 120;
         //modDiv.style.height = rows.length * cardHeight + "px";
         var cardsToLoad = 9;
         console.log(modDiv.scrollTop, "scrolltop");
@@ -87,7 +87,8 @@ Spotfire.initialize(async (mod) => {
             cardsToLoad,
             rerender, // When rerendering we always want to render everything
             windowSize,
-            mod
+            mod,
+            modDiv.scrollTop
         );
         modDiv.appendChild(returnedObject.fragment);
 
@@ -122,33 +123,34 @@ Spotfire.initialize(async (mod) => {
          *        Scroll Event Listener
          */
         modDiv.addEventListener("scroll", async function (e) {
-            if (modDiv.scrollTop > 0) {
+            var startNode = Math.floor(modDiv.scrollTop / cardHeight);
+            startNode = Math.max(0, startNode);
+            if (modDiv.scrollTop > cardHeight) {
                 //Check if old data view
                 if (await dataView.hasExpired()) {
                     return;
                 }
 
-                var startNode = Math.floor(modDiv.scrollTop / cardHeight);
-                startNode = Math.max(0, startNode);
-                console.log(startNode, "startnode");
-                //var rerender = false;
-                var translateString = "transform: translateY(" + modDiv.scrollTop + ")px";
-                console.log(prevIndex, "previndex in event");
-                console.log(modDiv.childNodes[0]);
-                modDiv.childNodes[0].style.transform = "translateY(" + modDiv.scrollTop + "px)";
-                //console.log(modDiv.firstElementChild.getAttribute("transform").replace("transform", translateString))
-                //style.translate = "";
                 console.log(cardsToLoad, "cardstoload in event");
-                console.log(modDiv.scrollTop, "shanghai in scroll");
-                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod);
-                modDiv.appendChild(returnedObject.fragment);
-                modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", (rows.length - cardsToLoad) * cardHeight));
 
+                var returnedObject = renderTextCards(
+                    rows,
+                    prevIndex,
+                    cardsToLoad,
+                    rerender,
+                    windowSize,
+                    mod,
+                    modDiv.scrollTop
+                );
+                modDiv.appendChild(returnedObject.fragment);
+                var bottomDivHeight = (rows.length - cardsToLoad) * 100 - modDiv.scrollTop;
+                modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
+                cardHeight = cardHeight + 100;
                 prevIndex = returnedObject.startIndex;
+            } else {
+                prevIndex = prevIndex;
             }
         });
-
-        console.log(prevIndex, "prevIndex");
 
         context.signalRenderComplete();
     }
@@ -199,13 +201,16 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, scrollTop) {
     //if (rerender) {
     document.querySelector("#text-card-container").innerHTML = "";
     //}
     var fragment = document.createDocumentFragment();
+    var topDiv = document.createElement("div");
+    topDiv.style.height = scrollTop + "px";
+    fragment.appendChild(topDiv);
 
-    var whatToLoad = prevIndex + cardsToLoad;
+    var whatToLoad = cardsToLoad;
     var startIndex = prevIndex;
     console.log(prevIndex, "prevIndex");
     console.log(whatToLoad, "whatToLoad");
@@ -221,7 +226,8 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
     var index = prevIndex;
-    for (; index < whatToLoad; index++) {
+    console.log(index, "index before loop");
+    for (; index < prevIndex + whatToLoad; index++) {
         // console.log("Rows: " + rows.length)
         if (index >= rows.length) {
             break;
@@ -254,6 +260,12 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 var button = document.getElementById("img-button");
                 newDiv.removeChild(button);
             };
+
+            /*if (index === startIndex) {
+                newDiv.style.transform = "translateY(" + scrollTop- + "px)";
+
+                console.log(newDiv.style.transform);
+            }*/
             fragment.appendChild(newDiv);
         }
     }
@@ -263,7 +275,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     }*/
 
     var returnObject = { fragment, startIndex: prevIndex };
-    console.log(returnObject);
     return returnObject;
 }
 
