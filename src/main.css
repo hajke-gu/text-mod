@@ -18,19 +18,16 @@ body {
 }
 
 #text-card {
-    /*box-shadow: 0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent; */
     overflow-y: hidden;
     overflow-x: hidden;
 
-    border-radius: 4px; /*4px rounded corners must be same as border left width!*/
+    border-radius: 4px; /*4px rounded corners must be same as border-left-width!*/
 
     /*colored sidebar */
     border-left: 4px solid;
 
     position: relative;
     height: auto;
-
-    /*padding-bottom: 8px;*/
 
     /* Distance between cards */
     margin-bottom: 16px;
@@ -62,7 +59,6 @@ body {
     margin-bottom: 0;
     border: 0;
     height: 1px;
-    /* background-color: #dcdfe8; must set in js */
 }
 
 #text-card-paragraph {
