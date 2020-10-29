@@ -460,7 +460,8 @@ function createHeaderContent(annotation) {
 function createLineDividerInTextCard(lineColor) {
     var line = document.createElement("hr");
     line.setAttribute("class", "thin_hr");
-    line.style.backgroundColor = lineColor;
+    // color 75% opacity of line color
+    line.style.backgroundColor = lineColor + "BF";
     return line;
 }
 
