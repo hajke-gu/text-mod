@@ -210,7 +210,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         fontStyle: styling.general.fontStyle,
         fontWeight: styling.general.fontWeight
     };
-    console.log(fontStyling);
     // additional styling for scales
     const scalesStyling = {
         modBackgroundColor: styling.general.backgroundColor,
@@ -218,7 +217,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         lineColor: styling.scales.line.stroke,
         tickMarkColor: styling.scales.tick.stroke
     };
-    console.log(scalesStyling);
 
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
