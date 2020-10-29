@@ -12,6 +12,7 @@
  */
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
+    var prevScrollTop = 0;
     /**
      * Create the read function.
      */
@@ -123,34 +124,65 @@ Spotfire.initialize(async (mod) => {
          *        Scroll Event Listener
          */
         modDiv.addEventListener("scroll", async function (e) {
-            var startNode = Math.floor(modDiv.scrollTop / cardHeight);
+            var currentScrollTop = modDiv.scrollTop;
+            var startNode = Math.floor(currentScrollTop / cardHeight);
             startNode = Math.max(0, startNode);
-            if (modDiv.scrollTop > cardHeight) {
-                //Check if old data view
-                if (await dataView.hasExpired()) {
-                    return;
+            console.log(currentScrollTop, "currentScrollTop before if");
+            console.log(cardHeight, "cardHeight before if");
+            console.log(prevScrollTop, "prevScrollTop before if");
+            if (currentScrollTop > prevScrollTop) {
+                console.log("WERE GOING DOWN TO SINGAPORE");
+                if (currentScrollTop > cardHeight) {
+                    //Check if old data view
+                    if (await dataView.hasExpired()) {
+                        return;
+                    }
+                    var returnedObject = renderTextCards(
+                        rows,
+                        prevIndex,
+                        cardsToLoad,
+                        rerender,
+                        windowSize,
+                        mod,
+                        currentScrollTop
+                    );
+                    modDiv.appendChild(returnedObject.fragment);
+                    var bottomDivHeight = (rows.length - cardsToLoad) * 100 - currentScrollTop;
+                    modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
+                    cardHeight = cardHeight + 100;
+                    prevIndex = Math.floor(modDiv.scrollTop / 100);
+                    console.log(prevIndex, "previndex in down");
                 }
-
-                console.log(cardsToLoad, "cardstoload in event");
-
-                var returnedObject = renderTextCards(
-                    rows,
-                    prevIndex,
-                    cardsToLoad,
-                    rerender,
-                    windowSize,
-                    mod,
-                    modDiv.scrollTop
-                );
-                modDiv.appendChild(returnedObject.fragment);
-                var bottomDivHeight = (rows.length - cardsToLoad) * 100 - modDiv.scrollTop;
-                modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
-                cardHeight = cardHeight + 100;
-                prevIndex = returnedObject.startIndex;
             } else {
-                prevIndex = prevIndex;
+                if (currentScrollTop < cardHeight) {
+                    if (await dataView.hasExpired()) {
+                        return;
+                    }
+
+                    var returnedObject = renderTextCards(
+                        rows,
+                        prevIndex,
+                        cardsToLoad,
+                        rerender,
+                        windowSize,
+                        mod,
+                        currentScrollTop
+                    );
+                    modDiv.appendChild(returnedObject.fragment);
+                    var bottomDivHeight = (rows.length - cardsToLoad) * 100 + currentScrollTop;
+                    modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
+                    cardHeight = cardHeight - 100;
+                    prevIndex = prevIndex - 1;
+                    prevIndex = Math.floor(modDiv.scrollTop / 100);
+                    console.log(prevIndex, "previndex in up");
+
+                    console.log("GOING TO MARS WITH ELON");
+                }
             }
+
+            prevScrollTop = currentScrollTop;
         });
+        console.log(prevScrollTop, "prevscrolltop");
 
         context.signalRenderComplete();
     }
