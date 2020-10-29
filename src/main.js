@@ -52,7 +52,7 @@ Spotfire.initialize(async (mod) => {
         }
         mod.controls.errorOverlay.hide();
 
-        modDiv.style.height = windowSize.height - 8 + "px";
+        modDiv.style.height = windowSize.height + "px";
 
         /**
          * Get rows from dataView

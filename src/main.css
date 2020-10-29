@@ -16,7 +16,7 @@ body {
 #text-card-container {
     overflow-y: scroll;
     overflow-x: hidden;
-    padding: 16px 24px 16px 24px;
+    padding: 2px 24px 2px 24px;
 }
 
 #text-card {
