@@ -78,5 +78,7 @@ body {
     top: 8px;
     position: absolute;
     border: none;
+    border-radius: 2px;
     background: transparent;
+    cursor: pointer;
 }

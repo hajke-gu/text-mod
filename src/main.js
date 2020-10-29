@@ -72,6 +72,12 @@ Spotfire.initialize(async (mod) => {
             sortRows(rows);
         }
 
+        /**
+         * Check if tooltip enabled
+         */
+        var tooltip = false;
+        if ((await dataView.categoricalAxis("Tooltip")) != null) tooltip = true;
+
         var rerender = true;
 
         var returnedObject = renderTextCards(
@@ -80,7 +86,8 @@ Spotfire.initialize(async (mod) => {
             cardsToLoad,
             rerender,
             windowSize,
-            mod
+            mod,
+            tooltip
         );
 
         modDiv.appendChild(returnedObject.fragment);
@@ -123,7 +130,7 @@ Spotfire.initialize(async (mod) => {
                 }
                 var rerender = false;
 
-                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod);
+                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltip);
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.startIndex;
             }
@@ -184,7 +191,7 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -260,15 +267,20 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 //TODO: white has to be background color
                 newDiv.style.boxShadow =
                     "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px white, 0 0 0 3px " + fontStyling.fontColor;
-                var tooltipString = createTooltipString(rows[index]);
-                mod.controls.tooltip.show(tooltipString);
+                if (tooltipEnabled) {
+                    var tooltipString = createTooltipString(rows[index]);
+                    mod.controls.tooltip.show(tooltipString);
+                }
+
                 createCopyButton(newDiv);
             };
 
             newDiv.onmouseleave = (e) => {
                 newDiv.style.boxShadow =
                     "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
-                mod.controls.tooltip.hide();
+
+                if (tooltipEnabled) mod.controls.tooltip.hide();
+
                 var button = document.getElementById("img-button");
                 newDiv.removeChild(button);
             };
