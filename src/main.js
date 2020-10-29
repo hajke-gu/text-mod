@@ -112,7 +112,9 @@ Spotfire.initialize(async (mod) => {
             }
         };
 
-        /*          * Scroll Event Listener          */
+        /*
+         * Scroll Event Listener
+         */
         modDiv.addEventListener("scroll", async function (e) {
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
                 //Check if old data view
@@ -127,7 +129,7 @@ Spotfire.initialize(async (mod) => {
             }
         });
 
-        /**
+        /*
          * Signal that the mod is ready for export.
          */
         context.signalRenderComplete();
@@ -137,33 +139,36 @@ Spotfire.initialize(async (mod) => {
 /**
  * Create a text card.
  * @param content Content inside the div
- * @param colour Colour of the border on left side of each textcard
  * @param annotation Annotation data from axis chosen by the user
  * @param windowSize Windowsize of the mod
  * @param markObject MarkObject contains information about if the object and/or rows is marked
  */
 
-function createTextCard(content, colour, annotation, windowSize, markObject) {
-    var textCardDiv = createTextCardDiv(colour);
+function createTextCard(content, annotation, windowSize, markObject, fontStyling, lineDividerColor) {
+    //create textCard
+    var textCardDiv = createTextCardDiv(fontStyling);
+    //textCardDiv.setAttribute("id", "text-card");
+
+    //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity (= add 99 to hexcolor => 60% opacity)
+    // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
+    if (!markObject.row && !markObject.allRows) textCardDiv.style.color = fontStyling.fontColor + "99";
+
     //add annotation to text card
     if (annotation !== null) {
         var header = createTextCardHeader();
         var headerContent = createHeaderContent(annotation);
-        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
-        if (!markObject.row && !markObject.allRows) header.style.color = "rgba(0, 0, 0, 0.5)";
+
         header.appendChild(headerContent);
         textCardDiv.appendChild(header);
-        var line = createLineDividerInTextCard();
+
+        //add divider line to text card
+        var line = createLineDividerInTextCard(lineDividerColor);
         textCardDiv.appendChild(line);
     }
 
     //add paragraph to text card
     if (typeof content === "string") {
-        var contentParagraph = createTextCardContentParagraph(windowSize, content);
-
-        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
-        if (!markObject.row && !markObject.allRows) contentParagraph.style.color = "rgba(0, 0, 0, 0.5)";
-
+        var contentParagraph = createTextCardContentParagraph(windowSize, content, fontStyling);
         textCardDiv.appendChild(contentParagraph);
     }
 
@@ -195,6 +200,24 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         }
     }
 
+    // Get and group styling attributes
+    const styling = mod.getRenderContext().styling;
+    // general fonts styling
+    const fontStyling = {
+        fontSize: styling.general.font.fontSize,
+        fontFamily: styling.general.font.fontFamily,
+        fontColor: styling.general.font.color,
+        fontStyle: styling.general.fontStyle,
+        fontWeight: styling.general.fontWeight
+    };
+    // additional styling for scales
+    const scalesStyling = {
+        modBackgroundColor: styling.general.backgroundColor,
+        fontColor: styling.scales.font.color,
+        lineColor: styling.scales.line.stroke,
+        tickMarkColor: styling.scales.tick.stroke
+    };
+
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
 
@@ -212,7 +235,19 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 row: rows[index].isMarked(),
                 allRows: allRowsMarked
             };
-            let newDiv = createTextCard(textCardContent, color, annotation, windowSize, markObject);
+            let newDiv = createTextCard(
+                textCardContent,
+                annotation,
+                windowSize,
+                markObject,
+                fontStyling,
+                scalesStyling.tickMarkColor
+            );
+            newDiv.setAttribute("id", "text-card");
+
+            newDiv.style.boxShadow =
+                "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
+            newDiv.style.borderLeftColor = color;
 
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
@@ -222,11 +257,17 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
+                //TODO: white has to be background color
+                newDiv.style.boxShadow =
+                    "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px white, 0 0 0 3px " + fontStyling.fontColor;
                 var tooltipString = createTooltipString(rows[index]);
                 mod.controls.tooltip.show(tooltipString);
                 createCopyButton(newDiv);
             };
+
             newDiv.onmouseleave = (e) => {
+                newDiv.style.boxShadow =
+                    "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
                 mod.controls.tooltip.hide();
                 var button = document.getElementById("img-button");
                 newDiv.removeChild(button);
@@ -400,12 +441,17 @@ function isAllRowsMarked(rows) {
 }
 
 /**
- * @param {*} colour Colour passed from the dataView object of specific row through the mod API
+ * @param fontStyling Font specifications from API
  */
-function createTextCardDiv(colour) {
+function createTextCardDiv(fontStyling) {
     var textCardDiv = document.createElement("div");
-    textCardDiv.setAttribute("id", "text-card");
-    textCardDiv.style.borderLeftColor = colour;
+    /*
+     * Adapting font Color, size, family from API (theme)
+     */
+    // should be color #313336
+    textCardDiv.style.color = fontStyling.fontColor;
+    textCardDiv.style.fontSize = fontStyling.fontSize;
+    textCardDiv.style.fontFamily = fontStyling.fontFamily;
     return textCardDiv;
 }
 
@@ -427,9 +473,11 @@ function createHeaderContent(annotation) {
     return headerContent;
 }
 
-function createLineDividerInTextCard() {
+function createLineDividerInTextCard(lineColor) {
     var line = document.createElement("hr");
     line.setAttribute("class", "thin_hr");
+    // color 75% opacity of line color
+    line.style.backgroundColor = lineColor + "BF";
     return line;
 }
 
@@ -439,11 +487,16 @@ function createLineDividerInTextCard() {
  * @param content Content of the row that will be in the paragraph
  */
 
-function createTextCardContentParagraph(windowSize, content) {
+function createTextCardContentParagraph(windowSize, content, fontStyling) {
     var contentParagraph = document.createElement("div");
     contentParagraph.setAttribute("id", "text-card-paragraph");
     contentParagraph.textContent = content;
     contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+    /*
+     * Apply styling of font Weight and Style only on Textcard Content (not on annotation line)
+     */
+    contentParagraph.style.fontStyle = fontStyling.fontStyle;
+    contentParagraph.style.fontWeight = fontStyling.fontWeight;
 
     return contentParagraph;
 }
