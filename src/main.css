@@ -6,13 +6,15 @@
 
 body {
     margin: 0;
+    padding: 0;
     overflow: hidden;
 }
 
 #text-card-container {
     overflow-y: scroll;
     overflow-x: hidden;
-    padding: 2px 24px 2px 24px;
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
 #text-card {
@@ -28,8 +30,11 @@ body {
     position: relative;
     height: auto;
 
+    /*padding-bottom: 8px;*/
+
+    /* Distance between cards */
     margin-bottom: 16px;
-    padding-bottom: 8px;
+    margin-top: 8px;
 }
 
 .annotation-container {
@@ -64,8 +69,9 @@ body {
     height: auto;
     padding-left: 16px;
     margin-top: 8px;
+    margin-bottom: 8px;
     padding-right: 16px;
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
 }
 
