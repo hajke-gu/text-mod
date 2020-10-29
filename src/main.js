@@ -371,14 +371,14 @@ function textToClipboard(text) {
 
 function createCopyButton(newDiv) {
     // BUTTON
-    var newButton = document.createElement("button");
+    var newButton = document.createElement("div");
 
     newButton.title = "Copy to Clipboard";
     newButton.setAttribute("id", "img-button");
 
     //TODO: Create SVG here
     var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svgNode.setAttributeNS(null, "viewBox", "0 0 16 16");
+    //svgNode.setAttributeNS(null, "viewBox", "0 0 16 16");
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "path");
     svg.setAttributeNS(null, "width", "100%");

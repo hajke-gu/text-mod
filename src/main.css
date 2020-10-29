@@ -45,7 +45,7 @@ body {
     transform: translateY(-50%);
 
     padding-left: 16px;
-    padding-right: 16px;
+    padding-right: 24px;
 
     /* limits annotations content to text card width, adds ... if too long */
     overflow: hidden;
@@ -78,5 +78,5 @@ body {
     top: 8px;
     position: absolute;
     border: none;
-    background: white;
+    background: transparent;
 }
