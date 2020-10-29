@@ -433,9 +433,9 @@ function sortRows(rows) {
         var sortValueA = Number(a.categorical("Sorting").value()[0].key);
         var sortValueB = Number(b.categorical("Sorting").value()[0].key);
 
-        if (sortValueA < sortValueB) return 1;
+        if (sortValueA < sortValueB) return -1;
 
-        if (sortValueA > sortValueB) return -1;
+        if (sortValueA > sortValueB) return 1;
 
         return 0;
     });
