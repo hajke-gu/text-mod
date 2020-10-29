@@ -154,7 +154,6 @@ Spotfire.initialize(async (mod) => {
 function createTextCard(content, annotation, windowSize, markObject, fontStyling, lineDividerColor) {
     //create textCard
     var textCardDiv = createTextCardDiv(fontStyling);
-    //textCardDiv.setAttribute("id", "text-card");
 
     //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity (= add 99 to hexcolor => 60% opacity)
     // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
@@ -242,6 +241,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 row: rows[index].isMarked(),
                 allRows: allRowsMarked
             };
+
+            let borderDiv = document.createElement("div");
+            borderDiv.setAttribute("id", "text-card-border");
+
             let newDiv = createTextCard(
                 textCardContent,
                 annotation,
@@ -252,8 +255,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             );
             newDiv.setAttribute("id", "text-card");
 
-            newDiv.style.boxShadow =
-                "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
+            newDiv.style.boxShadow = "0 0 0 1px " + scalesStyling.lineColor;
             newDiv.style.borderLeftColor = color;
 
             newDiv.onclick = (e) => {
@@ -264,9 +266,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
-                //TODO: white has to be background color
-                newDiv.style.boxShadow =
-                    "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px white, 0 0 0 3px " + fontStyling.fontColor;
+                borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
                 if (tooltipEnabled) {
                     var tooltipString = createTooltipString(rows[index]);
                     mod.controls.tooltip.show(tooltipString);
@@ -275,15 +275,15 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             };
 
             newDiv.onmouseleave = (e) => {
-                newDiv.style.boxShadow =
-                    "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px transparent, 0 0 0 3px transparent";
+                borderDiv.style.boxShadow = "";
 
                 if (tooltipEnabled) mod.controls.tooltip.hide();
 
                 var button = document.getElementById("img-button");
                 newDiv.removeChild(button);
             };
-            fragment.appendChild(newDiv);
+            borderDiv.appendChild(newDiv);
+            fragment.appendChild(borderDiv);
         }
     }
     if (!rerender || prevIndex === 0) {

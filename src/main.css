@@ -17,6 +17,14 @@ body {
     padding-right: 24px;
 }
 
+#text-card-border {
+    /* Distance between cards */
+    margin-bottom: 8px;
+    margin-top: 8px;
+    border: 4px solid transparent;
+    border-radius: 8px;
+}
+
 #text-card {
     overflow-y: hidden;
     overflow-x: hidden;
@@ -28,10 +36,6 @@ body {
 
     position: relative;
     height: auto;
-
-    /* Distance between cards */
-    margin-bottom: 16px;
-    margin-top: 8px;
 }
 
 .annotation-container {
