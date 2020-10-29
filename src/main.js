@@ -52,7 +52,7 @@ Spotfire.initialize(async (mod) => {
         }
         mod.controls.errorOverlay.hide();
 
-        modDiv.style.height = windowSize.height - 8 + "px";
+        modDiv.style.height = windowSize.height + "px";
 
         /**
          * Get rows from dataView
@@ -86,7 +86,9 @@ Spotfire.initialize(async (mod) => {
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.startIndex;
 
-        /*          * De-mark on click on something that isn't text card *   */
+        /**
+         * De-mark on click on something that isn't text card *
+         */
         var modContainer = document.getElementById("text-card-container");
 
         modContainer.onclick = () => {
@@ -97,8 +99,6 @@ Spotfire.initialize(async (mod) => {
             console.log(e.key.toString());
             var selectedText = getSelectedText();
             if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
-                //console.log(selectedText);
-                //console.log("inside if");
                 textToClipboard(selectedText);
                 selectedText = "";
             }
@@ -228,10 +228,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         if (index >= rows.length) {
             break;
         }
-        let textCardContent = getDataValue(rows[index], "Content");
+        let textCardContent = getDataValue(rows[index], "Content", 0);
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
-            var annotation = getDataValue(rows[index], "Annotation");
+            var annotation = getDataValue(rows[index], "Annotation", 0);
             var color = rows[index].color().hexCode;
             var markObject = {
                 row: rows[index].isMarked(),
@@ -262,9 +262,8 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 //TODO: white has to be background color
                 newDiv.style.boxShadow =
                     "0 0 0 1px " + scalesStyling.lineColor + ", 0 0 0 2px white, 0 0 0 3px " + fontStyling.fontColor;
-                mod.controls.tooltip.show(
-                    getColumnName(rows[index], "Tooltip") + ": " + getDataValue(rows[index], "Tooltip")
-                );
+                var tooltipString = createTooltipString(rows[index]);
+                mod.controls.tooltip.show(tooltipString);
                 createCopyButton(newDiv);
             };
 
@@ -278,7 +277,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             fragment.appendChild(newDiv);
         }
     }
-    if (!rerender || prevIndex == 0) {
+    if (!rerender || prevIndex === 0) {
         prevIndex = prevIndex + cardsToLoad;
     }
 
@@ -286,10 +285,17 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     return returnObject;
 }
 
-function getDataValue(element, string) {
+/**
+ *
+ * @param  element The row that will be used to get the specific value
+ * @param {*} string String that represent the axis where the value will come from
+ * @param {*} index Index of the column within the chosen axis to get the value from
+ */
+
+function getDataValue(element, string, index) {
     var result = null;
     try {
-        result = element.categorical(string).value()[0].key;
+        result = element.categorical(string).value()[index].key;
     } catch (error) {
         console.log(error.message);
     }
@@ -302,14 +308,17 @@ function getDataValue(element, string) {
     return result;
 }
 
-function getColumnName(element, string) {
+/**
+ *
+ * @param  element The row that will be used to get the specific column name
+ * @param {*} string String that represent the axis where the column name will come from
+ * @param {*} index Index of the column within the chosen axis to get the column name from
+ */
+
+function getColumnName(element, string, index) {
     var result = null;
-    //var result2 = null;
     try {
-        result = element.categorical(string).value()[0]._node.__hierarchy.levels[0].name;
-        //if we want the user to have more on the tooltip you have to loop over and change the "levels" incrementally
-        //result2 = element.categorical(string).value()[0]._node.__hierarchy.levels[1].name;
-        //console.log(result2)
+        result = element.categorical(string).value()[0]._node.__hierarchy.levels[index].name;
     } catch (error) {
         console.log(error.message);
     }
@@ -343,6 +352,10 @@ function getSelectedText() {
     return selectedText;
 }
 
+/**
+ *
+ * @param text Text is the value that the user has chosen, either through selection or copy entire text card
+ */
 function textToClipboard(text) {
     var temporaryCopyElement = document.createElement("textarea");
     document.body.appendChild(temporaryCopyElement);
@@ -352,6 +365,11 @@ function textToClipboard(text) {
     document.execCommand("copy");
     document.body.removeChild(temporaryCopyElement);
 }
+
+/**
+ *
+ * @param newDiv newDiv is the div element which the button will be added to
+ */
 
 function createCopyButton(newDiv) {
     // BUTTON
@@ -483,4 +501,23 @@ function createTextCardContentParagraph(windowSize, content, fontStyling) {
     contentParagraph.style.fontWeight = fontStyling.fontWeight;
 
     return contentParagraph;
+}
+
+function createTooltipString(specificRow) {
+    var nrOfTooltipChoices = specificRow.categorical("Tooltip").value()[0]._node.__hierarchy.levels.length;
+    var tooltipCollection = [];
+    var tooltipString = "";
+    var i = null;
+    for (i = 0; i < nrOfTooltipChoices; i++) {
+        var columnName = getColumnName(specificRow, "Tooltip", i);
+        var dataValue = getDataValue(specificRow, "Tooltip", i);
+        var tooltipObj = {
+            columnName: columnName,
+            dataValue: dataValue
+        };
+        tooltipCollection.push(tooltipObj);
+        tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
+    }
+
+    return tooltipString;
 }
