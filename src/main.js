@@ -110,7 +110,7 @@ Spotfire.initialize(async (mod) => {
         };
 
         document.onkeydown = (e) => {
-            console.log(e.key.toString());
+            //console.log(e.key.toString());
             var selectedText = getSelectedText();
             if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
                 textToClipboard(selectedText);
@@ -122,7 +122,7 @@ Spotfire.initialize(async (mod) => {
             if (e.key === "ArrowDown") {
                 modContainer.scrollBy(0, 100);
             } else {
-                console.log(e.key, " pressed");
+                //console.log(e.key, " pressed");
             }
         };
 
@@ -589,6 +589,8 @@ function createAnnotationString(specificRow) {
 
         if (annotationString === "") {
             annotationString = dataValue;
+        } else if (dataValue == null) {
+            annotationString += " | ";
         } else {
             annotationString += " | " + dataValue;
         }
