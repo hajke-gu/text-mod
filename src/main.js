@@ -78,6 +78,12 @@ Spotfire.initialize(async (mod) => {
         var tooltip = false;
         if ((await dataView.categoricalAxis("Tooltip")) != null) tooltip = true;
 
+        /**
+         * Check if annotation enabled
+         */
+        var annotationEnabled = false;
+        if ((await dataView.categoricalAxis("Annotation")) != null) annotationEnabled = true;
+
         var rerender = true;
 
         var returnedObject = renderTextCards(
@@ -87,7 +93,8 @@ Spotfire.initialize(async (mod) => {
             rerender,
             windowSize,
             mod,
-            tooltip
+            tooltip,
+            annotationEnabled
         );
 
         modDiv.appendChild(returnedObject.fragment);
@@ -130,7 +137,16 @@ Spotfire.initialize(async (mod) => {
                 }
                 var rerender = false;
 
-                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltip);
+                var returnedObject = renderTextCards(
+                    rows,
+                    prevIndex,
+                    cardsToLoad,
+                    rerender,
+                    windowSize,
+                    mod,
+                    tooltip,
+                    annotationEnabled
+                );
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.startIndex;
             }
@@ -190,7 +206,7 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled) {
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled, annotationEnabled) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -227,24 +243,50 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
 
+    /**
+     * Create all text cards
+     */
     for (let index = startIndex; index < whatToLoad; index++) {
-        // console.log("Rows: " + rows.length)
         if (index >= rows.length) {
             break;
         }
+
+        /**
+         * Get value/content for the specifc card
+         */
         let textCardContent = getDataValue(rows[index], "Content", 0);
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
-            var annotation = getDataValue(rows[index], "Annotation", 0);
+            /**
+             * Create Annotation
+             */
+            var annotation = null;
+            if (annotationEnabled) {
+                annotation = createAnnotationString(rows[index]);
+            }
+
+            /**
+             * Get color from api for side bar
+             */
             var color = rows[index].color().hexCode;
+
+            /**
+             * Check if specific row are marked and add boolean for condition is all rows marked
+             */
             var markObject = {
                 row: rows[index].isMarked(),
                 allRows: allRowsMarked
             };
 
+            /**
+             * Create border div
+             */
             let borderDiv = document.createElement("div");
             borderDiv.setAttribute("id", "text-card-border");
 
+            /**
+             * Create the text card
+             */
             let newDiv = createTextCard(
                 textCardContent,
                 annotation,
@@ -258,6 +300,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             newDiv.style.boxShadow = "0 0 0 1px " + scalesStyling.lineColor;
             newDiv.style.borderLeftColor = color;
 
+            /**
+             * Create on click functionallity
+             * Select text and marking
+             */
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
                 if (selectedText === "") {
@@ -265,6 +311,11 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                     rows[index].mark("Toggle");
                 }
             };
+
+            /**
+             * Create mouse over functionallity
+             * Border around card and tooltip
+             */
             newDiv.onmouseenter = (e) => {
                 borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
                 if (tooltipEnabled) {
@@ -282,6 +333,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 var button = document.getElementById("img-button");
                 newDiv.removeChild(button);
             };
+
             borderDiv.appendChild(newDiv);
             fragment.appendChild(borderDiv);
         }
@@ -526,4 +578,20 @@ function createTooltipString(specificRow) {
     }
 
     return tooltipString;
+}
+
+function createAnnotationString(specificRow) {
+    var nrOfAnnotations = specificRow.categorical("Annotation").value()[0]._node.__hierarchy.levels.length;
+    var annotationString = "";
+
+    for (var i = 0; i < nrOfAnnotations; i++) {
+        var dataValue = getDataValue(specificRow, "Annotation", i);
+
+        if (annotationString === "") {
+            annotationString = dataValue;
+        } else {
+            annotationString += " | " + dataValue;
+        }
+    }
+    return annotationString;
 }
