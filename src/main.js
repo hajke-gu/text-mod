@@ -266,6 +266,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
+                console.log(fontStyling.fontColor);
                 borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
                 if (tooltipEnabled) {
                     var tooltipString = createTooltipString(rows[index]);
