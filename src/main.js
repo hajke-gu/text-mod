@@ -252,9 +252,14 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         }
 
         /**
-         * Get value/content for the specifc card
+         * Get value/content for the specifc card.
+         * And handle date
          */
         let textCardContent = getDataValue(rows[index], "Content", 0);
+        if (getColumnName(rows[index], "Content", 0) === "Date")
+            //Date handling
+            textCardContent = formatDate(new Date(Number(textCardContent)));
+
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
             /**
@@ -587,10 +592,16 @@ function createAnnotationString(specificRow) {
     var nrOfAnnotations = specificRow.categorical("Annotation").value()[0]._node.__hierarchy.levels.length;
     var annotationString = "";
 
+    /**
+     * Check each annotation and add it to the annotationString
+     */
     for (var i = 0; i < nrOfAnnotations; i++) {
         var dataValue = getDataValue(specificRow, "Annotation", i);
         var columnName = getColumnName(specificRow, "Annotation", i);
 
+        /**
+         * Format Date
+         */
         if (columnName === "Date") {
             dataValue = formatDate(new Date(Number(dataValue)));
         }
@@ -619,9 +630,9 @@ function formatDate(date) {
     var dateFormat =
         year.toString() +
         "-" +
-        (month < 9 ? "0" + month : month).toString() +
+        (month < 10 ? "0" + month : month).toString() +
         "-" +
-        (day < 9 ? "0" + day : day).toString();
+        (day < 10 ? "0" + day : day).toString();
 
     return dateFormat;
 }
