@@ -421,7 +421,7 @@ function textToClipboard(text) {
     var temporaryCopyElement = document.createElement("textarea");
     document.body.appendChild(temporaryCopyElement);
     temporaryCopyElement.value = text;
-    console.log(text);
+    //console.log(text);
     temporaryCopyElement.select();
     document.execCommand("copy");
     document.body.removeChild(temporaryCopyElement);
@@ -580,12 +580,20 @@ function createTooltipString(specificRow) {
     return tooltipString;
 }
 
+/**
+ * @param {*} specificRow Datarow for which the annotation should be created of
+ */
 function createAnnotationString(specificRow) {
     var nrOfAnnotations = specificRow.categorical("Annotation").value()[0]._node.__hierarchy.levels.length;
     var annotationString = "";
 
     for (var i = 0; i < nrOfAnnotations; i++) {
         var dataValue = getDataValue(specificRow, "Annotation", i);
+        var columnName = getColumnName(specificRow, "Annotation", i);
+
+        if (columnName === "Date") {
+            dataValue = formatDate(new Date(Number(dataValue)));
+        }
 
         if (annotationString === "") {
             annotationString = dataValue;
@@ -596,4 +604,24 @@ function createAnnotationString(specificRow) {
         }
     }
     return annotationString;
+}
+
+/**
+ * Format date in YYYY-MM-DD
+ *
+ * @param {*} date Date object
+ */
+function formatDate(date) {
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    var day = date.getDate();
+
+    var dateFormat =
+        year.toString() +
+        "-" +
+        (month < 9 ? "0" + month : month).toString() +
+        "-" +
+        (day < 9 ? "0" + day : day).toString();
+
+    return dateFormat;
 }
