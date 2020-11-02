@@ -15,7 +15,13 @@ Spotfire.initialize(async (mod) => {
     /**
      * Create the read function.
      */
-    const reader = mod.createReader(mod.visualization.data(), mod.windowSize(), mod.property("myProperty"));
+    const reader = mod.createReader(
+        mod.visualization.data(),
+        mod.windowSize(),
+        mod.property("myProperty"),
+        mod.visualization.axis("Content"),
+        mod.visualization.axis("Sorting")
+    );
 
     const modDiv = findElem("#text-card-container");
 
@@ -32,8 +38,23 @@ Spotfire.initialize(async (mod) => {
      * @param {Spotfire.DataView} dataView
      * @param {Spotfire.Size} windowSize
      * @param {Spotfire.ModProperty<string>} prop
+     * @param {Spotfire.Axis} contentProp
+     * @param {Spotfire.Axis} sortingProp
      */
-    async function render(dataView, windowSize, prop) {
+    async function render(dataView, windowSize, prop, contentProp, sortingProp) {
+        if (contentProp.parts.length > 1 || sortingProp.parts.length > 1) {
+            if (contentProp.parts.length > 1)
+                mod.controls.errorOverlay.show("Selecting Multiple Content is not allowed.");
+            else if (sortingProp.parts.length > 1) {
+                mod.controls.errorOverlay.show("Selecting Multiple Sortings is not allowed.");
+            } else {
+                mod.controls.errorOverlay.show(
+                    "If this text can be seen. Tell Jonatan that he did something very wrong!"
+                );
+            }
+            return;
+        }
+        mod.controls.errorOverlay.hide();
         /*
          * NON-GLOBALS
          */
@@ -50,6 +71,7 @@ Spotfire.initialize(async (mod) => {
             mod.controls.errorOverlay.show(errors);
             return;
         }
+
         mod.controls.errorOverlay.hide();
 
         modDiv.style.height = windowSize.height + "px";
