@@ -40,22 +40,29 @@ body {
 
 .annotation-container {
     height: 32px;
+    display: flex;
+    justify-content: flex-start;
+    /*padding-left: 8px;*/
+    padding-right: 16px;
 }
 
 .annotation-content {
-    position: relative;
+    /*position: relative;
     top: 50%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
-
+    */
     padding-left: 16px;
-    padding-right: 24px;
+    padding-right: 16px;
 
     /* limits annotations content to text card width, adds ... if too long */
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-weight: bold;
+
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .thin_hr {

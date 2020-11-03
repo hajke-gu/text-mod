@@ -177,10 +177,27 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
 
     //add annotation to text card
     if (annotation !== null) {
+        /**
+         * Create all annotations
+         */
         var header = createTextCardHeader();
         var headerContent = createHeaderContent(annotation);
 
-        header.appendChild(headerContent);
+        var annotationLength = annotation[0]._node.__hierarchy.levels.length;
+        for (var i = 0; i < annotationLength; i++) {
+            var dataValue = annotation[i].key;
+            //console.log(dataValue);
+
+            var headerContent = createHeaderContent(dataValue);
+
+            if (i !== 0) {
+                //First annotation -> no border
+                headerContent.style.borderLeft = "1px solid";
+                headerContent.style.borderLeftColor = lineDividerColor + "BF";
+            }
+            header.appendChild(headerContent);
+        }
+
         textCardDiv.appendChild(header);
 
         //add divider line to text card
@@ -267,7 +284,8 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
              */
             var annotation = null;
             if (annotationEnabled) {
-                annotation = createAnnotationString(rows[index]);
+                annotation = rows[index].categorical("Annotation").value();
+                //annotation = createAnnotationString(rows[index]);
             }
 
             /**
