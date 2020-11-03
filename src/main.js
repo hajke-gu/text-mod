@@ -15,7 +15,13 @@ Spotfire.initialize(async (mod) => {
     /**
      * Create the read function.
      */
-    const reader = mod.createReader(mod.visualization.data(), mod.windowSize(), mod.property("myProperty"));
+    const reader = mod.createReader(
+        mod.visualization.data(),
+        mod.windowSize(),
+        mod.property("myProperty"),
+        mod.visualization.axis("Content"),
+        mod.visualization.axis("Sorting")
+    );
 
     const modDiv = findElem("#text-card-container");
 
@@ -32,8 +38,23 @@ Spotfire.initialize(async (mod) => {
      * @param {Spotfire.DataView} dataView
      * @param {Spotfire.Size} windowSize
      * @param {Spotfire.ModProperty<string>} prop
+     * @param {Spotfire.Axis} contentProp
+     * @param {Spotfire.Axis} sortingProp
      */
-    async function render(dataView, windowSize, prop) {
+    async function render(dataView, windowSize, prop, contentProp, sortingProp) {
+        if (contentProp.parts.length > 1 || sortingProp.parts.length > 1) {
+            if (contentProp.parts.length > 1)
+                mod.controls.errorOverlay.show("Selecting Multiple Content is not allowed.");
+            else if (sortingProp.parts.length > 1) {
+                mod.controls.errorOverlay.show("Selecting Multiple Sortings is not allowed.");
+            } else {
+                mod.controls.errorOverlay.show(
+                    "If this text can be seen. Tell Jonatan that he did something very wrong!"
+                );
+            }
+            return;
+        }
+        mod.controls.errorOverlay.hide();
         /*
          * NON-GLOBALS
          */
@@ -50,6 +71,7 @@ Spotfire.initialize(async (mod) => {
             mod.controls.errorOverlay.show(errors);
             return;
         }
+
         mod.controls.errorOverlay.hide();
 
         modDiv.style.height = windowSize.height + "px";
@@ -72,6 +94,12 @@ Spotfire.initialize(async (mod) => {
             sortRows(rows);
         }
 
+        /**
+         * Check if tooltip enabled
+         */
+        var tooltip = false;
+        if ((await dataView.categoricalAxis("Tooltip")) != null) tooltip = true;
+
         var rerender = true;
 
         var returnedObject = renderTextCards(
@@ -80,7 +108,8 @@ Spotfire.initialize(async (mod) => {
             cardsToLoad,
             rerender,
             windowSize,
-            mod
+            mod,
+            tooltip
         );
 
         modDiv.appendChild(returnedObject.fragment);
@@ -112,8 +141,10 @@ Spotfire.initialize(async (mod) => {
             }
         };
 
-        /*          * Scroll Event Listener          */
-        let user = modDiv.addEventListener("scroll", async function (e) {
+        /*
+         * Scroll Event Listener
+         */
+        modDiv.addEventListener("scroll", async function (e) {
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
                 //Check if old data view
                 if (await dataView.hasExpired()) {
@@ -121,14 +152,14 @@ Spotfire.initialize(async (mod) => {
                 }
                 var rerender = false;
 
-                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod);
+                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltip);
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.startIndex;
             }
             return 1;
         });
 
-        /**
+        /*
          * Signal that the mod is ready for export.
          */
         context.signalRenderComplete();
@@ -138,33 +169,35 @@ Spotfire.initialize(async (mod) => {
 /**
  * Create a text card.
  * @param content Content inside the div
- * @param colour Colour of the border on left side of each textcard
  * @param annotation Annotation data from axis chosen by the user
  * @param windowSize Windowsize of the mod
  * @param markObject MarkObject contains information about if the object and/or rows is marked
  */
 
-function createTextCard(content, colour, annotation, windowSize, markObject) {
-    var textCardDiv = createTextCardDiv(colour);
+function createTextCard(content, annotation, windowSize, markObject, fontStyling, lineDividerColor) {
+    //create textCard
+    var textCardDiv = createTextCardDiv(fontStyling);
+
+    //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity (= add 99 to hexcolor => 60% opacity)
+    // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
+    if (!markObject.row && !markObject.allRows) textCardDiv.style.color = fontStyling.fontColor + "99";
+
     //add annotation to text card
     if (annotation !== null) {
         var header = createTextCardHeader();
         var headerContent = createHeaderContent(annotation);
-        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
-        if (!markObject.row && !markObject.allRows) header.style.color = "rgba(0, 0, 0, 0.5)";
+
         header.appendChild(headerContent);
         textCardDiv.appendChild(header);
-        var line = createLineDividerInTextCard();
+
+        //add divider line to text card
+        var line = createLineDividerInTextCard(lineDividerColor);
         textCardDiv.appendChild(line);
     }
 
     //add paragraph to text card
     if (typeof content === "string") {
-        var contentParagraph = createTextCardContentParagraph(windowSize, content);
-
-        //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity
-        if (!markObject.row && !markObject.allRows) contentParagraph.style.color = "rgba(0, 0, 0, 0.5)";
-
+        var contentParagraph = createTextCardContentParagraph(windowSize, content, fontStyling);
         textCardDiv.appendChild(contentParagraph);
     }
 
@@ -180,7 +213,7 @@ function createTextCard(content, colour, annotation, windowSize, markObject) {
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod) {
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -195,6 +228,24 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             whatToLoad = cardsToLoad;
         }
     }
+
+    // Get and group styling attributes
+    const styling = mod.getRenderContext().styling;
+    // general fonts styling
+    const fontStyling = {
+        fontSize: styling.general.font.fontSize,
+        fontFamily: styling.general.font.fontFamily,
+        fontColor: styling.general.font.color,
+        fontStyle: styling.general.fontStyle,
+        fontWeight: styling.general.fontWeight
+    };
+    // additional styling for scales
+    const scalesStyling = {
+        modBackgroundColor: styling.general.backgroundColor,
+        fontColor: styling.scales.font.color,
+        lineColor: styling.scales.line.stroke,
+        tickMarkColor: styling.scales.tick.stroke
+    };
 
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
@@ -213,7 +264,22 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 row: rows[index].isMarked(),
                 allRows: allRowsMarked
             };
-            let newDiv = createTextCard(textCardContent, color, annotation, windowSize, markObject);
+
+            let borderDiv = document.createElement("div");
+            borderDiv.setAttribute("id", "text-card-border");
+
+            let newDiv = createTextCard(
+                textCardContent,
+                annotation,
+                windowSize,
+                markObject,
+                fontStyling,
+                scalesStyling.tickMarkColor
+            );
+            newDiv.setAttribute("id", "text-card");
+
+            newDiv.style.boxShadow = "0 0 0 1px " + scalesStyling.lineColor;
+            newDiv.style.borderLeftColor = color;
 
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
@@ -223,16 +289,24 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
-                var tooltipString = createTooltipString(rows[index]);
-                mod.controls.tooltip.show(tooltipString);
-                createCopyButton(newDiv);
+                borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
+                if (tooltipEnabled) {
+                    var tooltipString = createTooltipString(rows[index]);
+                    mod.controls.tooltip.show(tooltipString);
+                }
+                createCopyButton(newDiv, scalesStyling.lineColor, fontStyling.fontColor);
             };
+
             newDiv.onmouseleave = (e) => {
-                mod.controls.tooltip.hide();
+                borderDiv.style.boxShadow = "";
+
+                if (tooltipEnabled) mod.controls.tooltip.hide();
+
                 var button = document.getElementById("img-button");
                 newDiv.removeChild(button);
             };
-            fragment.appendChild(newDiv);
+            borderDiv.appendChild(newDiv);
+            fragment.appendChild(borderDiv);
         }
     }
     if (!rerender || prevIndex === 0) {
@@ -327,43 +401,41 @@ function textToClipboard(text) {
 /**
  *
  * @param newDiv newDiv is the div element which the button will be added to
+ * @param defaultColor default color for copy button
+ * @param mouseOverColor color on mouse over
  */
 
-function createCopyButton(newDiv) {
+function createCopyButton(newDiv, defaultColor, mouseOverColor) {
     // BUTTON
-    var newButton = document.createElement("button");
+    var newButton = document.createElement("svg");
 
     newButton.title = "Copy to Clipboard";
     newButton.setAttribute("id", "img-button");
 
     //TODO: Create SVG here
     var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svgNode.setAttributeNS(null, "viewBox", "0 0 16 16");
+    svgNode.setAttributeNS(null, "width", "16");
+    svgNode.setAttributeNS(null, "height", "16");
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    svg.setAttributeNS(null, "width", "100%");
-    svg.setAttributeNS(null, "height", "100%");
-    svg.setAttributeNS(null, "fill", "#797b85");
+    // 60% opacity of font color
+    svg.setAttributeNS(null, "fill", mouseOverColor + "99");
+    svg.setAttributeNS(null, "viewBox", "0 0 16 16");
     svg.setAttributeNS(null, "d", "M11.259 1H6v3H2v11h10v-3h2V4.094zM8 4h2v1H8zm3 10H3V5h3v7h5zm1-5H8V8h4zm0-2H8V6h4z");
 
     newButton.onclick = (e) => {
-        svg.setAttributeNS(null, "fill", "#61646b");
+        svg.setAttributeNS(null, "fill", mouseOverColor);
         //var text = newDiv.getElementById("text-card-paragraph").textContent;
-        var text = newDiv.querySelector("#text-card-paragraph").textContent;
+        var text = newDiv.querySelector("#text-card-content").textContent;
         textToClipboard(text);
         e.stopPropagation();
     };
     newButton.onmouseover = (e) => {
-        svg.setAttributeNS(null, "fill", "#61646b");
+        svg.setAttributeNS(null, "fill", mouseOverColor);
     };
-    newButton.onfocus = (e) => {
-        svg.setAttributeNS(null, "fill", "#797b85");
-    };
+
     newButton.onmouseleave = (e) => {
-        svg.setAttributeNS(null, "fill", "#797b85");
-    };
-    newButton.onselect = (e) => {
-        svg.setAttributeNS(null, "fill", "#3050EF");
+        svg.setAttributeNS(null, "fill", mouseOverColor + "99");
     };
 
     svgNode.appendChild(svg);
@@ -381,9 +453,9 @@ function sortRows(rows) {
         var sortValueA = Number(a.categorical("Sorting").value()[0].key);
         var sortValueB = Number(b.categorical("Sorting").value()[0].key);
 
-        if (sortValueA < sortValueB) return 1;
+        if (sortValueA < sortValueB) return -1;
 
-        if (sortValueA > sortValueB) return -1;
+        if (sortValueA > sortValueB) return 1;
 
         return 0;
     });
@@ -401,12 +473,16 @@ function isAllRowsMarked(rows) {
 }
 
 /**
- * @param {*} colour Colour passed from the dataView object of specific row through the mod API
+ * @param fontStyling Font specifications from API
  */
-function createTextCardDiv(colour) {
+function createTextCardDiv(fontStyling) {
     var textCardDiv = document.createElement("div");
-    textCardDiv.setAttribute("class", "text-card");
-    textCardDiv.style.borderLeftColor = colour;
+    /*
+     * Adapting font Color, size, family from API (theme)
+     */
+    textCardDiv.style.color = fontStyling.fontColor;
+    textCardDiv.style.fontSize = fontStyling.fontSize;
+    textCardDiv.style.fontFamily = fontStyling.fontFamily;
     return textCardDiv;
 }
 
@@ -428,9 +504,11 @@ function createHeaderContent(annotation) {
     return headerContent;
 }
 
-function createLineDividerInTextCard() {
+function createLineDividerInTextCard(lineColor) {
     var line = document.createElement("hr");
     line.setAttribute("class", "thin_hr");
+    // color 75% opacity of line color
+    line.style.backgroundColor = lineColor + "BF";
     return line;
 }
 
@@ -440,13 +518,18 @@ function createLineDividerInTextCard() {
  * @param content Content of the row that will be in the paragraph
  */
 
-function createTextCardContentParagraph(windowSize, content) {
-    var contentParagraph = document.createElement("div");
-    contentParagraph.setAttribute("id", "text-card-paragraph");
-    contentParagraph.textContent = content;
-    contentParagraph.style.maxHeight = windowSize.height * 0.5 + "px";
+function createTextCardContentParagraph(windowSize, content, fontStyling) {
+    var paragraph = document.createElement("div");
+    paragraph.setAttribute("id", "text-card-paragraph");
+    paragraph.textContent = content;
+    paragraph.style.maxHeight = windowSize.height * 0.5 + "px";
+    /*
+     * Apply styling of font Weight and Style only on Textcard Content (not on annotation line)
+     */
+    paragraph.style.fontStyle = fontStyling.fontStyle;
+    paragraph.style.fontWeight = fontStyling.fontWeight;
 
-    return contentParagraph;
+    return paragraph;
 }
 
 function createTooltipString(specificRow) {
