@@ -246,6 +246,23 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         tickMarkColor: styling.scales.tick.stroke
     };
 
+    // Text Card scrollbar
+    var styleElement = document.createElement("style");
+    styleElement.appendChild(
+        document.createTextNode(
+            "#text-card-paragraph::-webkit-scrollbar {width: 8px;} #text-card-paragraph::-webkit-scrollbar-track {border-radius: 16px; background-color: " +
+                scalesStyling.lineColor +
+                "4d;} #text-card-paragraph::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
+                fontStyling.fontColor +
+                "4d;} #text-card-paragraph::-webkit-scrollbar-thumb:hover {background-color: " +
+                fontStyling.fontColor +
+                "BF;} #text-card-paragraph::-webkit-scrollbar-thumb:active {background-color: " +
+                fontStyling.fontColor +
+                "BF;}"
+        )
+    );
+    document.getElementsByTagName("head")[0].appendChild(styleElement);
+
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
 
@@ -293,7 +310,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                     var tooltipString = createTooltipString(rows[index]);
                     mod.controls.tooltip.show(tooltipString);
                 }
-                createCopyButton(newDiv, scalesStyling.lineColor, fontStyling.fontColor);
+                createCopyButton(newDiv, fontStyling.fontColor);
             };
 
             newDiv.onmouseleave = (e) => {
@@ -400,11 +417,10 @@ function textToClipboard(text) {
 /**
  *
  * @param newDiv newDiv is the div element which the button will be added to
- * @param defaultColor default color for copy button
- * @param mouseOverColor color on mouse over
+ * @param buttonColor default color = API's font color
  */
 
-function createCopyButton(newDiv, defaultColor, mouseOverColor) {
+function createCopyButton(newDiv, buttonColor) {
     // BUTTON
     var newButton = document.createElement("svg");
 
@@ -418,23 +434,27 @@ function createCopyButton(newDiv, defaultColor, mouseOverColor) {
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "path");
     // 60% opacity of font color
-    svg.setAttributeNS(null, "fill", mouseOverColor + "99");
+    svg.setAttributeNS(null, "fill", buttonColor + "99");
     svg.setAttributeNS(null, "viewBox", "0 0 16 16");
     svg.setAttributeNS(null, "d", "M11.259 1H6v3H2v11h10v-3h2V4.094zM8 4h2v1H8zm3 10H3V5h3v7h5zm1-5H8V8h4zm0-2H8V6h4z");
+    // 80 % opacity of font color
+    newButton.onmouseover = (e) => {
+        svg.setAttributeNS(null, "fill", buttonColor + "CC");
+    };
 
+    newButton.onmousedown = (e) => {
+        svg.setAttributeNS(null, "fill", buttonColor);
+    };
+    // 80 % opacity of font color
     newButton.onclick = (e) => {
-        svg.setAttributeNS(null, "fill", mouseOverColor);
-        //var text = newDiv.getElementById("text-card-paragraph").textContent;
-        var text = newDiv.querySelector("#text-card-content").textContent;
+        svg.setAttributeNS(null, "fill", buttonColor + "CC");
+        var text = newDiv.querySelector("#text-card-paragraph").textContent;
         textToClipboard(text);
         e.stopPropagation();
     };
-    newButton.onmouseover = (e) => {
-        svg.setAttributeNS(null, "fill", mouseOverColor);
-    };
-
+    // 60% opacity of font color
     newButton.onmouseleave = (e) => {
-        svg.setAttributeNS(null, "fill", mouseOverColor + "99");
+        svg.setAttributeNS(null, "fill", buttonColor + "99");
     };
 
     svgNode.appendChild(svg);
