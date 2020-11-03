@@ -203,28 +203,35 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
          * Create all annotations
          */
         var header = createTextCardHeader();
-        var headerContent = createHeaderContent(annotation);
+        //var headerContent = createHeaderContent(annotation);
 
+        var firstAnnotationCreated = false;
         var annotationLength = annotation[0]._node.__hierarchy.levels.length;
         for (var i = 0; i < annotationLength; i++) {
-            var dataValue = annotation[i].key;
-            //console.log(dataValue);
+            var dataValue = annotation[i].key; //Get annotation value
 
-            var headerContent = createHeaderContent(dataValue);
+            if (dataValue !== null) {
+                //Check if annotation has value
+                var headerContent = createHeaderContent(dataValue);
 
-            if (i !== 0) {
-                //First annotation -> no border
-                headerContent.style.borderLeft = "1px solid";
-                headerContent.style.borderLeftColor = lineDividerColor + "BF";
+                if (i !== 0 && firstAnnotationCreated) {
+                    //First annotation -> no border
+                    headerContent.style.borderLeft = "1px solid";
+                    headerContent.style.borderLeftColor = lineDividerColor + "BF";
+                }
+                header.appendChild(headerContent);
+                firstAnnotationCreated = true;
             }
-            header.appendChild(headerContent);
         }
 
-        textCardDiv.appendChild(header);
+        if (firstAnnotationCreated) {
+            //Check if any annotation has been created
+            textCardDiv.appendChild(header);
 
-        //add divider line to text card
-        var line = createLineDividerInTextCard(lineDividerColor);
-        textCardDiv.appendChild(line);
+            //add divider line to text card
+            var line = createLineDividerInTextCard(lineDividerColor);
+            textCardDiv.appendChild(line);
+        }
     }
 
     //add paragraph to text card
