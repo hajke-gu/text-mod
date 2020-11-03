@@ -246,17 +246,19 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         tickMarkColor: styling.scales.tick.stroke
     };
 
-    // Text Card scrollbar
+    // Customized scrollbar for Text Card and Text Card Container that is adjusting to the theme
+    // HEX color + "4D" = 30% opacitiy
+    // HEX color + "BF" = 75% opacity
     var styleElement = document.createElement("style");
     styleElement.appendChild(
         document.createTextNode(
-            "#text-card-paragraph::-webkit-scrollbar {width: 8px;} #text-card-paragraph::-webkit-scrollbar-track {border-radius: 16px; background-color: " +
+            "::-webkit-scrollbar {width: 8px;} ::-webkit-scrollbar-track {border-radius: 16px; background-color: " +
                 scalesStyling.lineColor +
-                "4d;} #text-card-paragraph::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
+                "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
                 fontStyling.fontColor +
-                "4d;} #text-card-paragraph::-webkit-scrollbar-thumb:hover {background-color: " +
+                "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
                 fontStyling.fontColor +
-                "BF;} #text-card-paragraph::-webkit-scrollbar-thumb:active {background-color: " +
+                "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
                 fontStyling.fontColor +
                 "BF;}"
         )
