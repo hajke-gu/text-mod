@@ -113,7 +113,7 @@ Spotfire.initialize(async (mod) => {
         };
 
         /*          * Scroll Event Listener          */
-        modDiv.addEventListener("scroll", async function (e) {
+        let user = modDiv.addEventListener("scroll", async function (e) {
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
                 //Check if old data view
                 if (await dataView.hasExpired()) {
@@ -125,6 +125,7 @@ Spotfire.initialize(async (mod) => {
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.startIndex;
             }
+            return 1;
         });
 
         /**
@@ -404,7 +405,7 @@ function isAllRowsMarked(rows) {
  */
 function createTextCardDiv(colour) {
     var textCardDiv = document.createElement("div");
-    textCardDiv.setAttribute("id", "text-card");
+    textCardDiv.setAttribute("class", "text-card");
     textCardDiv.style.borderLeftColor = colour;
     return textCardDiv;
 }

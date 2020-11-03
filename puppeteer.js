@@ -12,7 +12,11 @@ var argv = require("minimist")(process.argv.slice(2));
     } else {
         headless = false;
     }
-    const browser = await puppeteer.launch({ headless: headless, defaultViewport: null, args: ["--start-maximized"] });
+    const browser = await puppeteer.launch({
+        headless: headless,
+        defaultViewport: null,
+        args: ["--start-maximized", "--disable-web-security"]
+    });
     const page = await browser.newPage();
 
     var username;
@@ -37,9 +41,10 @@ var argv = require("minimist")(process.argv.slice(2));
     await changeToEditMode(page);
     await openVisualizationMode(page);
     await connectToProjectServer(page);
+    await uploadToLibrary(page);
 
     /* run test suite */
-    await runTestSuites(page);
+    await runTests(page);
 
     /* closedown */
     if (headless) {
@@ -52,6 +57,7 @@ var argv = require("minimist")(process.argv.slice(2));
 })();
 
 async function login(page, username, password) {
+    /* login into spotfire */
     await page.goto("https://labs.spotfire-cloud.com/spotfire/login.html#/", { waitUntil: "networkidle2" });
     await new Promise((r) => setTimeout(r, 2000)); // wait for loading
     await page.type("[name=username]", username);
@@ -109,14 +115,75 @@ async function connectToProjectServer(page) {
             }
         })
     );
-    await new Promise((r) => setTimeout(r, 4000)); // wait for loading
-    await page.click('[id="id102"');
+    await new Promise((r) => setTimeout(r, 10000)); // wait for loading
 }
 
-async function runTestSuites(page) {
+async function uploadToLibrary(page) {
+    /* upload server mod to library */
+    await new Promise((r) => setTimeout(r, 3000)); // wait for loading
+    await page.$$eval(".sfx_button_507", (elements) =>
+        elements.forEach((el) => {
+            if (el.textContent.includes("Disconnect")) {
+                el.click();
+            }
+        })
+    );
+    await new Promise((r) => setTimeout(r, 6000)); // wait for loading
+    await page.$$eval(".sfx_button_507", (elements) =>
+        elements.forEach((el) => {
+            if (el.textContent.includes("Save")) {
+                el.click();
+            }
+        })
+    );
+    await new Promise((r) => setTimeout(r, 6000)); // wait for loading
+    await page.waitForSelector('div[title~="Spotfire"]');
+    await page.click('div[title~="Spotfire"]');
+    await new Promise((r) => setTimeout(r, 3000)); // wait for loading
+    await page.click('div[title~="Text-Mod"]');
+    await new Promise((r) => setTimeout(r, 3000)); // wait for loading
+    await page.click('button[title~="Save"]');
+    await new Promise((r) => setTimeout(r, 3000)); // wait for loading
+    await page.click("div.footer-button-group > button:nth-child(1)");
+    await new Promise((r) => setTimeout(r, 5000)); // wait for loading
+}
+
+async function runTests(page) {
+    // all tests placed in here and validate here
+    var results = new Array();
+    var result;
+
+    //test1
+    result = await test1(page);
+    results.push(result);
+    console.log(results);
+}
+
+/* AC The text visualization should only display a subset of the data at a time */
+async function test1(page) {
+    var result = false;
+
+    // get number of rows in dataset
     const element = await page.$(".sfx_label_217");
     const text = await page.evaluate((element) => element.textContent, element);
-    console.log(text);
+    var dataset = text.substr(0, text.indexOf(" "));
+    dataset = dataset.replace(",", "");
 
-    console.log("hellloooo");
+    // get all textcards rendered
+    const amountOfTextCards = await page.evaluate(() => {
+        // access iFrame
+        const iframe = document.querySelector("iframe.sfx_frame_1046");
+
+        // grab iframe's document object
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+        return iframeDoc.querySelectorAll("div.text-card").length;
+    });
+
+    // compare dataset
+    if (dataset > amountOfTextCards) {
+        result = true;
+    }
+
+    return result;
 }

@@ -19,7 +19,7 @@ body {
     padding: 2px 24px 2px 24px;
 }
 
-#text-card {
+.text-card {
     box-shadow: 0 0 0 1px #c2c6d1, 0 0 0 2px transparent, 0 0 0 3px transparent;
     overflow-y: hidden;
     overflow-x: hidden;
