@@ -203,7 +203,6 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
          * Create all annotations
          */
         var header = createTextCardHeader();
-        //var headerContent = createHeaderContent(annotation);
 
         var firstAnnotationCreated = false;
         var annotationLength = annotation[0]._node.__hierarchy.levels.length;
@@ -212,6 +211,12 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
 
             if (dataValue !== null) {
                 //Check if annotation has value
+
+                //Handle date
+                if (annotation[0]._node.__hierarchy.levels[i].name === "Date") {
+                    dataValue = formatDate(new Date(Number(dataValue)));
+                }
+
                 var headerContent = createHeaderContent(dataValue);
 
                 if (i !== 0 && firstAnnotationCreated) {
@@ -333,7 +338,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             var annotation = null;
             if (annotationEnabled) {
                 annotation = rows[index].categorical("Annotation").value();
-                //annotation = createAnnotationString(rows[index]);
             }
 
             /**
@@ -652,38 +656,6 @@ function createTooltipString(specificRow) {
     }
 
     return tooltipString;
-}
-
-/**
- * @param {*} specificRow Datarow for which the annotation should be created of
- */
-function createAnnotationString(specificRow) {
-    var nrOfAnnotations = specificRow.categorical("Annotation").value()[0]._node.__hierarchy.levels.length;
-    var annotationString = "";
-
-    /**
-     * Check each annotation and add it to the annotationString
-     */
-    for (var i = 0; i < nrOfAnnotations; i++) {
-        var dataValue = getDataValue(specificRow, "Annotation", i);
-        var columnName = getColumnName(specificRow, "Annotation", i);
-
-        /**
-         * Format Date
-         */
-        if (columnName === "Date") {
-            dataValue = formatDate(new Date(Number(dataValue)));
-        }
-
-        if (annotationString === "") {
-            annotationString = dataValue;
-        } else if (dataValue == null) {
-            annotationString += " | ";
-        } else {
-            annotationString += " | " + dataValue;
-        }
-    }
-    return annotationString;
 }
 
 /**
