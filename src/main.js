@@ -78,6 +78,7 @@ Spotfire.initialize(async (mod) => {
         //firstEmptyDiv.style.height = modDiv.scrollTop + "px";
 
         //modDiv.appendChild(firstEmptyDiv);
+        modDiv.appendChild(renderSanghaiDiv("firstDiv", modDiv.scrollTop));
 
         var returnedObject = renderTextCards(
             rows,
@@ -122,87 +123,23 @@ Spotfire.initialize(async (mod) => {
             }
         };
 
-        /* var mouseDownScrollLeft = 0;
-         var mouseDownScrollTop = 0;
-         var scrollBarPressed = false;
-         var event = new Event("mouseup");
- 
-         modDiv.addEventListener("mousedown", function (e) {
-             console.log("mousedown")
-             mouseDownScrollLeft = modDiv.scrollLeft;
-             mouseDownScrollTop = modDiv.scrollTop;
-             console.log(mouseDownScrollLeft, mouseDownScrollTop)
- 
-         })
-         modDiv.addEventListener("mousemove", async function (e) {
-             console.log("mousemove")
-             if (mouseDownScrollTop !== modDiv.scrollTop) {
-                 scrollBarPressed = true;
-                 console.log("mousemove and press scroll element")
-                 console.log(mouseDownScrollTop, "mousedownscrolltop")
-                 var currentScrollTop = modDiv.scrollTop;
-                 var percentageIndex = Math.round(currentScrollTop / cardHeight);
-                 console.log(percentageIndex, "percentage")
-                 cardHeight = getCardHeight(modDiv.children);
- 
-                 modDiv.appendChild(
-                     renderSanghaiDiv("firstDiv", modDiv.scrollTop)
-                 );
- 
-                 //Check if old data view
-                 if (await dataView.hasExpired()) {
-                     return;
-                 }
-                 var returnedObject = renderTextCards(
-                     rows,
-                     percentageIndex + 1,
-                     cardsToLoad,
-                     rerender,
-                     windowSize,
-                     mod,
-                     currentScrollTop
-                 );
-                 modDiv.appendChild(returnedObject.fragment);
-                 //cardHeight = modDiv.children[2].clientHeight;
-                 var bottomDivHeight = (rows.length - cardsToLoad) * cardHeight - currentScrollTop;
-                 modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
- 
-                 prevIndex = returnedObject.startIndex - cardsToLoad + 1;
-                 prevScrollTop = currentScrollTop;
- 
-                 console.log(percentageIndex, "previndex in down");
-                 scrollBarPressed = false;
-                 mouseDownScrollTop = modDiv.scrollTop;
- 
- 
-             }
- 
- 
-         }) */
-        /* modDiv.addEventListener("mouseup", function (e) {
-             mouseDownScrollTop = modDiv.scrollTop;
-             scrollBarPressed = false;
-         })*/
-
         /*
          *        Scroll Event Listener
          */
         modDiv.addEventListener("scroll", async function (e) {
             var currentScrollTop = modDiv.scrollTop;
-            var startNode = Math.floor(currentScrollTop / cardHeight);
-            startNode = Math.max(0, startNode);
             cardHeight = getCardHeight(modDiv.children);
 
-            console.log(cardHeight, "cardHeight inside if");
+            /*console.log(cardHeight, "cardHeight inside if");
             console.log(currentScrollTop, "currentScrollTop before if");
-            console.log(prevScrollTop, "prevScrollTop before if");
+            console.log(prevScrollTop, "prevScrollTop before if");*/
             //console.log(prevIndex, "previndex before if");
 
             if (currentScrollTop > prevScrollTop) {
                 if (currentScrollTop - prevScrollTop > cardHeight) {
                     console.log("WERE GOING DOWN TO SINGAPORE");
-                    modDiv.appendChild(renderSanghaiDiv("firstDiv", modDiv.scrollTop));
-
+                    //modDiv.appendChild(renderSanghaiDiv("firstDiv", currentScrollTop));
+                    console.log(prevScrollTop);
                     //Check if old data view
                     if (await dataView.hasExpired()) {
                         return;
@@ -217,24 +154,33 @@ Spotfire.initialize(async (mod) => {
                         currentScrollTop
                     );
                     modDiv.appendChild(returnedObject.fragment);
-                    //cardHeight = modDiv.children[2].clientHeight;
-                    var bottomDivHeight = (rows.length - cardsToLoad) * cardHeight - currentScrollTop;
-                    modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
+
+                    var nrOfCards = rows.length - cardsToLoad;
+                    console.log(nrOfCards, "nr of cards");
+                    console.log(cardHeight, "cardheight");
+                    var bottomHeight = nrOfCards * cardHeight;
+                    console.log(bottomHeight, "bottomheight");
+                    var totalBottomHeight = bottomHeight - currentScrollTop;
+                    modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", totalBottomHeight));
 
                     prevIndex = returnedObject.startIndex - cardsToLoad + 1;
+                    console.log(returnedObject.startIndex, "start index");
                     prevScrollTop = currentScrollTop;
+                    if (prevIndex + cardsToLoad >= rows.length) {
+                        modDiv.removeChild(document.getElementById("lastEmptyDiv"));
+                    }
 
                     console.log(prevIndex, "previndex in down");
                 }
             } else {
                 console.log(currentScrollTop, "currentScrollTop before if");
-                console.log(cardHeight, "cardHeight before if");
+                //console.log(cardHeight, "cardHeight before if");
                 console.log(prevScrollTop, "prevScrollTop before if");
-                console.log(prevIndex, "previndex before if");
+                /*console.log(prevIndex, "previndex before if");*/
                 console.log("GOING TO MARS WITH ELON");
 
                 if (prevScrollTop - currentScrollTop >= cardHeight) {
-                    modDiv.appendChild(renderSanghaiDiv("firstDiv", modDiv.scrollTop));
+                    //modDiv.appendChild(renderSanghaiDiv("firstDiv", modDiv.scrollTop));
                     if (await dataView.hasExpired()) {
                         return;
                     }
@@ -243,7 +189,6 @@ Spotfire.initialize(async (mod) => {
                     }
 
                     console.log(prevIndex, "previndex before render");
-                    var nodeToJumpTo = modDiv.children[2];
                     var returnedObject = renderTextCards(
                         rows,
                         prevIndex,
@@ -255,13 +200,19 @@ Spotfire.initialize(async (mod) => {
                     );
                     modDiv.appendChild(returnedObject.fragment);
 
-                    var bottomDivHeight = (rows.length - cardsToLoad) * cardHeight + currentScrollTop;
-                    modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
-                    console.log(prevIndex, "previndex after render ");
-                    console.log(returnedObject.startIndex, "startindex after render ");
-                    console.log(prevIndex, "previndex in down");
+                    var nrOfCards = rows.length - cardsToLoad;
+                    console.log(nrOfCards, "nr of cards");
+                    console.log(cardHeight, "cardheight");
+                    var bottomHeight = nrOfCards * cardHeight;
+                    console.log(bottomHeight, "bottomheight");
+                    var totalBottomHeight = bottomHeight - currentScrollTop;
+                    modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", totalBottomHeight));
+
                     prevScrollTop = currentScrollTop;
 
+                    if (returnedObject.startIndex + cardsToLoad >= rows.length) {
+                        modDiv.removeChild(document.getElementById("lastEmptyDiv"));
+                    }
                     prevIndex = prevIndex - 1;
 
                     //console.log(modDiv.children, "children before mars");
@@ -269,6 +220,95 @@ Spotfire.initialize(async (mod) => {
             }
         });
         console.log(prevScrollTop, "prevscrolltop");
+
+        var mouseDownScrollLeft = 0;
+        var mouseDownScrollTop = 0;
+        /*
+        var scrollBarPressed = false;
+        var event = new Event("mouseup");
+ 
+        var mouseMoveHandler = function () {
+            console.log("mousemove")
+            console.log(mouseDownScrollTop, "mouse scrolltop")
+            console.log(modDiv.scrollTop, "modDiv.scrollTop")
+ 
+            if (mouseDownScrollTop !== modDiv.scrollTop) {
+                scrollBarPressed = true;
+                console.log("mousemove and press scroll element")
+                console.log(mouseDownScrollTop, "mousedownscrolltop")
+                var currentScrollTop = modDiv.scrollTop;
+                cardHeight = getCardHeight(modDiv.children);
+                var percentageIndex = Math.round(currentScrollTop / cardHeight);
+                console.log(percentageIndex, "percentage")
+                var returnedObject = renderTextCards(
+                    rows,
+                    percentageIndex + 1,
+                    cardsToLoad,
+                    rerender,
+                    windowSize,
+                    mod,
+                    currentScrollTop
+                );
+                modDiv.appendChild(returnedObject.fragment);
+                //cardHeight = modDiv.children[2].clientHeight;
+                var bottomDivHeight = (rows.length - cardsToLoad) * cardHeight - currentScrollTop;
+                modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
+ 
+                prevIndex = returnedObject.startIndex - cardsToLoad + 1;
+                prevScrollTop = currentScrollTop;
+                scrollBarPressed = false;
+                console.log(percentageIndex, "previndex in down");
+                mouseDownScrollTop = modDiv.scrollTop;
+ 
+            }
+
+            const mouseDownHandler = function () {
+            mouseDownScrollTop = modDiv.scrollTop;
+            console.log("INSIDE MOUSEDOWN FUNC")
+            document.addEventListener("mousemove", mouseMoveHandler);
+ 
+ 
+        }
+ 
+        }*/
+        const mouseUpHandler = function () {
+            console.log("HERE IS MOUSE UP VAAARAAA");
+            if (mouseDownScrollTop !== modDiv.scrollTop) {
+                console.log("mousemove and press scroll element");
+                console.log(mouseDownScrollTop, "mousedownscrolltop");
+                var currentScrollTop = modDiv.scrollTop;
+                cardHeight = getCardHeight(modDiv.children);
+                var percentageIndex = Math.round(currentScrollTop / cardHeight);
+                console.log(percentageIndex, "percentage");
+                var returnedObject = renderTextCards(
+                    rows,
+                    percentageIndex + 1,
+                    cardsToLoad,
+                    rerender,
+                    windowSize,
+                    mod,
+                    currentScrollTop
+                );
+                modDiv.appendChild(returnedObject.fragment);
+                //cardHeight = modDiv.children[2].clientHeight;
+                var nrOfCards = rows.length - cardsToLoad;
+                console.log(nrOfCards, "nr of cards");
+                console.log(cardHeight, "cardheight");
+                var bottomHeight = nrOfCards * cardHeight;
+                console.log(bottomHeight, "bottomheight");
+                var totalBottomHeight = bottomHeight - currentScrollTop;
+                modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", totalBottomHeight));
+
+                prevIndex = returnedObject.startIndex - cardsToLoad + 1;
+                prevScrollTop = currentScrollTop;
+                console.log(percentageIndex, "previndex in down");
+                mouseDownScrollTop = modDiv.scrollTop;
+            }
+        };
+
+        //document.addEventListener("mousedown", mouseDownHandler);
+
+        modDiv.addEventListener("mouseup", mouseUpHandler);
 
         context.signalRenderComplete();
     }
@@ -333,14 +373,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     console.log(prevIndex, "prevIndex");
     console.log(whatToLoad, "whatToLoad");
     console.log(startIndex, "startIndex");
-    /*if (rerender) {
-        whatToLoad = prevIndex;
-        startIndex = 0;
-        if (prevIndex == 0) {
-            whatToLoad = cardsToLoad;
-        }
-    }
-*/
+
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
     var index = prevIndex;
@@ -353,8 +386,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         let textCardContent = getDataValue(rows[index], "Content", 0);
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
+            console.log(index, "first");
             var annotation = getDataValue(rows[index], "Annotation", 0);
             var color = rows[index].color().hexCode;
+            var tooltipString = createTooltipString(rows[index]);
             var markObject = {
                 row: rows[index].isMarked(),
                 allRows: allRowsMarked
@@ -369,7 +404,9 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
             };
             newDiv.onmouseenter = (e) => {
-                var tooltipString = createTooltipString(rows[index]);
+                console.log(index, "second");
+                console.log(rows[index]);
+                console.log(index);
                 mod.controls.tooltip.show(tooltipString);
                 createCopyButton(newDiv);
             };
@@ -378,20 +415,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 var button = document.getElementById("img-button");
                 newDiv.removeChild(button);
             };
-
-            /*if (index === startIndex) {
-                newDiv.style.transform = "translateY(" + scrollTop- + "px)";
-
-                console.log(newDiv.style.transform);
-            }*/
             fragment.appendChild(newDiv);
         }
     }
     prevIndex = index;
-    /*if (!rerender || prevIndex === 0) {
-        prevIndex = prevIndex + cardsToLoad;
-    }*/
-
     var returnObject = { fragment, startIndex: prevIndex };
     return returnObject;
 }
@@ -617,7 +644,6 @@ function createTooltipString(specificRow) {
         tooltipCollection.push(tooltipObj);
         tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
     }
-
     return tooltipString;
 }
 
@@ -633,9 +659,9 @@ function getCardHeight(childrenArray) {
     var index = 1;
     var cardHeight = 0;
     for (index; index < childrenArray.length - 1; index++) {
-        cardHeight += childrenArray[index].clientHeight;
+        cardHeight += childrenArray[index].getBoundingClientRect().height;
     }
-    cardHeight = cardHeight / index;
+    cardHeight = cardHeight / index - 1;
 
-    return cardHeight;
+    return 100;
 }
