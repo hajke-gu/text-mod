@@ -58,7 +58,6 @@ Spotfire.initialize(async (mod) => {
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-        var cardHeight = 90;
         //modDiv.style.height = rows.length * cardHeight + "px";
         var cardsToLoad = 9;
         if (rows == null) {
@@ -91,7 +90,9 @@ Spotfire.initialize(async (mod) => {
         );
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = 1;
+        var cardHeight = getCardHeight(modDiv.children);
 
+        console.log(cardHeight, "cardHeight");
         modDiv.appendChild(
             renderSanghaiDiv("lastEmptyDiv", (rows.length - cardsToLoad) * cardHeight - modDiv.scrollTop)
         );
@@ -121,6 +122,68 @@ Spotfire.initialize(async (mod) => {
             }
         };
 
+        /* var mouseDownScrollLeft = 0;
+         var mouseDownScrollTop = 0;
+         var scrollBarPressed = false;
+         var event = new Event("mouseup");
+ 
+         modDiv.addEventListener("mousedown", function (e) {
+             console.log("mousedown")
+             mouseDownScrollLeft = modDiv.scrollLeft;
+             mouseDownScrollTop = modDiv.scrollTop;
+             console.log(mouseDownScrollLeft, mouseDownScrollTop)
+ 
+         })
+         modDiv.addEventListener("mousemove", async function (e) {
+             console.log("mousemove")
+             if (mouseDownScrollTop !== modDiv.scrollTop) {
+                 scrollBarPressed = true;
+                 console.log("mousemove and press scroll element")
+                 console.log(mouseDownScrollTop, "mousedownscrolltop")
+                 var currentScrollTop = modDiv.scrollTop;
+                 var percentageIndex = Math.round(currentScrollTop / cardHeight);
+                 console.log(percentageIndex, "percentage")
+                 cardHeight = getCardHeight(modDiv.children);
+ 
+                 modDiv.appendChild(
+                     renderSanghaiDiv("firstDiv", modDiv.scrollTop)
+                 );
+ 
+                 //Check if old data view
+                 if (await dataView.hasExpired()) {
+                     return;
+                 }
+                 var returnedObject = renderTextCards(
+                     rows,
+                     percentageIndex + 1,
+                     cardsToLoad,
+                     rerender,
+                     windowSize,
+                     mod,
+                     currentScrollTop
+                 );
+                 modDiv.appendChild(returnedObject.fragment);
+                 //cardHeight = modDiv.children[2].clientHeight;
+                 var bottomDivHeight = (rows.length - cardsToLoad) * cardHeight - currentScrollTop;
+                 modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
+ 
+                 prevIndex = returnedObject.startIndex - cardsToLoad + 1;
+                 prevScrollTop = currentScrollTop;
+ 
+                 console.log(percentageIndex, "previndex in down");
+                 scrollBarPressed = false;
+                 mouseDownScrollTop = modDiv.scrollTop;
+ 
+ 
+             }
+ 
+ 
+         }) */
+        /* modDiv.addEventListener("mouseup", function (e) {
+             mouseDownScrollTop = modDiv.scrollTop;
+             scrollBarPressed = false;
+         })*/
+
         /*
          *        Scroll Event Listener
          */
@@ -128,16 +191,17 @@ Spotfire.initialize(async (mod) => {
             var currentScrollTop = modDiv.scrollTop;
             var startNode = Math.floor(currentScrollTop / cardHeight);
             startNode = Math.max(0, startNode);
+            cardHeight = getCardHeight(modDiv.children);
+
+            console.log(cardHeight, "cardHeight inside if");
             console.log(currentScrollTop, "currentScrollTop before if");
-            console.log(cardHeight, "cardHeight before if");
             console.log(prevScrollTop, "prevScrollTop before if");
-            console.log(prevIndex, "previndex before if");
-            // console.log(modDiv.children, "children");
-            cardHeight = modDiv.children[1].clientHeight;
+            //console.log(prevIndex, "previndex before if");
 
             if (currentScrollTop > prevScrollTop) {
                 if (currentScrollTop - prevScrollTop > cardHeight) {
                     console.log("WERE GOING DOWN TO SINGAPORE");
+                    modDiv.appendChild(renderSanghaiDiv("firstDiv", modDiv.scrollTop));
 
                     //Check if old data view
                     if (await dataView.hasExpired()) {
@@ -153,7 +217,7 @@ Spotfire.initialize(async (mod) => {
                         currentScrollTop
                     );
                     modDiv.appendChild(returnedObject.fragment);
-                    cardHeight = modDiv.children[2].clientHeight;
+                    //cardHeight = modDiv.children[2].clientHeight;
                     var bottomDivHeight = (rows.length - cardsToLoad) * cardHeight - currentScrollTop;
                     modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
 
@@ -170,13 +234,12 @@ Spotfire.initialize(async (mod) => {
                 console.log("GOING TO MARS WITH ELON");
 
                 if (prevScrollTop - currentScrollTop >= cardHeight) {
+                    modDiv.appendChild(renderSanghaiDiv("firstDiv", modDiv.scrollTop));
                     if (await dataView.hasExpired()) {
                         return;
                     }
                     if (prevIndex - 3 <= 0) {
                         prevIndex = 0;
-                    } else {
-                        prevIndex = prevIndex - 1;
                     }
 
                     console.log(prevIndex, "previndex before render");
@@ -188,12 +251,9 @@ Spotfire.initialize(async (mod) => {
                         rerender,
                         windowSize,
                         mod,
-                        currentScrollTop / 2
+                        currentScrollTop
                     );
                     modDiv.appendChild(returnedObject.fragment);
-                    console.log(cardHeight, "cardheigt before setting it in else ");
-                    cardHeight = modDiv.children[1].clientHeight;
-                    console.log(cardHeight, "cardheigt after setting it in else ");
 
                     var bottomDivHeight = (rows.length - cardsToLoad) * cardHeight + currentScrollTop;
                     modDiv.appendChild(renderSanghaiDiv("lastEmptyDiv", bottomDivHeight));
@@ -567,4 +627,15 @@ function renderSanghaiDiv(name, height) {
     shanghaiDiv.style.height = height + "px";
     console.log(shanghaiDiv);
     return shanghaiDiv;
+}
+
+function getCardHeight(childrenArray) {
+    var index = 1;
+    var cardHeight = 0;
+    for (index; index < childrenArray.length - 1; index++) {
+        cardHeight += childrenArray[index].clientHeight;
+    }
+    cardHeight = cardHeight / index;
+
+    return cardHeight;
 }
