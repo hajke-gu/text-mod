@@ -245,7 +245,13 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
         textCardDiv.appendChild(contentParagraph);
     }
 
-    return textCardDiv;
+    var divObject = {
+        textCardDiv: textCardDiv,
+        header: header,
+        content: contentParagraph
+    };
+
+    return divObject;
 }
 
 /**
@@ -362,7 +368,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             /**
              * Create the text card
              */
-            let newDiv = createTextCard(
+            let divObject = createTextCard(
                 textCardContent,
                 annotation,
                 windowSize,
@@ -370,6 +376,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 fontStyling,
                 scalesStyling.tickMarkColor
             );
+            let newDiv = divObject.textCardDiv;
             newDiv.setAttribute("id", "text-card");
 
             newDiv.style.boxShadow = "0 0 0 1px " + scalesStyling.lineColor;
@@ -391,23 +398,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
              * Create mouse over functionallity
              * Border around card and tooltip
              */
-            newDiv.onmouseenter = (e) => {
-                borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
-                if (tooltipEnabled) {
-                    var tooltipString = createTooltipString(rows[index]);
-                    mod.controls.tooltip.show(tooltipString);
-                }
-                createCopyButton(newDiv, fontStyling.fontColor);
-            };
-
-            newDiv.onmouseleave = (e) => {
-                borderDiv.style.boxShadow = "";
-
-                if (tooltipEnabled) mod.controls.tooltip.hide();
-
-                var button = document.getElementById("img-button");
-                newDiv.removeChild(button);
-            };
+            configureMouseOver(divObject, borderDiv, fontStyling, rows[index], tooltipEnabled, mod);
 
             borderDiv.appendChild(newDiv);
             fragment.appendChild(borderDiv);
@@ -639,22 +630,30 @@ function createTextCardContentParagraph(windowSize, content, fontStyling) {
     return paragraph;
 }
 
-function createTooltipString(specificRow) {
-    var nrOfTooltipChoices = specificRow.categorical("Tooltip").value()[0]._node.__hierarchy.levels.length;
+function createTooltipString(specificRow, tooltipContent) {
+    var nrOfTooltipChoices = specificRow.categorical(tooltipContent).value()[0]._node.__hierarchy.levels.length;
     var tooltipCollection = [];
     var tooltipString = "";
     var i = null;
     for (i = 0; i < nrOfTooltipChoices; i++) {
-        var columnName = getColumnName(specificRow, "Tooltip", i);
-        var dataValue = getDataValue(specificRow, "Tooltip", i);
+        var columnName = getColumnName(specificRow, tooltipContent, i);
+        var dataValue = getDataValue(specificRow, tooltipContent, i);
+
+        if (columnName === "Date")
+            //Handle date
+            dataValue = formatDate(new Date(Number(dataValue)));
+
         var tooltipObj = {
             columnName: columnName,
             dataValue: dataValue
         };
-        tooltipCollection.push(tooltipObj);
-        tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
-    }
 
+        if (dataValue !== null) {
+            // Remove empty data values
+            tooltipCollection.push(tooltipObj);
+            tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
+        }
+    }
     return tooltipString;
 }
 
@@ -676,4 +675,48 @@ function formatDate(date) {
         (day < 10 ? "0" + day : day).toString();
 
     return dateFormat;
+}
+
+function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod) {
+    /**
+     * Mouse over for textCardDiv
+     */
+
+    divObject.textCardDiv.onmouseenter = (e) => {
+        borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
+        createCopyButton(divObject.textCardDiv, fontStyling.fontColor);
+    };
+
+    divObject.textCardDiv.onmouseleave = (e) => {
+        borderDiv.style.boxShadow = "";
+
+        var button = document.getElementById("img-button");
+        divObject.textCardDiv.removeChild(button);
+    };
+
+    /**
+     * Mouse over for content
+     */
+    divObject.content.onmouseenter = (e) => {
+        if (tooltipEnabled) {
+            var tooltipString = createTooltipString(row, "Tooltip");
+            mod.controls.tooltip.show(tooltipString);
+        }
+    };
+
+    divObject.content.onmouseleave = (e) => {
+        if (tooltipEnabled) mod.controls.tooltip.hide();
+    };
+
+    /**
+     * Mouse over for header
+     */
+    divObject.header.onmouseenter = (e) => {
+        var tooltipString = createTooltipString(row, "Annotation");
+        mod.controls.tooltip.show(tooltipString);
+    };
+
+    divObject.header.onmouseleave = (e) => {
+        mod.controls.tooltip.hide();
+    };
 }
