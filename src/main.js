@@ -643,6 +643,12 @@ function createTooltipString(specificRow, tooltipContent) {
             //Handle date
             dataValue = formatDate(new Date(Number(dataValue)));
 
+        // truncate to a max length of 100 characters per tooltip row
+        var maxLength = 100;
+        if (typeof dataValue === "string" && dataValue.length > maxLength) {
+            dataValue = truncateString(dataValue, maxLength);
+        }
+
         var tooltipObj = {
             columnName: columnName,
             dataValue: dataValue
@@ -719,4 +725,9 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
     divObject.header.onmouseleave = (e) => {
         mod.controls.tooltip.hide();
     };
+}
+
+function truncateString(dataValue, maxLength) {
+    // Slice at maxLength minus 3 to really return maxLength characters
+    return dataValue.slice(0, maxLength - 3) + "...";
 }
