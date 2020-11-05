@@ -126,7 +126,7 @@ Spotfire.initialize(async (mod) => {
             modDiv.scrollTop
         );
         modDiv.appendChild(returnedObject.fragment);
-        prevIndex = returnedObject.startIndex - cardsToLoad;
+        prevIndex = returnedObject.startIndex - cardsToLoad + 1;
         var cardHeight = getCardHeight(modDiv.children);
 
         console.log(cardHeight, "cardHeight");
@@ -174,7 +174,10 @@ Spotfire.initialize(async (mod) => {
                     if (await dataView.hasExpired()) {
                         return;
                     }
-                    if (Math.abs(prevScrollTop - currentScrollTop) > 200) {
+                    if (prevIndex + cardsToLoad - 1 >= rows.length) {
+                        return;
+                    }
+                    if (Math.abs(prevScrollTop - currentScrollTop) > 1000) {
                         var percentageIndex = Math.round(currentScrollTop / cardHeight);
 
                         var returnedObject = renderTextCards(
@@ -214,9 +217,10 @@ Spotfire.initialize(async (mod) => {
 
                     prevIndex = returnedObject.startIndex - cardsToLoad + 1;
                     console.log(returnedObject.startIndex, "start index");
-                    console.log(totalBottomHeight);
+                    console.log(totalBottomHeight, "bottomheight ");
+
                     prevScrollTop = currentScrollTop;
-                    if (prevIndex + cardsToLoad >= rows.length) {
+                    if (returnedObject.startIndex - 1 >= rows.length) {
                         modDiv.removeChild(document.getElementById("lastEmptyDiv"));
                     }
 
@@ -231,7 +235,7 @@ Spotfire.initialize(async (mod) => {
                     if (prevIndex - 3 <= 0) {
                         prevIndex = 0;
                     }
-                    if (Math.abs(prevScrollTop - currentScrollTop) > 400) {
+                    if (Math.abs(prevScrollTop - currentScrollTop) > 1000) {
                         var percentageIndex = Math.round(currentScrollTop / cardHeight);
                         var returnedObject = renderTextCards(
                             rows,
@@ -244,6 +248,7 @@ Spotfire.initialize(async (mod) => {
                             annotationEnabled,
                             currentScrollTop
                         );
+                        prevIndex = percentageIndex - 1;
                     } else {
                         console.log(prevIndex, "previndex before render");
                         var returnedObject = renderTextCards(
@@ -257,6 +262,7 @@ Spotfire.initialize(async (mod) => {
                             annotationEnabled,
                             currentScrollTop
                         );
+                        prevIndex = prevIndex - 1;
                     }
 
                     modDiv.appendChild(returnedObject.fragment);
@@ -265,8 +271,8 @@ Spotfire.initialize(async (mod) => {
                     var bottomHeight = nrOfCards * cardHeight;
                     var totalBottomHeight = bottomHeight - currentScrollTop;
                     modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
-
-                    prevIndex = prevIndex - 1;
+                    console.log(returnedObject.startIndex, "start index returned");
+                    prevScrollTop = currentScrollTop;
                 }
             }
         });
@@ -836,6 +842,7 @@ function markTextCard(row, div, index) {
         if (selectedText === "") {
             e.stopPropagation();
             console.log(index, "MAGIC");
+            this.prevIndex = index;
             row.mark("Toggle");
         }
     };
