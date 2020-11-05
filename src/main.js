@@ -398,7 +398,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
              * Create mouse over functionallity
              * Border around card and tooltip
              */
-            configureMouseOver(divObject, borderDiv, fontStyling, rows[index], tooltipEnabled, mod);
+            configureMouseOver(divObject, borderDiv, fontStyling, rows[index], tooltipEnabled, mod, annotationEnabled);
 
             borderDiv.appendChild(newDiv);
             fragment.appendChild(borderDiv);
@@ -683,11 +683,10 @@ function formatDate(date) {
     return dateFormat;
 }
 
-function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod) {
+function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod, annotationEnabled) {
     /**
      * Mouse over for textCardDiv
      */
-
     divObject.textCardDiv.onmouseenter = (e) => {
         borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
         createCopyButton(divObject.textCardDiv, fontStyling.fontColor);
@@ -717,14 +716,16 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
     /**
      * Mouse over for header
      */
-    divObject.header.onmouseenter = (e) => {
-        var tooltipString = createTooltipString(row, "Annotation");
-        mod.controls.tooltip.show(tooltipString);
-    };
+    if (annotationEnabled) {
+        divObject.header.onmouseenter = (e) => {
+            var tooltipString = createTooltipString(row, "Annotation");
+            mod.controls.tooltip.show(tooltipString);
+        };
 
-    divObject.header.onmouseleave = (e) => {
-        mod.controls.tooltip.hide();
-    };
+        divObject.header.onmouseleave = (e) => {
+            mod.controls.tooltip.hide();
+        };
+    }
 }
 
 function truncateString(dataValue, maxLength) {
