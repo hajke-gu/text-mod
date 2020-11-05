@@ -232,7 +232,7 @@ Spotfire.initialize(async (mod) => {
                         return;
                     }
 
-                    if (prevIndex - 3 <= 0) {
+                    if (prevIndex - cardsToLoad <= 0) {
                         prevIndex = 0;
                     }
                     if (Math.abs(prevScrollTop - currentScrollTop) > 1000) {
@@ -842,7 +842,7 @@ function markTextCard(row, div, index) {
         if (selectedText === "") {
             e.stopPropagation();
             console.log(index, "MAGIC");
-            this.prevIndex = index;
+            this.prevIndex = index - 1;
             row.mark("Toggle");
         }
     };
