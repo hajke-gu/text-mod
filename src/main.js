@@ -395,8 +395,9 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                     } else {
                         if (rows[index].isMarked) {
                             rows[index].mark("Toggle");
+                        } else {
+                            rows[index].mark("Add");
                         }
-                        rows[index].mark("Add");
                     }
                 }
             };
