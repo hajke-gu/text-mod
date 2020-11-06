@@ -304,14 +304,14 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     styleElement.appendChild(
         document.createTextNode(
             "::-webkit-scrollbar {width: 8px;} ::-webkit-scrollbar-track {border-radius: 16px; background-color: " +
-                scalesStyling.lineColor +
-                "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
-                fontStyling.fontColor +
-                "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
-                fontStyling.fontColor +
-                "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
-                fontStyling.fontColor +
-                "BF;}"
+            scalesStyling.lineColor +
+            "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
+            fontStyling.fontColor +
+            "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
+            fontStyling.fontColor +
+            "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
+            fontStyling.fontColor +
+            "BF;}"
         )
     );
     document.getElementsByTagName("head")[0].appendChild(styleElement);
@@ -390,7 +390,14 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 var selectedText = getSelectedText();
                 if (selectedText === "") {
                     e.stopPropagation();
-                    rows[index].mark("Toggle");
+                    if (!e.ctrlKey) {
+                        rows[index].mark("Replace");
+                    } else {
+                        if (rows[index].isMarked) {
+                            rows[index].mark("Toggle");
+                        }
+                        rows[index].mark("Add");
+                    }
                 }
             };
 
