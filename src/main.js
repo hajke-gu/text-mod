@@ -104,6 +104,12 @@ Spotfire.initialize(async (mod) => {
         var tooltip = false;
         if ((await dataView.categoricalAxis("Tooltip")) != null) tooltip = true;
 
+        /**
+         * Check if annotation enabled
+         */
+        var annotationEnabled = false;
+        if ((await dataView.categoricalAxis("Annotation")) != null) annotationEnabled = true;
+
         var rerender = true;
 
         var returnedObject = renderTextCards(
@@ -113,7 +119,8 @@ Spotfire.initialize(async (mod) => {
             rerender,
             windowSize,
             mod,
-            tooltip
+            tooltip,
+            annotationEnabled
         );
 
         modDiv.appendChild(returnedObject.fragment);
@@ -142,7 +149,7 @@ Spotfire.initialize(async (mod) => {
         };
 
         document.onkeydown = (e) => {
-            console.log(e.key.toString());
+            //console.log(e.key.toString());
             var selectedText = getSelectedText();
             if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
                 textToClipboard(selectedText);
@@ -154,7 +161,7 @@ Spotfire.initialize(async (mod) => {
             if (e.key === "ArrowDown") {
                 modContainer.scrollBy(0, 100);
             } else {
-                console.log(e.key, " pressed");
+                //console.log(e.key, " pressed");
             }
         };
 
@@ -189,7 +196,16 @@ Spotfire.initialize(async (mod) => {
                 console.log(modDiv.scrollTop);
                 var rerender = false;
 
-                var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltip);
+                var returnedObject = renderTextCards(
+                    rows,
+                    prevIndex,
+                    cardsToLoad,
+                    rerender,
+                    windowSize,
+                    mod,
+                    tooltip,
+                    annotationEnabled
+                );
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.startIndex;
             }
@@ -222,15 +238,44 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
 
     //add annotation to text card
     if (annotation !== null) {
+        /**
+         * Create all annotations
+         */
         var header = createTextCardHeader();
-        var headerContent = createHeaderContent(annotation);
 
-        header.appendChild(headerContent);
-        textCardDiv.appendChild(header);
+        var firstAnnotationCreated = false;
+        var annotationLength = annotation[0]._node.__hierarchy.levels.length;
+        for (var i = 0; i < annotationLength; i++) {
+            var dataValue = annotation[i].key; //Get annotation value
 
-        //add divider line to text card
-        var line = createLineDividerInTextCard(lineDividerColor);
-        textCardDiv.appendChild(line);
+            if (dataValue !== null) {
+                //Check if annotation has value
+
+                //Handle date
+                if (annotation[0]._node.__hierarchy.levels[i].name === "Date") {
+                    dataValue = formatDate(new Date(Number(dataValue)));
+                }
+
+                var headerContent = createHeaderContent(dataValue);
+
+                if (i !== 0 && firstAnnotationCreated) {
+                    //First annotation -> no border
+                    headerContent.style.borderLeft = "1px solid";
+                    headerContent.style.borderLeftColor = lineDividerColor + "BF";
+                }
+                header.appendChild(headerContent);
+                firstAnnotationCreated = true;
+            }
+        }
+
+        if (firstAnnotationCreated) {
+            //Check if any annotation has been created
+            textCardDiv.appendChild(header);
+
+            //add divider line to text card
+            var line = createLineDividerInTextCard(lineDividerColor);
+            textCardDiv.appendChild(line);
+        }
     }
 
     //add paragraph to text card
@@ -239,7 +284,13 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
         textCardDiv.appendChild(contentParagraph);
     }
 
-    return textCardDiv;
+    var divObject = {
+        textCardDiv: textCardDiv,
+        header: header,
+        content: contentParagraph
+    };
+
+    return divObject;
 }
 
 /**
@@ -251,7 +302,7 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled) {
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled, annotationEnabled) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -285,28 +336,78 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         tickMarkColor: styling.scales.tick.stroke
     };
 
+    // Customized scrollbar for Text Card and Text Card Container that is adjusting to the theme
+    // HEX color + "4D" = 30% opacitiy
+    // HEX color + "BF" = 75% opacity
+    var styleElement = document.createElement("style");
+    styleElement.appendChild(
+        document.createTextNode(
+            "::-webkit-scrollbar {width: 8px;} ::-webkit-scrollbar-track {border-radius: 16px; background-color: " +
+            scalesStyling.lineColor +
+            "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
+            fontStyling.fontColor +
+            "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
+            fontStyling.fontColor +
+            "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
+            fontStyling.fontColor +
+            "BF;}"
+        )
+    );
+    document.getElementsByTagName("head")[0].appendChild(styleElement);
+
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
 
+    /**
+     * Create all text cards
+     */
     for (let index = startIndex; index < whatToLoad; index++) {
-        // console.log("Rows: " + rows.length)
         if (index >= rows.length) {
             break;
         }
+
+        /**
+         * Get value/content for the specifc card.
+         * And handle date
+         */
         let textCardContent = getDataValue(rows[index], "Content", 0);
+        if (getColumnName(rows[index], "Content", 0) === "Date")
+            //Date handling
+            textCardContent = formatDate(new Date(Number(textCardContent)));
+
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
-            var annotation = getDataValue(rows[index], "Annotation", 0);
+            /**
+             * Create Annotation
+             */
+            var annotation = null;
+            if (annotationEnabled) {
+                annotation = rows[index].categorical("Annotation").value();
+            }
+
+            /**
+             * Get color from api for side bar
+             */
             var color = rows[index].color().hexCode;
+
+            /**
+             * Check if specific row are marked and add boolean for condition is all rows marked
+             */
             var markObject = {
                 row: rows[index].isMarked(),
                 allRows: allRowsMarked
             };
 
+            /**
+             * Create border div
+             */
             let borderDiv = document.createElement("div");
             borderDiv.setAttribute("id", "text-card-border");
 
-            let newDiv = createTextCard(
+            /**
+             * Create the text card
+             */
+            let divObject = createTextCard(
                 textCardContent,
                 annotation,
                 windowSize,
@@ -314,35 +415,38 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 fontStyling,
                 scalesStyling.tickMarkColor
             );
+            let newDiv = divObject.textCardDiv;
             newDiv.setAttribute("id", "text-card");
 
             newDiv.style.boxShadow = "0 0 0 1px " + scalesStyling.lineColor;
             newDiv.style.borderLeftColor = color;
 
+            /**
+             * Create on click functionallity
+             * Select text and marking
+             */
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
                 if (selectedText === "") {
                     e.stopPropagation();
-                    rows[index].mark("Toggle");
+                    if (!e.ctrlKey) {
+                        rows[index].mark("Replace");
+                    } else {
+                        if (rows[index].isMarked) {
+                            rows[index].mark("Toggle");
+                        } else {
+                            rows[index].mark("Add");
+                        }
+                    }
                 }
             };
-            newDiv.onmouseenter = (e) => {
-                borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
-                if (tooltipEnabled) {
-                    var tooltipString = createTooltipString(rows[index]);
-                    mod.controls.tooltip.show(tooltipString);
-                }
-                createCopyButton(newDiv, scalesStyling.lineColor, fontStyling.fontColor);
-            };
 
-            newDiv.onmouseleave = (e) => {
-                borderDiv.style.boxShadow = "";
+            /**
+             * Create mouse over functionallity
+             * Border around card and tooltip
+             */
+            configureMouseOver(divObject, borderDiv, fontStyling, rows[index], tooltipEnabled, mod, annotationEnabled);
 
-                if (tooltipEnabled) mod.controls.tooltip.hide();
-
-                var button = document.getElementById("img-button");
-                newDiv.removeChild(button);
-            };
             borderDiv.appendChild(newDiv);
             fragment.appendChild(borderDiv);
         }
@@ -430,7 +534,7 @@ function textToClipboard(text) {
     var temporaryCopyElement = document.createElement("textarea");
     document.body.appendChild(temporaryCopyElement);
     temporaryCopyElement.value = text;
-    console.log(text);
+    //console.log(text);
     temporaryCopyElement.select();
     document.execCommand("copy");
     document.body.removeChild(temporaryCopyElement);
@@ -439,11 +543,10 @@ function textToClipboard(text) {
 /**
  *
  * @param newDiv newDiv is the div element which the button will be added to
- * @param defaultColor default color for copy button
- * @param mouseOverColor color on mouse over
+ * @param buttonColor default color = API's font color
  */
 
-function createCopyButton(newDiv, defaultColor, mouseOverColor) {
+function createCopyButton(newDiv, buttonColor) {
     // BUTTON
     var newButton = document.createElement("svg");
 
@@ -457,23 +560,27 @@ function createCopyButton(newDiv, defaultColor, mouseOverColor) {
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "path");
     // 60% opacity of font color
-    svg.setAttributeNS(null, "fill", mouseOverColor + "99");
+    svg.setAttributeNS(null, "fill", buttonColor + "99");
     svg.setAttributeNS(null, "viewBox", "0 0 16 16");
     svg.setAttributeNS(null, "d", "M11.259 1H6v3H2v11h10v-3h2V4.094zM8 4h2v1H8zm3 10H3V5h3v7h5zm1-5H8V8h4zm0-2H8V6h4z");
+    // 80 % opacity of font color
+    newButton.onmouseover = (e) => {
+        svg.setAttributeNS(null, "fill", buttonColor + "CC");
+    };
 
+    newButton.onmousedown = (e) => {
+        svg.setAttributeNS(null, "fill", buttonColor);
+    };
+    // 80 % opacity of font color
     newButton.onclick = (e) => {
-        svg.setAttributeNS(null, "fill", mouseOverColor);
-        //var text = newDiv.getElementById("text-card-paragraph").textContent;
-        var text = newDiv.querySelector("#text-card-content").textContent;
+        svg.setAttributeNS(null, "fill", buttonColor + "CC");
+        var text = newDiv.querySelector("#text-card-paragraph").textContent;
         textToClipboard(text);
         e.stopPropagation();
     };
-    newButton.onmouseover = (e) => {
-        svg.setAttributeNS(null, "fill", mouseOverColor);
-    };
-
+    // 60% opacity of font color
     newButton.onmouseleave = (e) => {
-        svg.setAttributeNS(null, "fill", mouseOverColor + "99");
+        svg.setAttributeNS(null, "fill", buttonColor + "99");
     };
 
     svgNode.appendChild(svg);
@@ -570,21 +677,105 @@ function createTextCardContentParagraph(windowSize, content, fontStyling) {
     return paragraph;
 }
 
-function createTooltipString(specificRow) {
-    var nrOfTooltipChoices = specificRow.categorical("Tooltip").value()[0]._node.__hierarchy.levels.length;
+function createTooltipString(specificRow, tooltipContent) {
+    var nrOfTooltipChoices = specificRow.categorical(tooltipContent).value()[0]._node.__hierarchy.levels.length;
     var tooltipCollection = [];
     var tooltipString = "";
     var i = null;
     for (i = 0; i < nrOfTooltipChoices; i++) {
-        var columnName = getColumnName(specificRow, "Tooltip", i);
-        var dataValue = getDataValue(specificRow, "Tooltip", i);
+        var columnName = getColumnName(specificRow, tooltipContent, i);
+        var dataValue = getDataValue(specificRow, tooltipContent, i);
+
+        if (columnName === "Date")
+            //Handle date
+            dataValue = formatDate(new Date(Number(dataValue)));
+
+        // truncate to a max length of 100 characters per tooltip row
+        var maxLength = 100;
+        if (typeof dataValue === "string" && dataValue.length > maxLength) {
+            dataValue = truncateString(dataValue, maxLength);
+        }
+
         var tooltipObj = {
             columnName: columnName,
             dataValue: dataValue
         };
-        tooltipCollection.push(tooltipObj);
-        tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
-    }
 
+        if (dataValue !== null) {
+            // Remove empty data values
+            tooltipCollection.push(tooltipObj);
+            tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
+        }
+    }
     return tooltipString;
+}
+
+/**
+ * Format date in YYYY-MM-DD
+ *
+ * @param {*} date Date object
+ */
+function formatDate(date) {
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    var day = date.getDate();
+
+    var dateFormat =
+        year.toString() +
+        "-" +
+        (month < 10 ? "0" + month : month).toString() +
+        "-" +
+        (day < 10 ? "0" + day : day).toString();
+
+    return dateFormat;
+}
+
+function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod, annotationEnabled) {
+    /**
+     * Mouse over for textCardDiv
+     */
+    divObject.textCardDiv.onmouseenter = (e) => {
+        borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
+        createCopyButton(divObject.textCardDiv, fontStyling.fontColor);
+    };
+
+    divObject.textCardDiv.onmouseleave = (e) => {
+        borderDiv.style.boxShadow = "";
+
+        var button = document.getElementById("img-button");
+        divObject.textCardDiv.removeChild(button);
+    };
+
+    /**
+     * Mouse over for content
+     */
+    divObject.content.onmouseenter = (e) => {
+        if (tooltipEnabled) {
+            var tooltipString = createTooltipString(row, "Tooltip");
+            mod.controls.tooltip.show(tooltipString);
+        }
+    };
+
+    divObject.content.onmouseleave = (e) => {
+        if (tooltipEnabled) mod.controls.tooltip.hide();
+    };
+
+    /**
+     * Mouse over for header
+     */
+    if (annotationEnabled) {
+        divObject.header.onmouseenter = (e) => {
+            var tooltipString = createTooltipString(row, "Annotation");
+            mod.controls.tooltip.show(tooltipString);
+        };
+
+        divObject.header.onmouseleave = (e) => {
+            mod.controls.tooltip.hide();
+        };
+    }
+}
+
+function truncateString(dataValue, maxLength) {
+    // Slice at maxLength minus 3 to really return maxLength characters
+    return dataValue.slice(0, maxLength - 3) + "...";
 }
