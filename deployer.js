@@ -43,9 +43,6 @@ var argv = require("minimist")(process.argv.slice(2));
     await connectToProjectServer(page);
     await uploadToLibrary(page);
 
-    /* run test suite */
-    await runTests(page);
-
     /* closedown */
     if (headless) {
         // cannot use pdf when not running true headless
@@ -141,78 +138,18 @@ async function uploadToLibrary(page) {
     await new Promise((r) => setTimeout(r, 3000)); // wait for loading
     await page.click('div[title~="Text-Mod"]');
     await new Promise((r) => setTimeout(r, 3000)); // wait for loading
+
+    // change name of mod
+    const name = "Text Card";
+    const el = await page.$$eval("input[type=text]", (elements) =>
+        elements.forEach((el) => {
+            if (el.textContent.includes("Text")) {
+                console.log("helloooooooooooo");
+            }
+        })
+    );
     await page.click('button[title~="Save"]');
     await new Promise((r) => setTimeout(r, 3000)); // wait for loading
     await page.click("div.footer-button-group > button:nth-child(1)");
     await new Promise((r) => setTimeout(r, 5000)); // wait for loading
-}
-
-async function runTests(page) {
-    // all tests placed in here and validate here
-    var results = new Array();
-    var result;
-
-    //test1
-    result = await test1(page);
-    results.push(result);
-
-    //test2
-    result = await test2(page);
-    results.push(result);
-}
-
-/* AC The text visualization should only display a subset of the data at a time */
-async function test1(page) {
-    var result = false;
-
-    // get number of rows in dataset
-    const element = await page.$(".sfx_label_217");
-    const text = await page.evaluate((element) => element.textContent, element);
-    var dataset = text.substr(0, text.indexOf(" "));
-    dataset = dataset.replace(",", "");
-
-    // get all textcards rendered
-    const amountOfTextCards = await page.evaluate(() => {
-        // access iFrame
-        const iframe = document.querySelector("iframe.sfx_frame_1046");
-
-        // grab iframe's document object
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-        return iframeDoc.querySelectorAll("div#text-card").length;
-    });
-
-    // compare dataset
-    if (dataset > amountOfTextCards) {
-        result = true;
-    }
-
-    return result;
-}
-
-/* AC It must be possible to copy the entire or a selected subset of the text to the clipboard. */
-async function test2(page) {
-    var result = false;
-
-    const res = await page.evaluate((page) => {
-        // access iFrame
-        const iframe = document.querySelector("iframe.sfx_frame_1046");
-
-        // grab iframe's document object
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-        // get first text card
-        const el = iframeDoc.querySelector("div#text-card");
-
-        el.click();
-
-        // click text card
-        iframeDoc.querySelector("svg").click();
-
-        return el.textContent;
-    });
-
-    console.log(res);
-
-    return result;
 }

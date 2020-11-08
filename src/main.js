@@ -12,6 +12,10 @@
  */
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
+    // Initial state
+    var lst = 0;
+    // orginal height of bottomdiv
+    var orgBtmDivHeight;
     /**
      * Create the read function.
      */
@@ -105,7 +109,7 @@ Spotfire.initialize(async (mod) => {
         var returnedObject = renderTextCards(
             rows,
             prevIndex, // When rerendering we always want to render everything
-            cardsToLoad,
+            10,
             rerender,
             windowSize,
             mod,
@@ -114,6 +118,19 @@ Spotfire.initialize(async (mod) => {
 
         modDiv.appendChild(returnedObject.fragment);
         prevIndex = returnedObject.startIndex;
+
+        // create top whitespace div
+        var el = document.createElement("div");
+        el.style.height = "1px";
+        el.setAttribute("id", "topDiv");
+        modDiv.insertBefore(el, modDiv.firstChild);
+
+        // create bottom whitespace div
+        var el2 = document.createElement("div");
+        orgBtmDivHeight = rows.length * 100;
+        el2.setAttribute("id", "bottomDiv");
+        el2.style.height = orgBtmDivHeight + "px";
+        modDiv.appendChild(el2);
 
         /**
          * De-mark on click on something that isn't text card *
@@ -145,17 +162,38 @@ Spotfire.initialize(async (mod) => {
          * Scroll Event Listener
          */
         modDiv.addEventListener("scroll", async function (e) {
+            console.log(lst);
+            var st = modDiv.scrollTop;
+            if (st > lst) {
+                console.log("down", lst);
+                //change height of top div
+                var topDiv = document.getElementById("topDiv");
+                var newHeight = modDiv.scrollTop;
+                console.log(topDiv.clientHeight);
+                topDiv.style.height = newHeight + "px";
+                //change height of bottom div
+                //var btmDiv = document.getElementById("btmDiv");
+                //newHeight = orgBtmDivHeight - modDiv.scrollTop;
+                //btmDiv.style.height = newHeight + "px";
+            } else {
+                console.log("up", lst);
+            }
+            lst = st;
+
+            /*
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
                 //Check if old data view
                 if (await dataView.hasExpired()) {
                     return;
                 }
+                console.log(modDiv.scrollTop);
                 var rerender = false;
 
                 var returnedObject = renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltip);
                 modDiv.appendChild(returnedObject.fragment);
                 prevIndex = returnedObject.startIndex;
             }
+            */
             return 1;
         });
 

@@ -1,0 +1,25 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+on:
+    push:
+        # Sequence of patterns matched against refs/heads
+        branches:
+            # Push events on main branch
+            - main
+
+jobs:
+    build:
+        name: depoloy-to-labs
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: run deploy
+              env:
+                  USERNAME: ${{ secrets.USERNAME }}
+                  PASSWORD: ${{ secrets.PASSWORD }}
+              run: | # install, run server, run puppeteer script
+                  npm i
+                  npm run server &
+                  node deployer.js -u $USERNAME -p $PASSWORD -h
