@@ -143,8 +143,7 @@ Spotfire.initialize(async (mod) => {
          * De-mark on click on something that isn't text card *
          */
         var modContainer = document.getElementById("text-card-container");
-
-        modContainer.onclick = () => {
+        modContainer.onmousedown = (e) => {
             dataView.clearMarking();
         };
 
@@ -425,36 +424,20 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
              * Create on click functionallity
              * Select text and marking
              */
-            /*
-             * WINDOWS
-            */
-            newDiv.onclick = (e) => {
+            newDiv.onmousedown = (event) => {
                 var selectedText = getSelectedText();
                 if (selectedText === "") {
-                    e.stopPropagation();
-                    if (!e.ctrlKey) {
-                        rows[index].mark("Replace");
-                    } else {
-                        if (rows[index].isMarked) {
+                    if (event.button == 0) {
+                        if (!event.ctrlKey) {
+                            rows[index].mark("Replace");
+                        }
+                        else {
                             rows[index].mark("Toggle");
-                        } else {
-                            rows[index].mark("Add");
                         }
                     }
                 }
+                event.stopPropagation();
             };
-            /*
-             * OSX
-            */
-            newDiv.addEventListener("mousedown", function (event) {
-                if (event.ctrlKey || event.button == 2) {
-                    if (rows[index].isMarked) {
-                        rows[index].mark("Toggle");
-                    } else {
-                        rows[index].mark("Add");
-                    }
-                }
-            });
             /**
              * Create mouse over functionallity
              * Border around card and tooltip
