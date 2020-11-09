@@ -1,9 +1,9 @@
 {
     "apiVersion": "1.0",
     "version": "1.0",
-    "name": "Text Visualization",
-    "id": "js-dev-starter",
-    "icon": "icon.svg",
+    "name": "Text Card",
+    "id": "text-card-mod",
+    "icon": "icon_24x24.svg",
     "properties": [
         {
             "name": "myProperty",
