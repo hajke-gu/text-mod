@@ -14,8 +14,7 @@ jobs:
               env:
                   USERNAME: ${{ secrets.USERNAME }}
                   PASSWORD: ${{ secrets.PASSWORD }}
-              run:
-                  | # install, run server, run puppeteer script, npm run server & node puppeteer runs two processes at the same time
+              run: | # install, run server, run puppeteer script
                   npm i 
                   npm run server & 
                   node puppeteer.js -u $USERNAME -p $PASSWORD -h
