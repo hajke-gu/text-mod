@@ -3,7 +3,7 @@
     "version": "1.0",
     "name": "Text Card",
     "id": "text-card-mod",
-    "icon": "icon_24x24.svg",
+    "icon": "icon.svg",
     "properties": [
         {
             "name": "myProperty",
