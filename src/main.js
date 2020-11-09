@@ -81,7 +81,7 @@ Spotfire.initialize(async (mod) => {
          */
         var rows = await dataView.allRows();
         //modDiv.style.height = rows.length * cardHeight + "px";
-        var cardsToLoad = 9;
+        var cardsToLoad = Math.floor(windowSize.height / 60);
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
