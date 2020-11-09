@@ -15,7 +15,7 @@ var argv = require("minimist")(process.argv.slice(2));
     const browser = await puppeteer.launch({
         headless: headless,
         defaultViewport: null,
-        args: ["--start-maximized", "--disable-web-security"]
+        args: ["--disable-web-security"]
     });
     const page = await browser.newPage();
 
@@ -45,9 +45,6 @@ var argv = require("minimist")(process.argv.slice(2));
 
     /* closedown */
     if (headless) {
-        // cannot use pdf when not running true headless
-        await page.pdf({ path: "result.pdf", landscape: true });
-
         // close browser
         await browser.close();
     }
@@ -81,51 +78,40 @@ async function changeToEditMode(page) {
 
 async function openVisualizationMode(page) {
     /* create visualization mode */
-    await page.click(".sfx_menu-item_454[title=Tools]");
-    await page.click(".contextMenuItemLabel[title=Development]");
-    await page.$$eval(".contextMenuItemLabel", (elements) =>
-        elements.forEach((el) => {
-            if (el.textContent.includes("Create")) {
-                el.click();
-            }
-        })
-    );
+    await page.click('.sfx_button_462[title~="Show"]');
+    await page.click(".contextMenuItemLabel[title=Tools]");
+    await page.click(".contextMenuItemLabel[title~=Development]");
+    await page.click(".contextMenuItemLabel[title~=Create]");
     await new Promise((r) => setTimeout(r, 5000)); // wait for loading
 }
 
 async function connectToProjectServer(page) {
     /* connect to project */
-    await page.click(".sfx_button_507");
-    await new Promise((r) => setTimeout(r, 4000)); // wait for loading
-    await page.$$eval(".sfx_button_507", (elements) =>
-        elements.forEach((el) => {
-            if (el.textContent.includes("Development")) {
-                el.click();
-            }
-        })
-    );
-    await new Promise((r) => setTimeout(r, 4000)); // wait for loading
-    await page.$$eval(".sfx_button_507", (elements) =>
-        elements.forEach((el) => {
-            if (el.textContent.includes("Connect")) {
-                el.click();
-            }
-        })
-    );
-    await new Promise((r) => setTimeout(r, 10000)); // wait for loading
+    await page.click("div[title~=Connect]");
+    await new Promise((r) => setTimeout(r, 5000)); // wait for loading
+
+    const els = await page.$$(".sfx_button_507");
+    await els[1].click();
+    await new Promise((r) => setTimeout(r, 5000)); // wait for loading
+
+    const arr = await page.$$(".sfx_button_507");
+    await arr[1].click();
+    await new Promise((r) => setTimeout(r, 5000)); // wait for loading
 }
 
 async function uploadToLibrary(page) {
     /* upload server mod to library */
     await new Promise((r) => setTimeout(r, 3000)); // wait for loading
-    await page.$$eval(".sfx_button_507", (elements) =>
+    await page.$$eval(".sfx_button-text_518", (elements) =>
         elements.forEach((el) => {
             if (el.textContent.includes("Disconnect")) {
                 el.click();
             }
         })
     );
+    //await page.pdf({ path: "result.pdf", landscape: true });
     await new Promise((r) => setTimeout(r, 6000)); // wait for loading
+
     await page.$$eval(".sfx_button_507", (elements) =>
         elements.forEach((el) => {
             if (el.textContent.includes("Save")) {
@@ -134,7 +120,7 @@ async function uploadToLibrary(page) {
         })
     );
     await new Promise((r) => setTimeout(r, 6000)); // wait for loading
-    await page.click('div[title~="Spotfire"]');
+    await page.click('[title~="Spotfire"]');
     await new Promise((r) => setTimeout(r, 3000)); // wait for loading
     await page.click('div[title~="Text-Mod"]');
     await new Promise((r) => setTimeout(r, 3000)); // wait for loading

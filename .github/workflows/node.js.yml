@@ -14,9 +14,10 @@ jobs:
               env:
                   USERNAME: ${{ secrets.USERNAME }}
                   PASSWORD: ${{ secrets.PASSWORD }}
-              run: | # install, run server, run puppeteer script
-                  npm i
-                  npm run server &
+              run:
+                  | # install, run server, run puppeteer script, npm run server & node puppeteer runs two processes at the same time
+                  npm i 
+                  npm run server & 
                   node puppeteer.js -u $USERNAME -p $PASSWORD -h
             - name: upload result
               uses: actions/upload-artifact@v2
