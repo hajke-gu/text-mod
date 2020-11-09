@@ -386,6 +386,9 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
              * Create on click functionallity
              * Select text and marking
              */
+            /*
+             * WINDOWS
+            */
             newDiv.onclick = (e) => {
                 var selectedText = getSelectedText();
                 if (selectedText === "") {
@@ -401,7 +404,18 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                     }
                 }
             };
-
+            /*
+             * OSX
+            */
+            newDiv.addEventListener("mousedown", function (event) {
+                if (event.ctrlKey || event.button == 2) {
+                    if (rows[index].isMarked) {
+                        rows[index].mark("Toggle");
+                    } else {
+                        rows[index].mark("Add");
+                    }
+                }
+            });
             /**
              * Create mouse over functionallity
              * Border around card and tooltip
