@@ -301,11 +301,17 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
                 }
 
                 var headerContent = createHeaderContent(dataValue);
+                let dataValueLength = ("" + dataValue).length;
+                if (dataValueLength <= 4) {
+                    headerContent.style.minWidth = dataValueLength + "ch";
+                    headerContent.style.textOverflow = "unset";
+                }
 
                 if (i !== 0 && firstAnnotationCreated) {
                     //First annotation -> no border
                     headerContent.style.borderLeft = "1px solid";
                     headerContent.style.borderLeftColor = lineDividerColor + "BF";
+                    headerContent.style.paddingLeft = "8px";
                 }
                 header.appendChild(headerContent);
                 firstAnnotationCreated = true;
@@ -578,7 +584,7 @@ function createCopyButton(newDiv, buttonColor) {
     newButton.title = "Copy to Clipboard";
     newButton.setAttribute("id", "img-button");
 
-    //TODO: Create SVG here
+    //Creates SVG
     var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svgNode.setAttributeNS(null, "width", "16");
     svgNode.setAttributeNS(null, "height", "16");
@@ -610,7 +616,6 @@ function createCopyButton(newDiv, buttonColor) {
     };
 
     svgNode.appendChild(svg);
-
     newButton.appendChild(svgNode);
     newDiv.appendChild(newButton);
 }
