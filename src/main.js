@@ -13,6 +13,8 @@
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
     var prevScrollTop = 0;
+    var hasBeenMarked = false;
+
     // Initial state
     /**
      * Create the read function.
@@ -109,12 +111,6 @@ Spotfire.initialize(async (mod) => {
         var annotationEnabled = false;
         if ((await dataView.categoricalAxis("Annotation")) != null) annotationEnabled = true;
 
-        var rerender = true;
-        //var firstEmptyDiv = document.getElementById("firstEmptyDiv");
-        //firstEmptyDiv.style.height = modDiv.scrollTop + "px";
-
-        //modDiv.appendChild(firstEmptyDiv);
-        modDiv.appendChild(renderBottomDiv("firstDiv", modDiv.scrollTop));
         console.log(prevIndex, "after mark previndex");
         var returnedObject = renderTextCards(
             rows,
@@ -127,7 +123,9 @@ Spotfire.initialize(async (mod) => {
             modDiv.scrollTop
         );
         modDiv.appendChild(returnedObject.fragment);
+
         prevIndex = returnedObject.startIndex - cardsToLoad + 1;
+
         var cardHeight = getCardHeight(modDiv.children);
 
         console.log(cardHeight, "cardHeight");
@@ -138,7 +136,6 @@ Spotfire.initialize(async (mod) => {
         /**
          * De-mark on click on something that isn't text card *
          */
-        var modContainer = document.getElementById("text-card-container");
         modDiv.onmousedown = (e) => {
             dataView.clearMarking();
         };
@@ -477,8 +474,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipE
                     if (event.button == 0) {
                         if (!event.ctrlKey) {
                             rows[index].mark("Replace");
+                            hasBeenMarked = true;
                         } else {
                             rows[index].mark("Toggle");
+                            hasBeenMarked = true;
                         }
                     }
                 }
