@@ -163,7 +163,7 @@ Spotfire.initialize(async (mod) => {
             var currentScrollTop = modDiv.scrollTop;
             cardHeight = getCardHeight(modDiv.children);
             if (currentScrollTop > prevScrollTop) {
-                if (currentScrollTop - prevScrollTop > cardHeight) {
+                if (currentScrollTop - prevScrollTop >= modDiv.children[1].getBoundingClientRect().height) {
                     console.log("WERE GOING DOWN TO SINGAPORE");
                     console.log(prevScrollTop);
                     //Check if old data view
@@ -220,7 +220,7 @@ Spotfire.initialize(async (mod) => {
                     if (await dataView.hasExpired()) {
                         return;
                     }
-                    if (prevIndex - cardsToLoad <= 0) {
+                    if (currentScrollTop <= cardHeight) {
                         prevIndex = 0;
                     }
                     if (Math.abs(prevScrollTop - currentScrollTop) > 1000) {
@@ -235,6 +235,7 @@ Spotfire.initialize(async (mod) => {
                             annotationEnabled,
                             currentScrollTop
                         );
+                        console.log(prevIndex, "prev index in percentage up");
                         prevIndex = percentageIndex - 1;
                     } else {
                         console.log(prevIndex, "previndex before render");
@@ -257,6 +258,9 @@ Spotfire.initialize(async (mod) => {
                     modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
                     console.log(returnedObject.startIndex, "start index returned");
                     prevScrollTop = currentScrollTop;
+                    if (returnedObject.startIndex <= cardsToLoad) {
+                        modDiv.removeChild(document.getElementById("top-div"));
+                    }
                 }
             }
         });
