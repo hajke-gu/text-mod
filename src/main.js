@@ -86,6 +86,7 @@ Spotfire.initialize(async (mod) => {
         var rows = await dataView.allRows();
         //modDiv.style.height = rows.length * cardHeight + "px";
         var cardsToLoad = Math.floor(windowSize.height / 60);
+        console.log(cardsToLoad, "cards to load");
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -154,7 +155,7 @@ Spotfire.initialize(async (mod) => {
          * De-mark on click on something that isn't text card *
          */
         var modContainer = document.getElementById("text-card-container");
-        modContainer.onmousedown = (e) => {
+        modDiv.onmousedown = (e) => {
             dataView.clearMarking();
         };
 
@@ -181,7 +182,6 @@ Spotfire.initialize(async (mod) => {
         modDiv.addEventListener("scroll", async function (e) {
             var currentScrollTop = modDiv.scrollTop;
             cardHeight = getCardHeight(modDiv.children);
-
             if (currentScrollTop > prevScrollTop) {
                 if (currentScrollTop - prevScrollTop > cardHeight) {
                     console.log("WERE GOING DOWN TO SINGAPORE");
@@ -195,7 +195,6 @@ Spotfire.initialize(async (mod) => {
                     }
                     if (Math.abs(prevScrollTop - currentScrollTop) > 1000) {
                         var percentageIndex = Math.round(currentScrollTop / cardHeight);
-
                         var returnedObject = renderTextCards(
                             rows,
                             percentageIndex,
@@ -220,7 +219,6 @@ Spotfire.initialize(async (mod) => {
                         );
                     }
                     modDiv.appendChild(returnedObject.fragment);
-
                     var nrOfCards = rows.length - cardsToLoad;
                     console.log(nrOfCards, "nr of cards");
                     console.log(cardHeight, "cardheight");
@@ -228,16 +226,13 @@ Spotfire.initialize(async (mod) => {
                     console.log(bottomHeight, "bottomheight");
                     var totalBottomHeight = bottomHeight - currentScrollTop;
                     modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
-
                     prevIndex = returnedObject.startIndex - cardsToLoad + 1;
                     console.log(returnedObject.startIndex, "start index");
                     console.log(totalBottomHeight, "bottomheight ");
-
                     prevScrollTop = currentScrollTop;
                     if (returnedObject.startIndex - 1 >= rows.length) {
                         modDiv.removeChild(document.getElementById("lastEmptyDiv"));
                     }
-
                     console.log(prevIndex, "previndex in down");
                 }
             } else {
@@ -245,7 +240,6 @@ Spotfire.initialize(async (mod) => {
                     if (await dataView.hasExpired()) {
                         return;
                     }
-
                     if (prevIndex - cardsToLoad <= 0) {
                         prevIndex = 0;
                     }
@@ -276,10 +270,8 @@ Spotfire.initialize(async (mod) => {
                         );
                         prevIndex = prevIndex - 1;
                     }
-
                     modDiv.appendChild(returnedObject.fragment);
                     var nrOfCards = rows.length - cardsToLoad;
-
                     var bottomHeight = nrOfCards * cardHeight;
                     var totalBottomHeight = bottomHeight - currentScrollTop;
                     modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
@@ -287,10 +279,7 @@ Spotfire.initialize(async (mod) => {
                     prevScrollTop = currentScrollTop;
                 }
             }
-
-            return 1;
         });
-
         context.signalRenderComplete();
     }
 });
@@ -373,7 +362,6 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
  * @param {*} rows All the rows from the dataset
  * @param {*} prevIndex Index of the previously rendered text card
  * @param {*} cardsToLoad Number of cards to render at one time
- * @param {*} rerender Boolean to check if the text cards needs to be rerendered
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
