@@ -14,9 +14,6 @@ Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
     var prevScrollTop = 0;
     // Initial state
-    var lst = 0;
-    // orginal height of bottomdiv
-    var orgBtmDivHeight;
     /**
      * Create the read function.
      */
@@ -137,20 +134,7 @@ Spotfire.initialize(async (mod) => {
         modDiv.appendChild(
             renderBottomDiv("lastEmptyDiv", (rows.length - cardsToLoad) * cardHeight - modDiv.scrollTop)
         );
-        /*
-                // create top whitespace div
-                var el = document.createElement("div");
-                el.style.height = "1px";
-                el.setAttribute("id", "topDiv");
-                modDiv.insertBefore(el, modDiv.firstChild);
-        
-                // create bottom whitespace div
-                var el2 = document.createElement("div");
-                orgBtmDivHeight = rows.length * 100;
-                el2.setAttribute("id", "bottomDiv");
-                el2.style.height = orgBtmDivHeight + "px";
-                modDiv.appendChild(el2);
-        */
+
         /**
          * De-mark on click on something that isn't text card *
          */
