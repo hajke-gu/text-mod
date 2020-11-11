@@ -2,24 +2,24 @@
 
 name: CI
 
-on: [push]
+on:
+    push:
+        # Sequence of patterns matched against refs/heads
+        branches:
+            # Push events on main branch
+            - main
 
 jobs:
     build:
-        name: compilation test
+        name: depoloy-to-labs
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            - name: run test
+            - name: run deploy
               env:
                   USERNAME: ${{ secrets.USERNAME }}
                   PASSWORD: ${{ secrets.PASSWORD }}
               run: | # install, run server, run puppeteer script
-                  npm i 
-                  npm run server & 
-                  node puppeteer.js -u $USERNAME -p $PASSWORD -h
-            - name: upload result
-              uses: actions/upload-artifact@v2
-              with:
-                  name: result
-                  path: result.pdf
+                  npm i
+                  npm run server &
+                  node deployer.js -u $USERNAME -p $PASSWORD -h

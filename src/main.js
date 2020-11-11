@@ -11,8 +11,12 @@
  * @param {Spotfire.Mod} mod - mod api
  */
 Spotfire.initialize(async (mod) => {
-    let prevIndex = 0;
+    var prevIndex = 0;
     var prevScrollTop = 0;
+    // Initial state
+    var lst = 0;
+    // orginal height of bottomdiv
+    var orgBtmDivHeight;
     /**
      * Create the read function.
      */
@@ -118,7 +122,6 @@ Spotfire.initialize(async (mod) => {
             rows,
             prevIndex,
             cardsToLoad,
-            rerender, // When rerendering we always want to render everything
             windowSize,
             mod,
             tooltip,
@@ -133,12 +136,25 @@ Spotfire.initialize(async (mod) => {
         modDiv.appendChild(
             renderBottomDiv("lastEmptyDiv", (rows.length - cardsToLoad) * cardHeight - modDiv.scrollTop)
         );
-
+        /*
+                // create top whitespace div
+                var el = document.createElement("div");
+                el.style.height = "1px";
+                el.setAttribute("id", "topDiv");
+                modDiv.insertBefore(el, modDiv.firstChild);
+        
+                // create bottom whitespace div
+                var el2 = document.createElement("div");
+                orgBtmDivHeight = rows.length * 100;
+                el2.setAttribute("id", "bottomDiv");
+                el2.style.height = orgBtmDivHeight + "px";
+                modDiv.appendChild(el2);
+        */
         /**
          * De-mark on click on something that isn't text card *
          */
-
-        modDiv.onclick = () => {
+        var modContainer = document.getElementById("text-card-container");
+        modContainer.onmousedown = (e) => {
             dataView.clearMarking();
         };
 
@@ -184,7 +200,6 @@ Spotfire.initialize(async (mod) => {
                             rows,
                             percentageIndex,
                             cardsToLoad,
-                            rerender,
                             windowSize,
                             mod,
                             tooltip,
@@ -197,7 +212,6 @@ Spotfire.initialize(async (mod) => {
                             rows,
                             prevIndex,
                             cardsToLoad,
-                            rerender,
                             windowSize,
                             mod,
                             tooltip,
@@ -241,7 +255,6 @@ Spotfire.initialize(async (mod) => {
                             rows,
                             percentageIndex,
                             cardsToLoad,
-                            rerender,
                             windowSize,
                             mod,
                             tooltip,
@@ -255,7 +268,6 @@ Spotfire.initialize(async (mod) => {
                             rows,
                             prevIndex,
                             cardsToLoad,
-                            rerender,
                             windowSize,
                             mod,
                             tooltip,
@@ -275,6 +287,8 @@ Spotfire.initialize(async (mod) => {
                     prevScrollTop = currentScrollTop;
                 }
             }
+
+            return 1;
         });
 
         context.signalRenderComplete();
@@ -363,20 +377,9 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
-function renderTextCards(
-    rows,
-    prevIndex,
-    cardsToLoad,
-    rerender,
-    windowSize,
-    mod,
-    tooltipEnabled,
-    annotationEnabled,
-    scrollTop
-) {
-    if (rerender) {
-        document.querySelector("#text-card-container").innerHTML = "";
-    }
+function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipEnabled, annotationEnabled, scrollTop) {
+    document.querySelector("#text-card-container").innerHTML = "";
+
     var fragment = document.createDocumentFragment();
     var topDiv = document.createElement("div");
     topDiv.setAttribute("id", "top-div");
@@ -492,12 +495,28 @@ function renderTextCards(
             newDiv.style.boxShadow = "0 0 0 1px " + scalesStyling.lineColor;
             newDiv.style.borderLeftColor = color;
 
-            markTextCard(rows[index], newDiv, index);
+            /**
+             * Create on click functionallity
+             * Select text and marking
+             */
+            newDiv.onmousedown = (event) => {
+                var selectedText = getSelectedText();
+                if (selectedText === "") {
+                    if (event.button == 0) {
+                        if (!event.ctrlKey) {
+                            rows[index].mark("Replace");
+                        } else {
+                            rows[index].mark("Toggle");
+                        }
+                    }
+                }
+                event.stopPropagation();
+            };
             /**
              * Create mouse over functionallity
              * Border around card and tooltip
              */
-            configureMouseOver(divObject, borderDiv, fontStyling, rows[index], tooltipEnabled, mod);
+            configureMouseOver(divObject, borderDiv, fontStyling, rows[index], tooltipEnabled, mod, annotationEnabled);
 
             borderDiv.appendChild(newDiv);
             fragment.appendChild(borderDiv);
@@ -740,6 +759,12 @@ function createTooltipString(specificRow, tooltipContent) {
             //Handle date
             dataValue = formatDate(new Date(Number(dataValue)));
 
+        // truncate to a max length of 100 characters per tooltip row
+        var maxLength = 100;
+        if (typeof dataValue === "string" && dataValue.length > maxLength) {
+            dataValue = truncateString(dataValue, maxLength);
+        }
+
         var tooltipObj = {
             columnName: columnName,
             dataValue: dataValue
@@ -788,11 +813,10 @@ function formatDate(date) {
     return dateFormat;
 }
 
-function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod) {
+function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod, annotationEnabled) {
     /**
      * Mouse over for textCardDiv
      */
-
     divObject.textCardDiv.onmouseenter = (e) => {
         borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
         createCopyButton(divObject.textCardDiv, fontStyling.fontColor);
@@ -822,14 +846,21 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
     /**
      * Mouse over for header
      */
-    divObject.header.onmouseenter = (e) => {
-        var tooltipString = createTooltipString(row, "Annotation");
-        mod.controls.tooltip.show(tooltipString);
-    };
+    if (annotationEnabled) {
+        divObject.header.onmouseenter = (e) => {
+            var tooltipString = createTooltipString(row, "Annotation");
+            mod.controls.tooltip.show(tooltipString);
+        };
 
-    divObject.header.onmouseleave = (e) => {
-        mod.controls.tooltip.hide();
-    };
+        divObject.header.onmouseleave = (e) => {
+            mod.controls.tooltip.hide();
+        };
+    }
+}
+
+function truncateString(dataValue, maxLength) {
+    // Slice at maxLength minus 3 to really return maxLength characters
+    return dataValue.slice(0, maxLength - 3) + "...";
 }
 
 function markTextCard(row, div, index) {

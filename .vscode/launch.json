@@ -12,6 +12,26 @@
             "port": 8066,
             "sourceMaps": true,
             "webRoot": "${workspaceRoot}/files"
+        },
+        {
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/puppeteer.js",
+            "args": ["-u", "${input:username}", "-p", "${input:password}"],
+            "request": "launch",
+            "skipFiles": ["<node_internals>/**"],
+            "type": "pwa-node"
+        }
+    ],
+    "inputs": [
+        {
+            "description": "User name",
+            "id": "username",
+            "type": "promptString"
+        },
+        {
+            "description": "Password",
+            "id": "password",
+            "type": "promptString"
         }
     ]
 }

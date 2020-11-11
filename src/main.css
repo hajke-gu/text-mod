@@ -55,6 +55,7 @@ body {
     white-space: nowrap;
     text-overflow: ellipsis;
     font-weight: bold;
+    font-style: normal;
 
     margin-top: auto;
     margin-bottom: auto;
@@ -73,7 +74,7 @@ body {
     margin-top: 8px;
     margin-bottom: 8px;
     padding-right: 24px;
-    overflow-y: visible;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
