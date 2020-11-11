@@ -12,10 +12,10 @@
  */
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
+    var prevScrollTop = 0;
+    var hasBeenMarked = false;
+
     // Initial state
-    var lst = 0;
-    // orginal height of bottomdiv
-    var orgBtmDivHeight;
     /**
      * Create the read function.
      */
@@ -62,7 +62,6 @@ Spotfire.initialize(async (mod) => {
         /*
          * NON-GLOBALS
          */
-        const cardsToLoad = 100;
 
         /**
          * Check the data view for errors
@@ -84,7 +83,8 @@ Spotfire.initialize(async (mod) => {
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-
+        var cardsToLoad = Math.floor(windowSize.height / 60);
+        console.log(cardsToLoad, "cards to load");
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -110,40 +110,32 @@ Spotfire.initialize(async (mod) => {
         var annotationEnabled = false;
         if ((await dataView.categoricalAxis("Annotation")) != null) annotationEnabled = true;
 
-        var rerender = true;
-
+        console.log(prevIndex, "after mark previndex");
         var returnedObject = renderTextCards(
             rows,
-            prevIndex, // When rerendering we always want to render everything
-            10,
-            rerender,
+            prevIndex,
+            cardsToLoad,
             windowSize,
             mod,
             tooltip,
-            annotationEnabled
+            annotationEnabled,
+            modDiv.scrollTop
         );
-
         modDiv.appendChild(returnedObject.fragment);
-        prevIndex = returnedObject.startIndex;
 
-        // create top whitespace div
-        var el = document.createElement("div");
-        el.style.height = "1px";
-        el.setAttribute("id", "topDiv");
-        modDiv.insertBefore(el, modDiv.firstChild);
+        prevIndex = returnedObject.startIndex - cardsToLoad;
 
-        // create bottom whitespace div
-        var el2 = document.createElement("div");
-        orgBtmDivHeight = rows.length * 100;
-        el2.setAttribute("id", "bottomDiv");
-        el2.style.height = orgBtmDivHeight + "px";
-        modDiv.appendChild(el2);
+        var cardHeight = getCardHeight(modDiv.children);
+
+        console.log(cardHeight, "cardHeight");
+        modDiv.appendChild(
+            renderBottomDiv("lastEmptyDiv", (rows.length - cardsToLoad) * cardHeight - modDiv.scrollTop)
+        );
 
         /**
          * De-mark on click on something that isn't text card *
          */
-        var modContainer = document.getElementById("text-card-container");
-        modContainer.onmousedown = (e) => {
+        modDiv.onmousedown = (e) => {
             dataView.clearMarking();
         };
 
@@ -155,10 +147,10 @@ Spotfire.initialize(async (mod) => {
                 selectedText = "";
             }
             if (e.key === "ArrowUp") {
-                modContainer.scrollBy(0, -100);
+                modDiv.scrollBy(0, -100);
             }
             if (e.key === "ArrowDown") {
-                modContainer.scrollBy(0, 100);
+                modDiv.scrollBy(0, 100);
             } else {
                 //console.log(e.key, " pressed");
             }
@@ -168,53 +160,106 @@ Spotfire.initialize(async (mod) => {
          * Scroll Event Listener
          */
         modDiv.addEventListener("scroll", async function (e) {
-            console.log(lst);
-            var st = modDiv.scrollTop;
-            if (st > lst) {
-                console.log("down", lst);
-                //change height of top div
-                var topDiv = document.getElementById("topDiv");
-                var newHeight = modDiv.scrollTop;
-                console.log(topDiv.clientHeight);
-                topDiv.style.height = newHeight + "px";
-                //change height of bottom div
-                //var btmDiv = document.getElementById("btmDiv");
-                //newHeight = orgBtmDivHeight - modDiv.scrollTop;
-                //btmDiv.style.height = newHeight + "px";
-            } else {
-                console.log("up", lst);
-            }
-            lst = st;
-
-            /*
-            if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
-                //Check if old data view
-                if (await dataView.hasExpired()) {
-                    return;
+            var currentScrollTop = modDiv.scrollTop;
+            cardHeight = getCardHeight(modDiv.children);
+            if (currentScrollTop > prevScrollTop) {
+                if (currentScrollTop - prevScrollTop > cardHeight) {
+                    console.log("WERE GOING DOWN TO SINGAPORE");
+                    console.log(prevScrollTop);
+                    //Check if old data view
+                    if (await dataView.hasExpired()) {
+                        return;
+                    }
+                    if (prevIndex + cardsToLoad - 1 >= rows.length) {
+                        return;
+                    }
+                    if (Math.abs(prevScrollTop - currentScrollTop) > 1000) {
+                        var percentageIndex = Math.round(currentScrollTop / cardHeight);
+                        var returnedObject = renderTextCards(
+                            rows,
+                            percentageIndex,
+                            cardsToLoad,
+                            windowSize,
+                            mod,
+                            tooltip,
+                            annotationEnabled,
+                            currentScrollTop
+                        );
+                    } else {
+                        console.log(prevIndex, "previndex before render");
+                        var returnedObject = renderTextCards(
+                            rows,
+                            prevIndex,
+                            cardsToLoad,
+                            windowSize,
+                            mod,
+                            tooltip,
+                            annotationEnabled,
+                            currentScrollTop
+                        );
+                    }
+                    modDiv.appendChild(returnedObject.fragment);
+                    var nrOfCards = rows.length - cardsToLoad;
+                    console.log(nrOfCards, "nr of cards");
+                    console.log(cardHeight, "cardheight");
+                    var bottomHeight = nrOfCards * cardHeight;
+                    console.log(bottomHeight, "bottomheight");
+                    var totalBottomHeight = bottomHeight - currentScrollTop;
+                    modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
+                    prevIndex = returnedObject.startIndex - cardsToLoad + 1;
+                    console.log(returnedObject.startIndex, "start index");
+                    console.log(totalBottomHeight, "bottomheight ");
+                    prevScrollTop = currentScrollTop;
+                    if (returnedObject.startIndex - 1 >= rows.length) {
+                        modDiv.removeChild(document.getElementById("lastEmptyDiv"));
+                    }
+                    console.log(prevIndex, "previndex in down");
                 }
-                console.log(modDiv.scrollTop);
-                var rerender = false;
-
-                var returnedObject = renderTextCards(
-                    rows,
-                    prevIndex,
-                    cardsToLoad,
-                    rerender,
-                    windowSize,
-                    mod,
-                    tooltip,
-                    annotationEnabled
-                );
-                modDiv.appendChild(returnedObject.fragment);
-                prevIndex = returnedObject.startIndex;
+            } else {
+                if (prevScrollTop - currentScrollTop >= cardHeight) {
+                    if (await dataView.hasExpired()) {
+                        return;
+                    }
+                    if (prevIndex - cardsToLoad <= 0) {
+                        prevIndex = 0;
+                    }
+                    if (Math.abs(prevScrollTop - currentScrollTop) > 1000) {
+                        var percentageIndex = Math.round(currentScrollTop / cardHeight);
+                        var returnedObject = renderTextCards(
+                            rows,
+                            percentageIndex,
+                            cardsToLoad,
+                            windowSize,
+                            mod,
+                            tooltip,
+                            annotationEnabled,
+                            currentScrollTop
+                        );
+                        prevIndex = percentageIndex - 1;
+                    } else {
+                        console.log(prevIndex, "previndex before render");
+                        var returnedObject = renderTextCards(
+                            rows,
+                            prevIndex,
+                            cardsToLoad,
+                            windowSize,
+                            mod,
+                            tooltip,
+                            annotationEnabled,
+                            currentScrollTop
+                        );
+                        prevIndex = prevIndex - 1;
+                    }
+                    modDiv.appendChild(returnedObject.fragment);
+                    var nrOfCards = rows.length - cardsToLoad;
+                    var bottomHeight = nrOfCards * cardHeight;
+                    var totalBottomHeight = bottomHeight - currentScrollTop;
+                    modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
+                    console.log(returnedObject.startIndex, "start index returned");
+                    prevScrollTop = currentScrollTop;
+                }
             }
-            */
-            return 1;
         });
-
-        /*
-         * Signal that the mod is ready for export.
-         */
         context.signalRenderComplete();
     }
 });
@@ -297,25 +342,23 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
  * @param {*} rows All the rows from the dataset
  * @param {*} prevIndex Index of the previously rendered text card
  * @param {*} cardsToLoad Number of cards to render at one time
- * @param {*} rerender Boolean to check if the text cards needs to be rerendered
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled, annotationEnabled) {
-    if (rerender) {
-        document.querySelector("#text-card-container").innerHTML = "";
-    }
-    var fragment = document.createDocumentFragment();
+function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipEnabled, annotationEnabled, scrollTop) {
+    document.querySelector("#text-card-container").innerHTML = "";
 
-    var whatToLoad = prevIndex + cardsToLoad;
+    var fragment = document.createDocumentFragment();
+    var topDiv = document.createElement("div");
+    topDiv.setAttribute("id", "top-div");
+    topDiv.style.height = scrollTop + "px";
+    fragment.appendChild(topDiv);
+
+    var whatToLoad = cardsToLoad;
     var startIndex = prevIndex;
-    if (rerender) {
-        whatToLoad = prevIndex;
-        startIndex = 0;
-        if (prevIndex == 0) {
-            whatToLoad = cardsToLoad;
-        }
-    }
+    console.log(prevIndex, "prevIndex");
+    console.log(whatToLoad, "whatToLoad");
+    console.log(startIndex, "startIndex");
 
     // Get and group styling attributes
     const styling = mod.getRenderContext().styling;
@@ -342,25 +385,25 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     styleElement.appendChild(
         document.createTextNode(
             "::-webkit-scrollbar {width: 8px;} ::-webkit-scrollbar-track {border-radius: 16px; background-color: " +
-            scalesStyling.lineColor +
-            "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
-            fontStyling.fontColor +
-            "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
-            fontStyling.fontColor +
-            "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
-            fontStyling.fontColor +
-            "BF;}"
+                scalesStyling.lineColor +
+                "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
+                fontStyling.fontColor +
+                "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
+                fontStyling.fontColor +
+                "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
+                fontStyling.fontColor +
+                "BF;}"
         )
     );
     document.getElementsByTagName("head")[0].appendChild(styleElement);
 
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
-
+    let index = startIndex;
     /**
      * Create all text cards
      */
-    for (let index = startIndex; index < whatToLoad; index++) {
+    for (; index < prevIndex + whatToLoad; index++) {
         if (index >= rows.length) {
             break;
         }
@@ -424,20 +467,8 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
              * Create on click functionallity
              * Select text and marking
              */
-            newDiv.onmousedown = (event) => {
-                var selectedText = getSelectedText();
-                if (selectedText === "") {
-                    if (event.button == 0) {
-                        if (!event.ctrlKey) {
-                            rows[index].mark("Replace");
-                        }
-                        else {
-                            rows[index].mark("Toggle");
-                        }
-                    }
-                }
-                event.stopPropagation();
-            };
+            markTextCard(rows[index], newDiv, index);
+
             /**
              * Create mouse over functionallity
              * Border around card and tooltip
@@ -448,10 +479,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             fragment.appendChild(borderDiv);
         }
     }
-    if (!rerender || prevIndex === 0) {
-        prevIndex = prevIndex + cardsToLoad;
-    }
-
+    prevIndex = index;
     var returnObject = { fragment, startIndex: prevIndex };
     return returnObject;
 }
@@ -573,6 +601,7 @@ function createCopyButton(newDiv, buttonColor) {
         svg.setAttributeNS(null, "fill", buttonColor + "CC");
         var text = newDiv.querySelector("#text-card-paragraph").textContent;
         textToClipboard(text);
+        console.log(text);
         e.stopPropagation();
     };
     // 60% opacity of font color
@@ -697,16 +726,30 @@ function createTooltipString(specificRow, tooltipContent) {
             columnName: columnName,
             dataValue: dataValue
         };
-
-        if (dataValue !== null) {
-            // Remove empty data values
-            tooltipCollection.push(tooltipObj);
-            tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
-        }
+        tooltipCollection.push(tooltipObj);
+        tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
     }
     return tooltipString;
 }
 
+function renderBottomDiv(name, height) {
+    var bottomDiv = document.createElement("div");
+    bottomDiv.setAttribute("id", name);
+    bottomDiv.style.height = height + "px";
+    console.log(bottomDiv);
+    return bottomDiv;
+}
+
+function getCardHeight(childrenArray) {
+    var index = 1;
+    var cardHeight = 0;
+    for (index; index < childrenArray.length - 1; index++) {
+        cardHeight += childrenArray[index].getBoundingClientRect().height;
+    }
+    cardHeight = cardHeight / index - 1;
+
+    return 100;
+}
 /**
  * Format date in YYYY-MM-DD
  *
@@ -775,4 +818,24 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
 function truncateString(dataValue, maxLength) {
     // Slice at maxLength minus 3 to really return maxLength characters
     return dataValue.slice(0, maxLength - 3) + "...";
+}
+
+function markTextCard(row, div, index) {
+    /**
+     * Create on click functionallity
+     * Select text and marking
+     */
+    div.onmousedown = (e) => {
+        var selectedText = getSelectedText();
+        if (selectedText === "") {
+            e.stopPropagation();
+            if (e.button == 0) {
+                if (!e.ctrlKey) {
+                    row.mark("Replace");
+                } else {
+                    row.mark("Toggle");
+                }
+            }
+        }
+    };
 }
