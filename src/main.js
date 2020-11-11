@@ -303,8 +303,9 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
                 var headerContent = createHeaderContent(dataValue);
                 let dataValueLength = ("" + dataValue).length;
                 // annotations with 4 or less characters get never truncated
-                if (dataValueLength <= 4) {
+                if (dataValueLength < 4) {
                     headerContent.style.minWidth = dataValueLength + "ch";
+                    headerContent.style.textOverflow = "unset";
                 }
 
                 if (i !== 0 && firstAnnotationCreated) {
