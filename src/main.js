@@ -83,7 +83,6 @@ Spotfire.initialize(async (mod) => {
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-        //modDiv.style.height = rows.length * cardHeight + "px";
         var cardsToLoad = Math.floor(windowSize.height / 60);
         console.log(cardsToLoad, "cards to load");
         if (rows == null) {
@@ -124,7 +123,7 @@ Spotfire.initialize(async (mod) => {
         );
         modDiv.appendChild(returnedObject.fragment);
 
-        prevIndex = returnedObject.startIndex - cardsToLoad + 1;
+        prevIndex = returnedObject.startIndex - cardsToLoad;
 
         var cardHeight = getCardHeight(modDiv.children);
 
@@ -468,21 +467,8 @@ function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipE
              * Create on click functionallity
              * Select text and marking
              */
-            newDiv.onmousedown = (event) => {
-                var selectedText = getSelectedText();
-                if (selectedText === "") {
-                    if (event.button == 0) {
-                        if (!event.ctrlKey) {
-                            rows[index].mark("Replace");
-                            hasBeenMarked = true;
-                        } else {
-                            rows[index].mark("Toggle");
-                            hasBeenMarked = true;
-                        }
-                    }
-                }
-                event.stopPropagation();
-            };
+            markTextCard(rows[index], newDiv, index);
+
             /**
              * Create mouse over functionallity
              * Border around card and tooltip
@@ -839,13 +825,17 @@ function markTextCard(row, div, index) {
      * Create on click functionallity
      * Select text and marking
      */
-    div.onclick = (e) => {
+    div.onmousedown = (e) => {
         var selectedText = getSelectedText();
         if (selectedText === "") {
             e.stopPropagation();
-            console.log(index, "MAGIC");
-            this.prevIndex = index - 1;
-            row.mark("Toggle");
+            if (e.button == 0) {
+                if (!e.ctrlKey) {
+                    row.mark("Replace");
+                } else {
+                    row.mark("Toggle");
+                }
+            }
         }
     };
 }
