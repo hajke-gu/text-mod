@@ -83,7 +83,7 @@ Spotfire.initialize(async (mod) => {
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-        var cardsToLoad = Math.floor(windowSize.height / 60);
+        var cardsToLoad = Math.floor(windowSize.height / 30);
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -198,8 +198,9 @@ Spotfire.initialize(async (mod) => {
                     modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
                     prevIndex = returnedObject.startIndex - cardsToLoad + 1;
                     prevScrollTop = currentScrollTop;
-                    if (returnedObject.startIndex - 1 >= rows.length) {
-                        modDiv.removeChild(document.getElementById("lastEmptyDiv"));
+                    console.log(returnedObject.startIndex);
+                    if (returnedObject.startIndex >= rows.length) {
+                        document.getElementById("lastEmptyDiv").style.height = "0px";
                     }
                 }
             } else {
