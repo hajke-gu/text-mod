@@ -109,7 +109,6 @@ Spotfire.initialize(async (mod) => {
         var annotationEnabled = false;
         if ((await dataView.categoricalAxis("Annotation")) != null) annotationEnabled = true;
 
-        console.log(prevIndex, "after mark previndex");
         var returnedObject = renderTextCards(
             rows,
             prevIndex,
