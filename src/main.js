@@ -84,7 +84,6 @@ Spotfire.initialize(async (mod) => {
          */
         var rows = await dataView.allRows();
         var cardsToLoad = Math.floor(windowSize.height / 60);
-        console.log(cardsToLoad, "cards to load");
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -127,7 +126,6 @@ Spotfire.initialize(async (mod) => {
 
         var cardHeight = getCardHeight(modDiv.children);
 
-        console.log(cardHeight, "cardHeight");
         modDiv.appendChild(
             renderBottomDiv("lastEmptyDiv", (rows.length - cardsToLoad) * cardHeight - modDiv.scrollTop)
         );
@@ -140,7 +138,6 @@ Spotfire.initialize(async (mod) => {
         };
 
         document.onkeydown = (e) => {
-            //console.log(e.key.toString());
             var selectedText = getSelectedText();
             if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
                 textToClipboard(selectedText);
@@ -152,7 +149,6 @@ Spotfire.initialize(async (mod) => {
             if (e.key === "ArrowDown") {
                 modDiv.scrollBy(0, 100);
             } else {
-                //console.log(e.key, " pressed");
             }
         };
 
@@ -164,8 +160,6 @@ Spotfire.initialize(async (mod) => {
             cardHeight = getCardHeight(modDiv.children);
             if (currentScrollTop > prevScrollTop) {
                 if (currentScrollTop - prevScrollTop >= modDiv.children[1].getBoundingClientRect().height) {
-                    console.log("WERE GOING DOWN TO SINGAPORE");
-                    console.log(prevScrollTop);
                     //Check if old data view
                     if (await dataView.hasExpired()) {
                         return;
@@ -186,7 +180,6 @@ Spotfire.initialize(async (mod) => {
                             currentScrollTop
                         );
                     } else {
-                        console.log(prevIndex, "previndex before render");
                         var returnedObject = renderTextCards(
                             rows,
                             prevIndex,
@@ -200,20 +193,15 @@ Spotfire.initialize(async (mod) => {
                     }
                     modDiv.appendChild(returnedObject.fragment);
                     var nrOfCards = rows.length - cardsToLoad;
-                    console.log(nrOfCards, "nr of cards");
-                    console.log(cardHeight, "cardheight");
+
                     var bottomHeight = nrOfCards * cardHeight;
-                    console.log(bottomHeight, "bottomheight");
                     var totalBottomHeight = bottomHeight - currentScrollTop;
                     modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
                     prevIndex = returnedObject.startIndex - cardsToLoad + 1;
-                    console.log(returnedObject.startIndex, "start index");
-                    console.log(totalBottomHeight, "bottomheight ");
                     prevScrollTop = currentScrollTop;
                     if (returnedObject.startIndex - 1 >= rows.length) {
                         modDiv.removeChild(document.getElementById("lastEmptyDiv"));
                     }
-                    console.log(prevIndex, "previndex in down");
                 }
             } else {
                 if (prevScrollTop - currentScrollTop >= cardHeight) {
@@ -221,7 +209,6 @@ Spotfire.initialize(async (mod) => {
                         return;
                     }
                     if (prevIndex < 0) {
-                        console.log("inside second if");
                         var topDiv = document.getElementById("top-div");
                         if (topDiv != undefined) {
                             topDiv.style.height = 0 + "px";
@@ -231,12 +218,10 @@ Spotfire.initialize(async (mod) => {
                     }
 
                     if (currentScrollTop <= cardHeight) {
-                        console.log("inside third if");
                         prevIndex = 0;
                     }
                     if (Math.abs(prevScrollTop - currentScrollTop) > 500) {
                         var percentageIndex = Math.round(currentScrollTop / cardHeight);
-                        console.log(percentageIndex, "percentage index jump");
                         var returnedObject = renderTextCards(
                             rows,
                             percentageIndex,
@@ -249,7 +234,6 @@ Spotfire.initialize(async (mod) => {
                         );
                         prevIndex = percentageIndex - 1;
                     } else {
-                        console.log(prevIndex, "previndex before render in else");
                         var returnedObject = renderTextCards(
                             rows,
                             prevIndex,
@@ -268,7 +252,6 @@ Spotfire.initialize(async (mod) => {
                     var bottomHeight = nrOfCards * cardHeight;
                     var totalBottomHeight = bottomHeight - currentScrollTop;
                     modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
-                    //console.log(returnedObject.startIndex, "start index returned");
                     prevScrollTop = currentScrollTop;
                     if (returnedObject.startIndex <= cardsToLoad) {
                         document.getElementById("top-div").style.height = "0px";
@@ -379,9 +362,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipE
 
     var whatToLoad = cardsToLoad;
     var startIndex = prevIndex;
-    console.log(prevIndex, "prevIndex");
-    console.log(whatToLoad, "whatToLoad");
-    console.log(startIndex, "startIndex");
 
     // Get and group styling attributes
     const styling = mod.getRenderContext().styling;
@@ -582,7 +562,6 @@ function textToClipboard(text) {
     var temporaryCopyElement = document.createElement("textarea");
     document.body.appendChild(temporaryCopyElement);
     temporaryCopyElement.value = text;
-    //console.log(text);
     temporaryCopyElement.select();
     document.execCommand("copy");
     document.body.removeChild(temporaryCopyElement);
@@ -620,7 +599,6 @@ function createCopyButton(newDiv, buttonColor) {
         svg.setAttributeNS(null, "fill", buttonColor);
         var text = newDiv.querySelector("#text-card-paragraph").textContent;
         textToClipboard(text);
-        console.log(text);
         e.stopPropagation();
     };
     // 80 % opacity of font color
