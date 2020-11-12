@@ -83,7 +83,7 @@ Spotfire.initialize(async (mod) => {
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-        var cardsToLoad = Math.floor(windowSize.height / 32);
+        var cardsToLoad = Math.floor(windowSize.height / 60);
         console.log(cardsToLoad, "cards to load");
         if (rows == null) {
             // User interaction caused the data view to expire.
