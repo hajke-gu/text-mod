@@ -220,11 +220,23 @@ Spotfire.initialize(async (mod) => {
                     if (await dataView.hasExpired()) {
                         return;
                     }
+                    if (prevIndex < 0) {
+                        console.log("inside second if");
+                        var topDiv = document.getElementById("top-div");
+                        if (topDiv != undefined) {
+                            topDiv.style.height = 0 + "px";
+                        }
+                        prevIndex = 0;
+                        modDiv.scrollTo(0, 0);
+                    }
+
                     if (currentScrollTop <= cardHeight) {
+                        console.log("inside third if");
                         prevIndex = 0;
                     }
-                    if (Math.abs(prevScrollTop - currentScrollTop) > 1000) {
+                    if (Math.abs(prevScrollTop - currentScrollTop) > 500) {
                         var percentageIndex = Math.round(currentScrollTop / cardHeight);
+                        console.log(percentageIndex, "percentage index jump");
                         var returnedObject = renderTextCards(
                             rows,
                             percentageIndex,
@@ -235,10 +247,9 @@ Spotfire.initialize(async (mod) => {
                             annotationEnabled,
                             currentScrollTop
                         );
-                        console.log(prevIndex, "prev index in percentage up");
                         prevIndex = percentageIndex - 1;
                     } else {
-                        console.log(prevIndex, "previndex before render");
+                        console.log(prevIndex, "previndex before render in else");
                         var returnedObject = renderTextCards(
                             rows,
                             prevIndex,
@@ -249,17 +260,18 @@ Spotfire.initialize(async (mod) => {
                             annotationEnabled,
                             currentScrollTop
                         );
-                        prevIndex = prevIndex - 1;
+
+                        prevIndex = returnedObject.startIndex - cardsToLoad - 1;
                     }
                     modDiv.appendChild(returnedObject.fragment);
                     var nrOfCards = rows.length - cardsToLoad;
                     var bottomHeight = nrOfCards * cardHeight;
                     var totalBottomHeight = bottomHeight - currentScrollTop;
                     modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
-                    console.log(returnedObject.startIndex, "start index returned");
+                    //console.log(returnedObject.startIndex, "start index returned");
                     prevScrollTop = currentScrollTop;
                     if (returnedObject.startIndex <= cardsToLoad) {
-                        modDiv.removeChild(document.getElementById("top-div"));
+                        document.getElementById("top-div").style.height = "0px";
                     }
                 }
             }
@@ -740,7 +752,6 @@ function renderBottomDiv(name, height) {
     var bottomDiv = document.createElement("div");
     bottomDiv.setAttribute("id", name);
     bottomDiv.style.height = height + "px";
-    console.log(bottomDiv);
     return bottomDiv;
 }
 
