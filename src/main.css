@@ -43,17 +43,20 @@ body {
     height: 32px;
     display: flex;
     justify-content: flex-start;
-    padding-right: 16px;
+    padding-right: 24px;
+    padding-left: 16px;
 }
 
 .annotation-content {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-right: 8px;
 
     /* limits annotations content to text card width, adds ... if too long */
     overflow: hidden;
     white-space: nowrap;
+    /* truncates annotations that too long */
     text-overflow: ellipsis;
+    /* annotations <= 4 characters will not be truncated */
+    min-width: 4ch;
     font-weight: bold;
     font-style: normal;
 
