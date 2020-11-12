@@ -1,8 +1,13 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: deploy
 
-on: [push]
+on:
+    push:
+        # Sequence of patterns matched against refs/heads
+        branches:
+            # Push events on main branch
+            - master
 
 jobs:
     build:
