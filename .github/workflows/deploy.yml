@@ -16,6 +16,5 @@ jobs:
                   PASSWORD: ${{ secrets.PASSWORD }}
               run: | # install, run server, run puppeteer script
                   npm i
-                  bash minification.sh
                   npm run server &
                   node deployer.js -u $USERNAME -p $PASSWORD -h
