@@ -132,8 +132,15 @@ Spotfire.initialize(async (mod) => {
         /**
          * De-mark on click on something that isn't text card *
          */
-        modDiv.onmousedown = (e) => {
-            dataView.clearMarking();
+        modDiv.onmouseup = (e) => {
+            if (
+                !(
+                    e.clientX < modDiv.getBoundingClientRect().width &&
+                    e.clientX > modDiv.getBoundingClientRect().width - 8
+                )
+            ) {
+                dataView.clearMarking();
+            }
         };
 
         document.onkeydown = (e) => {
@@ -597,13 +604,14 @@ function createCopyButton(newDiv, buttonColor) {
 
     newButton.onmousedown = (e) => {
         svg.setAttributeNS(null, "fill", buttonColor);
-        var text = newDiv.querySelector("#text-card-paragraph").textContent;
-        textToClipboard(text);
         e.stopPropagation();
     };
     // 80 % opacity of font color
-    newButton.onmouseup = () => {
+    newButton.onmouseup = (e) => {
         svg.setAttributeNS(null, "fill", buttonColor + "CC");
+        var text = newDiv.querySelector("#text-card-paragraph").textContent;
+        textToClipboard(text);
+        e.stopPropagation();
     };
 
     // 60% opacity of font color
@@ -825,17 +833,31 @@ function markTextCard(row, div, index) {
      * Create on click functionallity
      * Select text and marking
      */
-    div.onmousedown = (e) => {
+    div.onmouseup = (e) => {
         var selectedText = getSelectedText();
+        console.log("selected text: " + selectedText);
         if (selectedText === "") {
-            e.stopPropagation();
-            if (e.button == 0) {
-                if (!e.ctrlKey) {
-                    row.mark("Replace");
-                } else {
-                    row.mark("Toggle");
+            console.log("hoho");
+            // TODO: Stop this if scrollbar is pressed
+            var xpos = parseInt(e.clientX) - 4;
+            var width = parseInt(div.getBoundingClientRect().width) + 24;
+            console.log("Xpos:" + xpos);
+            console.log("Width: " + width);
+
+            if (!(xpos > width - 8 && xpos < width)) {
+                e.stopPropagation();
+                if (e.button == 0) {
+                    if (!e.ctrlKey) {
+                        row.mark("Replace");
+                    } else {
+                        row.mark("Toggle");
+                    }
                 }
+            } else {
+                e.stopPropagation();
             }
+        } else {
+            e.stopPropagation();
         }
     };
 }
