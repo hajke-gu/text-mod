@@ -20,11 +20,19 @@
             "request": "launch",
             "skipFiles": ["<node_internals>/**"],
             "type": "pwa-node"
+        },
+        {
+            "name": "Test Deployer",
+            "program": "${workspaceFolder}/deployer.js",
+            "args": ["-u", "${input:username}", "-p", "${input:password}"],
+            "request": "launch",
+            "skipFiles": ["<node_internals>/**"],
+            "type": "pwa-node"
         }
     ],
     "inputs": [
         {
-            "description": "User name",
+            "description": "Username",
             "id": "username",
             "type": "promptString"
         },
