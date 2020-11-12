@@ -161,6 +161,5 @@ async function selectorWithText(page, selector, includedText) {
 
 async function clickSelectorWithText(page, selector, includedText) {
     let elem = await selectorWithText(page, selector, includedText);
-
     await elem.click();
 }

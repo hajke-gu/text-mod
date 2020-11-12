@@ -3,8 +3,8 @@
 #https://www.npmjs.com/package/clean-css
 #https://www.npmjs.com/package/html-minifier
 
-npm i html-minifier -g
-npm i minify -g 
+npm i html-minifier
+npm i minify
 mkdir src/full
 mv src/index.html src/full/index.html
 mv src/main.js src/full/main.js
