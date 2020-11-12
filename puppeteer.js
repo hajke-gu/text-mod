@@ -41,13 +41,9 @@ var argv = require("minimist")(process.argv.slice(2));
     await changeToEditMode(page);
     await connectToServer(page);
 
-    /* CONTINUE HERE WITH TESTS ETC */
+    /*
     await page.keyboard.press("Escape");
-    /* show results */
-    if (headless) {
-        // cannot use pdf when not running true headless
-        await page.pdf({ path: "result.pdf", landscape: true });
-    }
+    
 
     let frame = await page.waitForSelector("iframe" + sfx("frame"));
     let modPage = await frame.contentFrame();
@@ -74,8 +70,14 @@ var argv = require("minimist")(process.argv.slice(2));
     });
 
     assert(backgroundColor != markedBackgroundColor, "Color should change");
+    */
 
-    await browser.close();
+    /* show results */
+    if (headless) {
+        // cannot use pdf when not running true headless
+        await page.pdf({ path: "result.pdf", landscape: true });
+        await browser.close();
+    }
 })();
 
 async function login(page, username, password) {
