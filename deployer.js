@@ -85,11 +85,11 @@ async function connectToServer(page) {
     await page.waitForSelector(sfx("instruction"));
     await clickSelectorWithText(page, sfx("popout") + " " + sfx("button-text"), "Development server");
     await clickSelectorWithText(page, sfx("popout") + " " + sfx("button-text"), "Connect");
+    await clickSelectorWithText(page, sfx("popout") + " " + sfx("button-text"), "Disconnect");
 }
 
 async function deployToLibrary(page) {
     /* deploy to spotfire library */
-    await clickSelectorWithText(page, sfx("popout") + " " + sfx("button-text"), "Disconnect");
     await page.waitFor(5000); // wait for button to be selectable
     await clickSelectorWithText(page, sfx("popout") + " " + sfx("button-text"), "Save");
     await clickSelectorWithText(page, ".tss-lb-row__title", "Spotfire");
