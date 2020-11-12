@@ -5,7 +5,9 @@
 
 sudo npm i html-minifier -g
 sudo npm i minify -g
+ls -man
 mkdir src/full
+ls -man
 mv src/index.html src/full/index.html
 mv src/main.js src/full/main.js
 mv src/main.css src/full/main.css
