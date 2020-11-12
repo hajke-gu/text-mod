@@ -611,19 +611,11 @@ function createCopyButton(newDiv, buttonColor) {
         console.log(text);
         e.stopPropagation();
     };
-
+    // 80 % opacity of font color
     newButton.onmouseup = () => {
         svg.setAttributeNS(null, "fill", buttonColor + "CC");
     };
-    // 80 % opacity of font color
-    /*
-    newButton.onclick = (e) => {
-        svg.setAttributeNS(null, "fill", buttonColor + "CC");
-        var text = newDiv.querySelector("#text-card-paragraph").textContent;
-        textToClipboard(text);
-        console.log(text);
-        e.stopPropagation();
-    };*/
+
     // 60% opacity of font color
     newButton.onmouseleave = (e) => {
         svg.setAttributeNS(null, "fill", buttonColor + "99");
