@@ -83,7 +83,7 @@ Spotfire.initialize(async (mod) => {
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-        var cardsToLoad = Math.floor(windowSize.height / 60);
+        var cardsToLoad = Math.floor(windowSize.height / 32);
         console.log(cardsToLoad, "cards to load");
         if (rows == null) {
             // User interaction caused the data view to expire.
@@ -606,15 +606,24 @@ function createCopyButton(newDiv, buttonColor) {
 
     newButton.onmousedown = (e) => {
         svg.setAttributeNS(null, "fill", buttonColor);
+        var text = newDiv.querySelector("#text-card-paragraph").textContent;
+        textToClipboard(text);
+        console.log(text);
+        e.stopPropagation();
+    };
+
+    newButton.onmouseup = () => {
+        svg.setAttributeNS(null, "fill", buttonColor + "CC");
     };
     // 80 % opacity of font color
+    /*
     newButton.onclick = (e) => {
         svg.setAttributeNS(null, "fill", buttonColor + "CC");
         var text = newDiv.querySelector("#text-card-paragraph").textContent;
         textToClipboard(text);
         console.log(text);
         e.stopPropagation();
-    };
+    };*/
     // 60% opacity of font color
     newButton.onmouseleave = (e) => {
         svg.setAttributeNS(null, "fill", buttonColor + "99");
