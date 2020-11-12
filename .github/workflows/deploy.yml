@@ -3,12 +3,6 @@
 name: CI
 
 on: [workflow_dispatch]
-on:
-    push:
-        # Sequence of patterns matched against refs/heads
-        branches:
-            # Push events on main branch
-            - main
 
 jobs:
     build:
