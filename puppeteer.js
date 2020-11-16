@@ -2,7 +2,9 @@
 const puppeteer = require("puppeteer");
 /** @type {any} */
 const assert = require("assert");
+const { waitForDebugger } = require("inspector");
 var argv = require("minimist")(process.argv.slice(2));
+var ncp = require("copy-paste");
 
 (async () => {
     /* setup */
@@ -41,41 +43,13 @@ var argv = require("minimist")(process.argv.slice(2));
     await changeToEditMode(page);
     await connectToServer(page);
 
-    /*
-    await page.keyboard.press("Escape");
-    
-
-    let frame = await page.waitForSelector("iframe" + sfx("frame"));
-    let modPage = await frame.contentFrame();
-
-    // // continue here with tests
-
-    // There should be a css class for this row or a unique id.
-    let firstRow = await selectorWithText(modPage, '[id*="text-card-wrapper"]', "High income: OECD");
-
-    let backgroundColor = await modPage.$eval('[id*="text-card-hello"]', (el) => {
-        // @ts-ignore
-        return el.style.backgroundColor;
-    });
-
-    assert(backgroundColor.length > 0, "Color should be set");
-
-    await firstRow.click();
-    // It is difficult to know here wether the mod has been updated or not.
-    await sleep(1000);
-
-    let markedBackgroundColor = await modPage.$eval('[id*="text-card-sidebar"]', (el) => {
-        // @ts-ignore
-        return el.style.backgroundColor;
-    });
-
-    assert(backgroundColor != markedBackgroundColor, "Color should change");
-    */
+    /* run test suite */
+    await runTests(page);
 
     /* show results */
+
     if (headless) {
         // cannot use pdf when not running true headless
-        await page.pdf({ path: "result.pdf", landscape: true });
         await browser.close();
     }
 })();
@@ -115,6 +89,85 @@ async function connectToServer(page) {
     await clickSelectorWithText(page, sfx("popout") + " " + sfx("button-text"), "Development server");
     await clickSelectorWithText(page, sfx("popout") + " " + sfx("button-text"), "Connect");
     await clickSelectorWithText(page, sfx("popout") + " " + sfx("button-text"), "Disconnect");
+    await page.keyboard.press("Escape");
+}
+
+async function runTests(page) {
+    // all tests placed in here and validate here
+    var results = new Array();
+    var result;
+
+    // test1
+    result = await test1(page);
+    results.push(result);
+
+    // test2
+    result = await test2(page);
+    results.push(result);
+
+    // verify results
+    if (results.includes(false)) {
+        console.log("Tests unsuccessful.");
+        //process.exit(1);
+    } else {
+        console.log("Tests succesful.");
+    }
+}
+
+/* AC The text visualization should only display a subset of the data at a time */
+async function test1(page) {
+    var result = false;
+
+    // wait for render
+    await page.waitFor(5000);
+
+    // get number of rows in dataset
+    const element = await page.$(".sfx_label_217");
+    const text = await page.evaluate((element) => element.textContent, element);
+    var dataset = text.substr(0, text.indexOf(" "));
+    dataset = dataset.replace(",", "");
+
+    // access iFrame
+    let frame = await page.waitForSelector("iframe" + sfx("frame"));
+    let content = await frame.contentFrame();
+
+    // get number of text cards
+    const numberOfTextCards = await content.$$eval("div#text-card", (divs) => divs.length);
+
+    // comparison
+    if (dataset > numberOfTextCards) {
+        result = true;
+    }
+
+    return result;
+}
+
+/* AC It must be possible to copy the entire or a selected subset of the text to the clipboard. */
+async function test2(page) {
+    var result = false;
+
+    // wait for render
+    await page.waitFor(5000);
+
+    // access iFrame
+    let frame = await page.waitForSelector("iframe" + sfx("frame"));
+    let content = await frame.contentFrame();
+
+    // get first text card
+    await content.hover("div#text-card");
+    await content.waitForSelector("div#text-card svg");
+    await page.waitFor(5000); // required
+    await content.click("div#text-card svg");
+
+    // get text from clipboard
+    const text = ncp.paste();
+
+    // compare
+    if (text === "East Asia & Pacific") {
+        result = true;
+    }
+
+    return result;
 }
 
 /**
