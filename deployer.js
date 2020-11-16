@@ -93,9 +93,18 @@ async function deployToLibrary(page) {
     await page.waitFor(5000); // wait for button to be selectable
     await clickSelectorWithText(page, sfx("popout") + " " + sfx("button-text"), "Save");
     await clickSelectorWithText(page, ".tss-lb-row__title", "Spotfire");
-    await clickSelectorWithText(page, ".tss-lb-row__title", "Text");
-    await clickSelectorWithText(page, ".tss-lb-row__title", "Text");
+    await page.waitFor(5000); // wait for button to be selectable
+    await page.$$eval(".tss-lb-row__title", (elements) =>
+        elements.forEach((el) => {
+            if (el.textContent.includes("Text")) {
+                el.click();
+            }
+        })
+    );
+    await page.waitFor(5000); // wait for button to be selectable
     await page.click('button[title~="Save"]');
+    await page.waitFor(5000); // wait for button to be selectable
+    await clickSelectorWithText(page, "button.sf-element-button", "OK");
 }
 
 /**
@@ -142,6 +151,5 @@ async function selectorWithText(page, selector, includedText) {
 
 async function clickSelectorWithText(page, selector, includedText) {
     let elem = await selectorWithText(page, selector, includedText);
-
     await elem.click();
 }
