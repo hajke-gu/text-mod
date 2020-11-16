@@ -108,7 +108,9 @@ Spotfire.initialize(async (mod) => {
          */
         var annotationEnabled = false;
         if ((await dataView.categoricalAxis("Annotation")) != null) annotationEnabled = true;
-
+        if (prevIndex < 0) {
+            prevIndex = 0;
+        }
         var returnedObject = renderTextCards(
             rows,
             prevIndex,
@@ -277,7 +279,9 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
 
     //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity (= add 99 to hexcolor => 60% opacity)
     // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
-    if (!markObject.row && !markObject.allRows) textCardDiv.style.color = fontStyling.fontColor + "99";
+    if (!markObject.row && !markObject.allRows) {
+        textCardDiv.style.color = fontStyling.fontColor + "99";
+    }
 
     //add annotation to text card
     if (annotation !== null) {
@@ -496,6 +500,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipE
 
 function getDataValue(element, string, index) {
     var result = null;
+
     try {
         result = element.categorical(string).value()[index].key;
     } catch (error) {
