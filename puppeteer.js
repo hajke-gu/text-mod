@@ -7,49 +7,54 @@ var argv = require("minimist")(process.argv.slice(2));
 var ncp = require("copy-paste");
 
 (async () => {
-    /* setup */
-    var headless = !!argv.h;
+    try {
+        /* setup */
+        var headless = !!argv.h;
 
-    const browser = await puppeteer.launch({
-        headless: headless,
-        env: {
-            webSecurityEnabled: "false"
-        },
-        defaultViewport: null,
-        // This allows for inspection of iframes from other origins, e.g sandboxed.
-        args: ["--disable-features=site-per-process"]
-    });
+        const browser = await puppeteer.launch({
+            headless: headless,
+            env: {
+                webSecurityEnabled: "false"
+            },
+            defaultViewport: null,
+            // This allows for inspection of iframes from other origins, e.g sandboxed.
+            args: ["--disable-features=site-per-process"]
+        });
 
-    const page = await browser.newPage();
-    var username;
-    var password;
+        const page = await browser.newPage();
+        var username;
+        var password;
 
-    if (argv.u) {
-        username = argv.u;
-    } else {
-        console.log("No username (-u) specified. Will terminate script.");
+        if (argv.u) {
+            username = argv.u;
+        } else {
+            console.log("No username (-u) specified. Will terminate script.");
+            process.exit(1);
+        }
+
+        if (argv.p) {
+            password = argv.p;
+        } else {
+            console.log("No password (-p) specified. Will terminate script.");
+            process.exit(1);
+        }
+
+        /* main runner */
+        await login(page, username, password);
+        await changeToEditMode(page);
+        await connectToServer(page);
+
+        /* run test suite */
+        await runTests(page);
+
+        /* show results */
+        if (headless) {
+            // cannot use pdf when not running true headless
+            await browser.close();
+        }
+    } catch (error) {
+        console.log(error);
         process.exit(1);
-    }
-
-    if (argv.p) {
-        password = argv.p;
-    } else {
-        console.log("No password (-p) specified. Will terminate script.");
-        process.exit(1);
-    }
-
-    /* main runner */
-    await login(page, username, password);
-    await changeToEditMode(page);
-    await connectToServer(page);
-
-    /* run test suite */
-    await runTests(page);
-
-    /* show results */
-    if (headless) {
-        // cannot use pdf when not running true headless
-        await browser.close();
     }
 })();
 
