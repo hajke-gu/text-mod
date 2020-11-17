@@ -11,8 +11,9 @@ jobs:
         steps:
             - name: checkout
               uses: actions/checkout@v2
-            - name: run test
+            - name: do something
               uses: GabrielBB/xvfb-action@v1
+            - name: run test
               env:
                   USERNAME: ${{ secrets.USERNAME }}
                   PASSWORD: ${{ secrets.PASSWORD }}
