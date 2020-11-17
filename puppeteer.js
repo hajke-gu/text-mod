@@ -113,6 +113,7 @@ async function runTests(page) {
     // verify results
     if (results.includes(false)) {
         console.log("Tests unsuccessful.");
+        console.log(results);
         process.exit(1);
     } else {
         console.log("Tests succesful.");
