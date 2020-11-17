@@ -15,7 +15,8 @@ jobs:
                   USERNAME: ${{ secrets.USERNAME }}
                   PASSWORD: ${{ secrets.PASSWORD }}
               run: | # install, run server, run puppeteer script
-                  sudo aptitude install xclip
+                  sudo apt update
+                  sudo apt install xclip
                   npm i 
                   npm run server & 
                   node puppeteer.js -u $USERNAME -p $PASSWORD -h
