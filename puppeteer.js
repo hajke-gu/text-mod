@@ -169,6 +169,8 @@ async function test2(page) {
     //const text = ncp.paste();
     const text = clip.readSync();
 
+    console.log("text: ", text);
+
     // compare
     if (text === "East Asia & Pacific") {
         result = true;
