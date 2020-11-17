@@ -4,7 +4,8 @@ const puppeteer = require("puppeteer");
 const assert = require("assert");
 const { waitForDebugger } = require("inspector");
 var argv = require("minimist")(process.argv.slice(2));
-var ncp = require("copy-paste");
+//var ncp = require("copy-paste");
+const clip = require("clipboardy");
 
 (async () => {
     try {
@@ -106,13 +107,13 @@ async function runTests(page) {
     results.push(result);
 
     // test2
-    //result = await test2(page);
-    //results.push(result);
+    result = await test2(page);
+    results.push(result);
 
     // verify results
     if (results.includes(false)) {
         console.log("Tests unsuccessful.");
-        //process.exit(1);
+        process.exit(1);
     } else {
         console.log("Tests succesful.");
     }
@@ -164,7 +165,8 @@ async function test2(page) {
     await content.click("div#text-card svg");
 
     // get text from clipboard
-    const text = ncp.paste();
+    //const text = ncp.paste();
+    const text = clip.readSync();
 
     // compare
     if (text === "East Asia & Pacific") {
