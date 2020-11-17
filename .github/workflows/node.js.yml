@@ -9,9 +9,10 @@ jobs:
         name: compilation test
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - name: checkout
+              uses: actions/checkout@v2
             - name: run test
-            - command: xvfb-run npm t
+              uses: GabrielBB/xvfb-action@v1
               env:
                   USERNAME: ${{ secrets.USERNAME }}
                   PASSWORD: ${{ secrets.PASSWORD }}
