@@ -13,12 +13,12 @@ jobs:
               uses: actions/checkout@v2
             - name: do something
               uses: GabrielBB/xvfb-action@v1
-            - name: run test
-              env:
-                  USERNAME: ${{ secrets.USERNAME }}
-                  PASSWORD: ${{ secrets.PASSWORD }}
-              run: | # install, run server, run puppeteer script
-                  sudo apt install xsel
-                  npm i 
-                  npm run server & 
-                  node puppeteer.js -u $USERNAME -p $PASSWORD -h
+              with:
+                  env:
+                      USERNAME: ${{ secrets.USERNAME }}
+                      PASSWORD: ${{ secrets.PASSWORD }}
+                  run: | # install, run server, run puppeteer script
+                      sudo apt install xsel
+                      npm i 
+                      npm run server & 
+                      node puppeteer.js -u $USERNAME -p $PASSWORD -h
