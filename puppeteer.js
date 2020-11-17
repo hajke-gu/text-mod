@@ -106,8 +106,8 @@ async function runTests(page) {
     results.push(result);
 
     // test2
-    result = await test2(page);
-    results.push(result);
+    //result = await test2(page);
+    //results.push(result);
 
     // verify results
     if (results.includes(false)) {
