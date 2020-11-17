@@ -11,6 +11,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: run test
+              command: xvfb-run npm t
               env:
                   USERNAME: ${{ secrets.USERNAME }}
                   PASSWORD: ${{ secrets.PASSWORD }}
