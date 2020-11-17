@@ -47,7 +47,6 @@ var ncp = require("copy-paste");
     await runTests(page);
 
     /* show results */
-
     if (headless) {
         // cannot use pdf when not running true headless
         await browser.close();
