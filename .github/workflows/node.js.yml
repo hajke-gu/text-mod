@@ -14,11 +14,11 @@ jobs:
             - name: do something
               uses: GabrielBB/xvfb-action@v1
               with:
-                  env:
-                      USERNAME: ${{ secrets.USERNAME }}
-                      PASSWORD: ${{ secrets.PASSWORD }}
                   run: | # install, run server, run puppeteer script
                       sudo apt install xsel
                       npm i 
                       npm run server & 
                       node puppeteer.js -u $USERNAME -p $PASSWORD -h
+              env:
+                  USERNAME: ${{ secrets.USERNAME }}
+                  PASSWORD: ${{ secrets.PASSWORD }}
