@@ -20,4 +20,4 @@ jobs:
                   sudo apt-get install -y xvfb
                   npm i 
                   npm run server & 
-                  xvfb node puppeteer.js -u $USERNAME -p $PASSWORD -h
+                  xvfb-run node puppeteer.js -u $USERNAME -p $PASSWORD -h
