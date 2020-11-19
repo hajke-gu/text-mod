@@ -9,17 +9,15 @@ jobs:
         name: compilation test
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - name: checkout
+              uses: actions/checkout@v2
             - name: run test
               env:
                   USERNAME: ${{ secrets.USERNAME }}
                   PASSWORD: ${{ secrets.PASSWORD }}
               run: | # install, run server, run puppeteer script
+                  sudo apt-get update -y
+                  sudo apt-get install -y xvfb
                   npm i 
                   npm run server & 
-                  node puppeteer.js -u $USERNAME -p $PASSWORD -h
-            - name: upload result
-              uses: actions/upload-artifact@v2
-              with:
-                  name: result
-                  path: result.pdf
+                  xvfb-run node puppeteer.js -u $USERNAME -p $PASSWORD -h

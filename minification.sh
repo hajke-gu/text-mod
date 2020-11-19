@@ -3,9 +3,11 @@
 #https://www.npmjs.com/package/clean-css
 #https://www.npmjs.com/package/html-minifier
 
-npm i html-minifier
-npm i minify
+sudo npm i html-minifier -g
+sudo npm i minify -g
+ls -man src/
 mkdir src/full
+ls -man src/
 mv src/index.html src/full/index.html
 mv src/main.js src/full/main.js
 mv src/main.css src/full/main.css
