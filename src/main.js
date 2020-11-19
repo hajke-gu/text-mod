@@ -328,14 +328,14 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     styleElement.appendChild(
         document.createTextNode(
             "::-webkit-scrollbar {width: 8px;} ::-webkit-scrollbar-track {border-radius: 16px; background-color: " +
-                scalesStyling.lineColor +
-                "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
-                fontStyling.fontColor +
-                "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
-                fontStyling.fontColor +
-                "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
-                fontStyling.fontColor +
-                "BF;}"
+            scalesStyling.lineColor +
+            "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
+            fontStyling.fontColor +
+            "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
+            fontStyling.fontColor +
+            "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
+            fontStyling.fontColor +
+            "BF;}"
         )
     );
     document.getElementsByTagName("head")[0].appendChild(styleElement);
@@ -411,20 +411,27 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
              * Select text and marking
              */
             newDiv.onmousedown = (event) => {
-                var selectedText = getSelectedText();
-                if (selectedText === "" && event.button == 0) {
-                    let width = newDiv.getBoundingClientRect().width + 27;
-                    let height = newDiv.getBoundingClientRect().height;
-                    let maxHeight = windowSize.height * 0.5;
+                var scrolling = true;
+                let width = newDiv.getBoundingClientRect().width + 27;
+                let height = newDiv.getBoundingClientRect().height;
+                let maxHeight = windowSize.height * 0.5;
 
-                    //Check if card could have scrollbar and check if clicking scrollbar
-                    if (height < maxHeight || width - event.clientX > 10) {
-                        if (!event.ctrlKey) {
-                            rows[index].mark("Replace");
-                        } else {
-                            rows[index].mark("Toggle");
+                //Check if card could have scrollbar and check if clicking scrollbar
+                if (height < maxHeight || width - event.clientX > 10) {
+                    scrolling = false;
+                }
+                newDiv.onmouseup = function () {
+                    if (!scrolling) {
+                        var selectedText = getSelectedText();
+                        if (selectedText === "" && event.button == 0) {
+                            if (!event.ctrlKey) {
+                                rows[index].mark("Replace");
+                            } else {
+                                rows[index].mark("Toggle");
+                            }
                         }
                     }
+
                 }
                 event.stopPropagation();
             };
