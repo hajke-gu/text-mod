@@ -17,24 +17,43 @@
             "dropTarget": {
                 "icon": "Color",
                 "description": "Color by {0}"
+            },
+            "automaticConfiguration": {
+                "expressionHeuristics": "none"
             }
         },
         "axes": [
             {
-                "name": "Content",
+                "name": "Card by",
                 "mode": "categorical"
+            },
+            {
+                "name": "Content",
+                "mode": "categorical",
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
+                }
             },
             {
                 "name": "Annotation",
-                "mode": "categorical"
+                "mode": "categorical",
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
+                }
             },
             {
                 "name": "Sorting",
-                "mode": "categorical"
+                "mode": "categorical",
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
+                }
             },
             {
                 "name": "Tooltip",
-                "mode": "categorical"
+                "mode": "categorical",
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
+                }
             }
         ]
     },
