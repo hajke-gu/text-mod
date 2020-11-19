@@ -107,13 +107,13 @@ async function runTests(page) {
     results.push(result);
 
     // test2
-    result = await test2(page);
-    results.push(result);
+    //result = await test2(page);
+    //results.push(result);
 
     // verify results
     if (results.includes(false)) {
         console.log("Tests unsuccessful.");
-        console.log(results);
+        console.log("Tests results as follows: ", results);
         process.exit(1);
     } else {
         console.log("Tests succesful.");
