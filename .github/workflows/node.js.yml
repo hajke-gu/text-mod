@@ -1,0 +1,23 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+on: [push]
+
+jobs:
+    build:
+        name: compilation test
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v2
+            - name: run test
+              env:
+                  USERNAME: ${{ secrets.USERNAME }}
+                  PASSWORD: ${{ secrets.PASSWORD }}
+              run: | # install, run server, run puppeteer script
+                  sudo apt-get update -y
+                  sudo apt-get install -y xvfb
+                  npm i 
+                  npm run server & 
+                  xvfb-run node puppeteer.js -u $USERNAME -p $PASSWORD -h

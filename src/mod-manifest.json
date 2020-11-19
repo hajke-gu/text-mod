@@ -1,0 +1,61 @@
+{
+    "apiVersion": "1.0",
+    "version": "1.0",
+    "name": "Text Card",
+    "id": "text-card-mod",
+    "icon": "icon.svg",
+    "properties": [
+        {
+            "name": "myProperty",
+            "type": "string",
+            "defaultValue": "myValue"
+        }
+    ],
+    "dataViewDefinition": {
+        "colorAxis": {
+            "mode": "dual",
+            "dropTarget": {
+                "icon": "Color",
+                "description": "Color by {0}"
+            },
+            "automaticConfiguration": {
+                "expressionHeuristics": "none"
+            }
+        },
+        "axes": [
+            {
+                "name": "Card by",
+                "mode": "categorical"
+            },
+            {
+                "name": "Content",
+                "mode": "categorical",
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
+                }
+            },
+            {
+                "name": "Annotation",
+                "mode": "categorical",
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
+                }
+            },
+            {
+                "name": "Sorting",
+                "mode": "categorical",
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
+                }
+            },
+            {
+                "name": "Tooltip",
+                "mode": "categorical",
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
+                }
+            }
+        ]
+    },
+    "files": ["index.html", "main.css", "main.js"]
+}

@@ -1,0 +1,89 @@
+/*
+* Copyright © 2020. TIBCO Software Inc.
+* This file is subject to the license terms contained
+* in the license file that is distributed with this file.
+*/
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#text-card-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+#text-card-border {
+    /* Distance between cards */
+    margin-bottom: 8px;
+    margin-top: 8px;
+    border: 4px solid transparent;
+    border-radius: 8px;
+}
+
+#text-card {
+    overflow-y: hidden;
+    overflow-x: hidden;
+
+    border-radius: 4px; /*4px rounded corners must be same as border-left-width!*/
+
+    /*colored sidebar */
+    border-left: 4px solid;
+
+    position: relative;
+    height: auto;
+}
+
+.annotation-container {
+    height: 32px;
+    display: flex;
+    justify-content: flex-start;
+    padding-right: 24px;
+    padding-left: 16px;
+}
+
+.annotation-content {
+    padding-right: 8px;
+
+    /* limits annotations content to text card width, adds ... if too long */
+    overflow: hidden;
+    white-space: nowrap;
+    /* truncates annotations that too long */
+    text-overflow: ellipsis;
+    /* annotations <= 4 characters will not be truncated */
+    min-width: 4ch;
+    font-weight: bold;
+    font-style: normal;
+
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.thin_hr {
+    margin-top: 0;
+    margin-bottom: 0;
+    border: 0;
+    height: 1px;
+}
+
+#text-card-paragraph {
+    height: auto;
+    padding-left: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding-right: 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#img-button {
+    position: absolute;
+    top: 6px;
+    right: 9px;
+    border: 0;
+    cursor: pointer;
+}
