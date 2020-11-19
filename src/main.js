@@ -12,10 +12,6 @@
  */
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
-    var prevScrollTop = 0;
-    var hasBeenMarked = false;
-
-    // Initial state
     /**
      * Create the read function.
      */
@@ -62,6 +58,7 @@ Spotfire.initialize(async (mod) => {
         /*
          * NON-GLOBALS
          */
+        const cardsToLoad = 100;
 
         /**
          * Check the data view for errors
@@ -83,7 +80,7 @@ Spotfire.initialize(async (mod) => {
          * Get rows from dataView
          */
         var rows = await dataView.allRows();
-        var cardsToLoad = Math.floor(windowSize.height / 30);
+
         if (rows == null) {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
@@ -108,48 +105,48 @@ Spotfire.initialize(async (mod) => {
          */
         var annotationEnabled = false;
         if ((await dataView.categoricalAxis("Annotation")) != null) annotationEnabled = true;
-        if (prevIndex < 0) {
-            prevIndex = 0;
-        }
+
+        var rerender = true;
+
         var returnedObject = renderTextCards(
             rows,
-            prevIndex,
+            prevIndex, // When rerendering we always want to render everything
             cardsToLoad,
+            rerender,
             windowSize,
             mod,
             tooltip,
-            annotationEnabled,
-            modDiv.scrollTop
+            annotationEnabled
         );
+
         modDiv.appendChild(returnedObject.fragment);
-
-        prevIndex = returnedObject.startIndex - cardsToLoad;
-
-        var cardHeight = getCardHeight(modDiv.children);
-
-        modDiv.appendChild(
-            renderBottomDiv("lastEmptyDiv", (rows.length - cardsToLoad) * cardHeight - modDiv.scrollTop)
-        );
+        prevIndex = returnedObject.startIndex;
 
         /**
          * De-mark on click on something that isn't text card *
          */
+        var modContainer = document.getElementById("text-card-container");
         modDiv.onmousedown = (e) => {
-            dataView.clearMarking();
+            let width = modDiv.getBoundingClientRect().width;
+            if (!(e.clientX < width && e.clientX > width - 12)) {
+                dataView.clearMarking();
+            }
         };
 
         document.onkeydown = (e) => {
+            //console.log(e.key.toString());
             var selectedText = getSelectedText();
             if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
                 textToClipboard(selectedText);
                 selectedText = "";
             }
             if (e.key === "ArrowUp") {
-                modDiv.scrollBy(0, -100);
+                modContainer.scrollBy(0, -100);
             }
             if (e.key === "ArrowDown") {
-                modDiv.scrollBy(0, 100);
+                modContainer.scrollBy(0, 100);
             } else {
+                //console.log(e.key, " pressed");
             }
         };
 
@@ -157,110 +154,31 @@ Spotfire.initialize(async (mod) => {
          * Scroll Event Listener
          */
         modDiv.addEventListener("scroll", async function (e) {
-            var currentScrollTop = modDiv.scrollTop;
-            cardHeight = getCardHeight(modDiv.children);
-            if (currentScrollTop > prevScrollTop) {
-                if (currentScrollTop - prevScrollTop >= modDiv.children[1].getBoundingClientRect().height) {
-                    //Check if old data view
-                    if (await dataView.hasExpired()) {
-                        return;
-                    }
-                    if (prevIndex + cardsToLoad - 1 >= rows.length) {
-                        return;
-                    }
-                    if (Math.abs(prevScrollTop - currentScrollTop) > 1000) {
-                        var percentageIndex = Math.round(currentScrollTop / cardHeight);
-                        var returnedObject = renderTextCards(
-                            rows,
-                            percentageIndex,
-                            cardsToLoad,
-                            windowSize,
-                            mod,
-                            tooltip,
-                            annotationEnabled,
-                            currentScrollTop
-                        );
-                    } else {
-                        var returnedObject = renderTextCards(
-                            rows,
-                            prevIndex,
-                            cardsToLoad,
-                            windowSize,
-                            mod,
-                            tooltip,
-                            annotationEnabled,
-                            currentScrollTop
-                        );
-                    }
-                    modDiv.appendChild(returnedObject.fragment);
-                    var nrOfCards = rows.length - cardsToLoad;
-
-                    var bottomHeight = nrOfCards * cardHeight;
-                    var totalBottomHeight = bottomHeight - currentScrollTop;
-                    modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
-                    prevIndex = returnedObject.startIndex - cardsToLoad + 1;
-                    prevScrollTop = currentScrollTop;
-                    console.log(returnedObject.startIndex);
-                    if (returnedObject.startIndex >= rows.length) {
-                        document.getElementById("lastEmptyDiv").style.height = "0px";
-                    }
+            if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
+                //Check if old data view
+                if (await dataView.hasExpired()) {
+                    return;
                 }
-            } else {
-                if (prevScrollTop - currentScrollTop >= cardHeight) {
-                    if (await dataView.hasExpired()) {
-                        return;
-                    }
-                    if (prevIndex < 0) {
-                        var topDiv = document.getElementById("top-div");
-                        if (topDiv != undefined) {
-                            topDiv.style.height = 0 + "px";
-                        }
-                        prevIndex = 0;
-                        modDiv.scrollTo(0, 0);
-                    }
+                var rerender = false;
 
-                    if (currentScrollTop <= cardHeight) {
-                        prevIndex = 0;
-                    }
-                    if (Math.abs(prevScrollTop - currentScrollTop) > 500) {
-                        var percentageIndex = Math.round(currentScrollTop / cardHeight);
-                        var returnedObject = renderTextCards(
-                            rows,
-                            percentageIndex,
-                            cardsToLoad,
-                            windowSize,
-                            mod,
-                            tooltip,
-                            annotationEnabled,
-                            currentScrollTop
-                        );
-                        prevIndex = percentageIndex - 1;
-                    } else {
-                        var returnedObject = renderTextCards(
-                            rows,
-                            prevIndex,
-                            cardsToLoad,
-                            windowSize,
-                            mod,
-                            tooltip,
-                            annotationEnabled,
-                            currentScrollTop
-                        );
-
-                        prevIndex = returnedObject.startIndex - cardsToLoad - 1;
-                    }
-                    modDiv.appendChild(returnedObject.fragment);
-                    var nrOfCards = rows.length - cardsToLoad;
-                    var bottomHeight = nrOfCards * cardHeight;
-                    var totalBottomHeight = bottomHeight - currentScrollTop;
-                    modDiv.appendChild(renderBottomDiv("lastEmptyDiv", totalBottomHeight));
-                    prevScrollTop = currentScrollTop;
-                    if (returnedObject.startIndex <= cardsToLoad) {
-                        document.getElementById("top-div").style.height = "0px";
-                    }
-                }
+                var returnedObject = renderTextCards(
+                    rows,
+                    prevIndex,
+                    cardsToLoad,
+                    rerender,
+                    windowSize,
+                    mod,
+                    tooltip,
+                    annotationEnabled
+                );
+                modDiv.appendChild(returnedObject.fragment);
+                prevIndex = returnedObject.startIndex;
             }
         });
+
+        /*
+         * Signal that the mod is ready for export.
+         */
         context.signalRenderComplete();
     }
 });
@@ -279,9 +197,7 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
 
     //Check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity (= add 99 to hexcolor => 60% opacity)
     // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
-    if (!markObject.row && !markObject.allRows) {
-        textCardDiv.style.color = fontStyling.fontColor + "99";
-    }
+    if (!markObject.row && !markObject.allRows) textCardDiv.style.color = fontStyling.fontColor + "99";
 
     //add annotation to text card
     if (annotation !== null) {
@@ -304,6 +220,7 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
                 }
 
                 var headerContent = createHeaderContent(dataValue);
+
                 let dataValueLength = ("" + dataValue).length;
                 // annotations with 4 or less characters get never truncated
                 if (dataValueLength < 4) {
@@ -352,20 +269,25 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
  * @param {*} rows All the rows from the dataset
  * @param {*} prevIndex Index of the previously rendered text card
  * @param {*} cardsToLoad Number of cards to render at one time
+ * @param {*} rerender Boolean to check if the text cards needs to be rerendered
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  */
-function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipEnabled, annotationEnabled, scrollTop) {
-    document.querySelector("#text-card-container").innerHTML = "";
-
+function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled, annotationEnabled) {
+    if (rerender) {
+        document.querySelector("#text-card-container").innerHTML = "";
+    }
     var fragment = document.createDocumentFragment();
-    var topDiv = document.createElement("div");
-    topDiv.setAttribute("id", "top-div");
-    topDiv.style.height = scrollTop + "px";
-    fragment.appendChild(topDiv);
 
-    var whatToLoad = cardsToLoad;
+    var whatToLoad = prevIndex + cardsToLoad;
     var startIndex = prevIndex;
+    if (rerender) {
+        whatToLoad = prevIndex;
+        startIndex = 0;
+        if (prevIndex == 0) {
+            whatToLoad = cardsToLoad;
+        }
+    }
 
     // Get and group styling attributes
     const styling = mod.getRenderContext().styling;
@@ -406,11 +328,11 @@ function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipE
 
     //Check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
-    let index = startIndex;
+
     /**
      * Create all text cards
      */
-    for (; index < prevIndex + whatToLoad; index++) {
+    for (let index = startIndex; index < whatToLoad; index++) {
         if (index >= rows.length) {
             break;
         }
@@ -474,8 +396,24 @@ function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipE
              * Create on click functionallity
              * Select text and marking
              */
-            markTextCard(rows[index], newDiv, index);
+            newDiv.onmousedown = (event) => {
+                var selectedText = getSelectedText();
+                if (selectedText === "" && event.button == 0) {
+                    let width = newDiv.getBoundingClientRect().width + 27;
+                    let height = newDiv.getBoundingClientRect().height;
+                    let maxHeight = windowSize.height * 0.5;
 
+                    //Check if card could have scrollbar and check if clicking scrollbar
+                    if (height < maxHeight || width - event.clientX > 10) {
+                        if (!event.ctrlKey) {
+                            rows[index].mark("Replace");
+                        } else {
+                            rows[index].mark("Toggle");
+                        }
+                    }
+                }
+                event.stopPropagation();
+            };
             /**
              * Create mouse over functionallity
              * Border around card and tooltip
@@ -486,7 +424,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipE
             fragment.appendChild(borderDiv);
         }
     }
-    prevIndex = index;
+    if (!rerender || prevIndex === 0) {
+        prevIndex = prevIndex + cardsToLoad;
+    }
+
     var returnObject = { fragment, startIndex: prevIndex };
     return returnObject;
 }
@@ -500,7 +441,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, windowSize, mod, tooltipE
 
 function getDataValue(element, string, index) {
     var result = null;
-
     try {
         result = element.categorical(string).value()[index].key;
     } catch (error) {
@@ -567,6 +507,7 @@ function textToClipboard(text) {
     var temporaryCopyElement = document.createElement("textarea");
     document.body.appendChild(temporaryCopyElement);
     temporaryCopyElement.value = text;
+    //console.log(text);
     temporaryCopyElement.select();
     document.execCommand("copy");
     document.body.removeChild(temporaryCopyElement);
@@ -607,16 +548,17 @@ function createCopyButton(newDiv, buttonColor) {
         e.stopPropagation();
     };
     // 80 % opacity of font color
-    newButton.onmouseup = () => {
+    newButton.onmouseup = (e) => {
         svg.setAttributeNS(null, "fill", buttonColor + "CC");
+        e.stopPropagation();
     };
-
     // 60% opacity of font color
     newButton.onmouseleave = (e) => {
         svg.setAttributeNS(null, "fill", buttonColor + "99");
     };
 
     svgNode.appendChild(svg);
+
     newButton.appendChild(svgNode);
     newDiv.appendChild(newButton);
 }
@@ -732,29 +674,16 @@ function createTooltipString(specificRow, tooltipContent) {
             columnName: columnName,
             dataValue: dataValue
         };
-        tooltipCollection.push(tooltipObj);
-        tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
+
+        if (dataValue !== null) {
+            // Remove empty data values
+            tooltipCollection.push(tooltipObj);
+            tooltipString = tooltipString + tooltipObj.columnName + ": " + tooltipObj.dataValue + "\n";
+        }
     }
     return tooltipString;
 }
 
-function renderBottomDiv(name, height) {
-    var bottomDiv = document.createElement("div");
-    bottomDiv.setAttribute("id", name);
-    bottomDiv.style.height = height + "px";
-    return bottomDiv;
-}
-
-function getCardHeight(childrenArray) {
-    var index = 1;
-    var cardHeight = 0;
-    for (index; index < childrenArray.length - 1; index++) {
-        cardHeight += childrenArray[index].getBoundingClientRect().height;
-    }
-    cardHeight = cardHeight / index - 1;
-
-    return 100;
-}
 /**
  * Format date in YYYY-MM-DD
  *
@@ -823,24 +752,4 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
 function truncateString(dataValue, maxLength) {
     // Slice at maxLength minus 3 to really return maxLength characters
     return dataValue.slice(0, maxLength - 3) + "...";
-}
-
-function markTextCard(row, div, index) {
-    /**
-     * Create on click functionallity
-     * Select text and marking
-     */
-    div.onmousedown = (e) => {
-        var selectedText = getSelectedText();
-        if (selectedText === "") {
-            e.stopPropagation();
-            if (e.button == 0) {
-                if (!e.ctrlKey) {
-                    row.mark("Replace");
-                } else {
-                    row.mark("Toggle");
-                }
-            }
-        }
-    };
 }
