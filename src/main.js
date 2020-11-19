@@ -29,6 +29,10 @@ Spotfire.initialize(async (mod) => {
      * Store the context.
      */
     const context = mod.getRenderContext();
+
+    //** fix axis */
+    mod.visualization.axis("Card by").setExpression("<baserowid()>");
+
     /**
      * Initiate the read loop
      */
