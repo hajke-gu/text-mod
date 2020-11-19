@@ -42,7 +42,17 @@ Spotfire.initialize(async (mod) => {
      * @param {Spotfire.Axis} sortingProp
      */
     async function render(dataView, windowSize, prop, contentProp, sortingProp) {
-        if (contentProp.parts.length > 1 || sortingProp.parts.length > 1) {
+        /**
+         * Check data axes
+         * - Check if content empty
+         * - Check if content is multiple
+         * - Check if sorting is multiple
+         * - Check if card by is Row Number
+         */
+        if (contentProp.parts.length == 0) {
+            mod.controls.errorOverlay.show("Select a content to get started!");
+            return;
+        } else if (contentProp.parts.length > 1 || sortingProp.parts.length > 1) {
             if (contentProp.parts.length > 1)
                 mod.controls.errorOverlay.show("Selecting Multiple Content is not allowed.");
             else if (sortingProp.parts.length > 1) {
@@ -507,7 +517,6 @@ function textToClipboard(text) {
     var temporaryCopyElement = document.createElement("textarea");
     document.body.appendChild(temporaryCopyElement);
     temporaryCopyElement.value = text;
-    //console.log(text);
     temporaryCopyElement.select();
     document.execCommand("copy");
     document.body.removeChild(temporaryCopyElement);

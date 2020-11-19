@@ -21,6 +21,10 @@
         },
         "axes": [
             {
+                "name": "Card-by",
+                "mode": "categorical"
+            },
+            {
                 "name": "Content",
                 "mode": "categorical"
             },
