@@ -13,7 +13,7 @@
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
     var prevScrollTop = 0;
-    var hasBeenMarked = false;
+    var hasBeenMarked == false;
 
     // Initial state
     /**
