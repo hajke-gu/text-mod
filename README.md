@@ -2,7 +2,7 @@
 
 The Text Card product for the TIBCO Spotfire environment is an extension used to visualize text data in an efficient and esthetical way, often alongside other data visualizations. 
 
-Project for Gothenburg University (Course DIT827) and TIBCO Spotfire
+Project for Software innovation course at [Gothenburg University](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjN8vmW55jtAhVkmIsKHQtEBgIQFjAAegQIBBAC&url=https%3A%2F%2Fkursplaner.gu.se%2Fpdf%2Fkurs%2Fen%2FDIT827&usg=AOvVaw3_5kJeDs3_ov4auh2zQxuZ) and [TIBCO Spotfire](https://www.tibco.com/products/tibco-spotfire)
 
 ## Authors
 
