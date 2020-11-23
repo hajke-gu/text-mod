@@ -53,6 +53,7 @@ Spotfire.initialize(async (mod) => {
          * - Check if sorting is multiple
          * - Check if card by is Row Number
          */
+
         if (contentProp.parts.length == 0) {
             mod.controls.errorOverlay.show("Select a content to get started!");
             return;
@@ -328,14 +329,14 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     styleElement.appendChild(
         document.createTextNode(
             "::-webkit-scrollbar {width: 8px;} ::-webkit-scrollbar-track {border-radius: 16px; background-color: " +
-            scalesStyling.lineColor +
-            "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
-            fontStyling.fontColor +
-            "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
-            fontStyling.fontColor +
-            "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
-            fontStyling.fontColor +
-            "BF;}"
+                scalesStyling.lineColor +
+                "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
+                fontStyling.fontColor +
+                "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
+                fontStyling.fontColor +
+                "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
+                fontStyling.fontColor +
+                "BF;}"
         )
     );
     document.getElementsByTagName("head")[0].appendChild(styleElement);
@@ -431,8 +432,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                             }
                         }
                     }
-
-                }
+                };
                 event.stopPropagation();
             };
             /**
@@ -589,14 +589,23 @@ function createCopyButton(newDiv, buttonColor) {
  */
 function sortRows(rows) {
     rows.sort(function (a, b) {
-        var sortValueA = Number(a.categorical("Sorting").value()[0].key);
-        var sortValueB = Number(b.categorical("Sorting").value()[0].key);
+        let sortValueA = a.categorical("Sorting").value()[0].key;
+        let sortValueB = b.categorical("Sorting").value()[0].key;
 
-        if (sortValueA < sortValueB) return -1;
+        if (!isNaN(Number(sortValueA)) && !isNaN(Number(sortValueB))) {
+            sortValueA = Number(sortValueA);
+            sortValueB = Number(sortValueB);
 
-        if (sortValueA > sortValueB) return 1;
+            if (sortValueA < sortValueB) return -1;
 
-        return 0;
+            if (sortValueA > sortValueB) return 1;
+
+            return 0;
+        } else {
+            if (sortValueA == null) sortValueA = "";
+            if (sortValueB == null) sortValueB = "";
+            return sortValueA.localeCompare(sortValueB);
+        }
     });
 }
 
