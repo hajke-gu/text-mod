@@ -1,4 +1,4 @@
-# Text Mod
+# Text Card
 
 Project for Gothenburg University(Course DIT827) and TIBCO Spotfire
 
@@ -16,4 +16,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
--
+- Thanks to the team at [TIBCO Spotfire](https://www.tibco.com/products/tibco-spotfire) for all the support in the development of this extension
