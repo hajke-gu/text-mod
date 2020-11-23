@@ -1,6 +1,6 @@
 # Text Card
 
-Project for Gothenburg University(Course DIT827) and TIBCO Spotfire
+Project for Gothenburg University (Course DIT827) and TIBCO Spotfire
 
 ## Authors
 
