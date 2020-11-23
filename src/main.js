@@ -106,9 +106,6 @@ Spotfire.initialize(async (mod) => {
          * Sort rows
          */
         if ((await dataView.categoricalAxis("Sorting")) != null) {
-            //let column = await dataTable.column(getColumnName(rows[0], "Sorting", 0));
-            //console.log(column.name);
-            //let columnType = column.dataType.isNumber();
             sortRows(rows);
         }
 
