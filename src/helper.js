@@ -1,17 +1,31 @@
+/**
+ * Truncates string
+ * @param {*} dataValue the actual string
+ * @param {*} maxLength max length of string
+ */
 function truncateString(dataValue, maxLength) {
     // Slice at maxLength minus 3 to really return maxLength characters
     return dataValue.slice(0, maxLength - 3) + "...";
 }
 
+/**
+ * Configures mouse over
+ * @param {*} divObject
+ * @param {*} borderDiv
+ * @param {*} fontStyling
+ * @param {*} row
+ * @param {*} tooltipEnabled
+ * @param {*} mod
+ * @param {*} annotationEnabled
+ */
 function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod, annotationEnabled) {
-    /**
-     * Mouse over for textCardDiv
-     */
+    // mouse over text card event listener
     divObject.textCardDiv.onmouseenter = (e) => {
         borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
         createCopyButton(divObject.textCardDiv, fontStyling.fontColor);
     };
 
+    // mouse leave text card event listener
     divObject.textCardDiv.onmouseleave = (e) => {
         borderDiv.style.boxShadow = "";
 
@@ -19,9 +33,7 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
         divObject.textCardDiv.removeChild(button);
     };
 
-    /**
-     * Mouse over for content
-     */
+    // mouse over text card content event listener
     divObject.content.onmouseenter = (e) => {
         if (tooltipEnabled) {
             var tooltipString = createTooltipString(row, "Tooltip");
@@ -33,9 +45,7 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
         if (tooltipEnabled) mod.controls.tooltip.hide();
     };
 
-    /**
-     * Mouse over for header
-     */
+    // mouse over for annotation event listener
     if (annotationEnabled) {
         divObject.header.onmouseenter = (e) => {
             var tooltipString = createTooltipString(row, "Annotation");
@@ -106,7 +116,7 @@ function sortRows(rows) {
 }
 
 /**
- *
+ * Get text from text card to clipboard
  * @param text Text is the value that the user has chosen, either through selection or copy entire text card
  */
 function textToClipboard(text) {
@@ -118,11 +128,20 @@ function textToClipboard(text) {
     document.body.removeChild(temporaryCopyElement);
 }
 
-/** @returns {HTMLElement} */
+/**
+ * Find element in dom
+ * @param selector Selector as string to search for in dom
+ * @returns {HTMLElement}
+ */
 function findElem(selector) {
     return document.querySelector(selector);
 }
 
+/**
+ * Get selected text
+ * @param selector Selector as string to search for in dom
+ * @returns {String}
+ */
 function getSelectedText() {
     var selectedText = "";
 
@@ -134,18 +153,15 @@ function getSelectedText() {
     if (document.getSelection) {
         selectedText = document.getSelection().toString();
     }
-    // document.selection
-
     return selectedText;
 }
 
 /**
- *
- * @param  element The row that will be used to get the specific column name
+ * Get name of column from data table
+ * @param element The row that will be used to get the specific column name
  * @param {*} string String that represent the axis where the column name will come from
  * @param {*} index Index of the column within the chosen axis to get the column name from
  */
-
 function getColumnName(element, string, index) {
     var result = null;
     try {
@@ -163,12 +179,11 @@ function getColumnName(element, string, index) {
 }
 
 /**
- *
+ * Get data value from row
  * @param  element The row that will be used to get the specific value
  * @param {*} string String that represent the axis where the value will come from
  * @param {*} index Index of the column within the chosen axis to get the value from
  */
-
 function getDataValue(element, string, index) {
     var result = null;
     try {

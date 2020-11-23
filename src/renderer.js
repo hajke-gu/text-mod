@@ -6,6 +6,7 @@
  * @param {*} rerender Boolean to check if the text cards needs to be rerendered
  * @param {*} windowSize WindowSize of the mod in pixels
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
+ * @returns {HTMLDocument}
  */
 function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled, annotationEnabled) {
     if (rerender) {
@@ -23,7 +24,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         }
     }
 
-    // Get and group styling attributes
+    // get and group styling attributes
     const styling = mod.getRenderContext().styling;
     // general fonts styling
     const fontStyling = {
@@ -41,9 +42,9 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         tickMarkColor: styling.scales.tick.stroke
     };
 
-    // Customized scrollbar for Text Card and Text Card Container that is adjusting to the theme
-    // HEX color + "4D" = 30% opacitiy
-    // HEX color + "BF" = 75% opacity
+    // customized scrollbar for Text Card and Text Card Container that is adjusting to the theme
+    // hex color + "4D" = 30% opacitiy
+    // hex color + "BF" = 75% opacity
     var styleElement = document.createElement("style");
     styleElement.appendChild(
         document.createTextNode(
@@ -60,58 +61,43 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     );
     document.getElementsByTagName("head")[0].appendChild(styleElement);
 
-    //Check if all row are marked
+    // check if all row are marked
     var allRowsMarked = isAllRowsMarked(rows);
 
-    /**
-     * Create all text cards
-     */
+    // create all text cards
     for (let index = startIndex; index < whatToLoad; index++) {
         if (index >= rows.length) {
             break;
         }
 
-        /**
-         * Get value/content for the specifc card.
-         * And handle date
-         */
+        // get value/content for the specifc card and handle date
         let textCardContent = getDataValue(rows[index], "Content", 0);
         if (getColumnName(rows[index], "Content", 0) === "Date")
-            //Date handling
+            // date handling
             textCardContent = formatDate(new Date(Number(textCardContent)));
 
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
-            /**
-             * Create Annotation
-             */
+            // create annotation
             var annotation = null;
             if (annotationEnabled) {
                 annotation = rows[index].categorical("Annotation").value();
             }
 
-            /**
-             * Get color from api for side bar
-             */
+            // get color from api to be used for the side bar of the card
             var color = rows[index].color().hexCode;
 
-            /**
-             * Check if specific row are marked and add boolean for condition is all rows marked
-             */
+            // check if specific row are marked and add boolean for condition is all rows marked
             var markObject = {
                 row: rows[index].isMarked(),
                 allRows: allRowsMarked
             };
 
-            /**
-             * Create border div
-             */
+            // create border div
             let borderDiv = document.createElement("div");
             borderDiv.setAttribute("id", "text-card-border");
 
-            /**
-             * Create the text card
-             */
+            // create the text card
             let divObject = createTextCard(
                 textCardContent,
                 annotation,
@@ -126,17 +112,14 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             newDiv.style.boxShadow = "0 0 0 1px " + scalesStyling.lineColor;
             newDiv.style.borderLeftColor = color;
 
-            /**
-             * Create on click functionallity
-             * Select text and marking
-             */
+            // create on click functionallity, select text and stiling
             newDiv.onmousedown = (event) => {
                 var scrolling = true;
                 let width = newDiv.getBoundingClientRect().width + 27;
                 let height = newDiv.getBoundingClientRect().height;
                 let maxHeight = windowSize.height * 0.5;
 
-                //Check if card could have scrollbar and check if clicking scrollbar
+                // check if card could have scrollbar and check if clicking scrollbar
                 if (height < maxHeight || width - event.clientX > 10) {
                     scrolling = false;
                 }
@@ -154,10 +137,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 };
                 event.stopPropagation();
             };
-            /**
-             * Create mouse over functionallity
-             * Border around card and tooltip
-             */
+            // create mouse over functionallity & Border around card and tooltip
             configureMouseOver(divObject, borderDiv, fontStyling, rows[index], tooltipEnabled, mod, annotationEnabled);
 
             borderDiv.appendChild(newDiv);

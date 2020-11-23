@@ -12,9 +12,8 @@
  */
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
-    /**
-     * Create the read function.
-     */
+
+    // create the read function
     const reader = mod.createReader(
         mod.visualization.data(),
         mod.windowSize(),
@@ -25,17 +24,13 @@ Spotfire.initialize(async (mod) => {
 
     const modDiv = findElem("#text-card-container");
 
-    /**
-     * Store the context.
-     */
+    // store the context
     const context = mod.getRenderContext();
 
-    //** fix axis */
+    // used to set max number of cards to equal the number of rows of dataset
     mod.visualization.axis("Card by").setExpression("<baserowid()>");
 
-    /**
-     * Initiate the read loop
-     */
+    // initiate the read loop
     reader.subscribe(render);
 
     /**
@@ -45,6 +40,7 @@ Spotfire.initialize(async (mod) => {
      * @param {Spotfire.Axis} contentProp
      * @param {Spotfire.Axis} sortingProp
      */
+    // @ts-ignore
     async function render(dataView, windowSize, prop, contentProp, sortingProp) {
         /**
          * Check data axes
@@ -70,14 +66,11 @@ Spotfire.initialize(async (mod) => {
             return;
         }
         mod.controls.errorOverlay.hide();
-        /*
-         * NON-GLOBALS
-         */
+
+        // non-global value
         const cardsToLoad = 100;
 
-        /**
-         * Check the data view for errors
-         */
+        // check dataview for errors
         let errors = await dataView.getErrors();
         if (errors.length > 0) {
             // Showing an error overlay will hide the mod iframe.
@@ -88,12 +81,9 @@ Spotfire.initialize(async (mod) => {
         }
 
         mod.controls.errorOverlay.hide();
-
         modDiv.style.height = windowSize.height + "px";
 
-        /**
-         * Get rows from dataView
-         */
+        // get rows/data from dataview via api
         var rows = await dataView.allRows();
 
         if (rows == null) {
@@ -102,22 +92,16 @@ Spotfire.initialize(async (mod) => {
             return;
         }
 
-        /**
-         * Sort rows
-         */
+        // check if sorting is enabled
         if ((await dataView.categoricalAxis("Sorting")) != null) {
             sortRows(rows);
         }
 
-        /**
-         * Check if tooltip enabled
-         */
+        // check if tooltip is enabled
         var tooltip = false;
         if ((await dataView.categoricalAxis("Tooltip")) != null) tooltip = true;
 
-        /**
-         * Check if annotation enabled
-         */
+        // check if annotation is enabled
         var annotationEnabled = false;
         if ((await dataView.categoricalAxis("Annotation")) != null) annotationEnabled = true;
 
@@ -134,12 +118,12 @@ Spotfire.initialize(async (mod) => {
             annotationEnabled
         );
 
+        // @ts-ignore
         modDiv.appendChild(returnedObject.fragment);
+        // @ts-ignore
         prevIndex = returnedObject.startIndex;
 
-        /**
-         * De-mark on click on something that isn't text card *
-         */
+        // de-mark on click on something that isn't text card *
         var modContainer = document.getElementById("text-card-container");
         modDiv.onmousedown = (e) => {
             let width = modDiv.getBoundingClientRect().width;
@@ -148,8 +132,8 @@ Spotfire.initialize(async (mod) => {
             }
         };
 
+        // down-key event listener
         document.onkeydown = (e) => {
-            //console.log(e.key.toString());
             var selectedText = getSelectedText();
             if ((e.ctrlKey || e.metaKey) && e.key === "c" && selectedText !== "") {
                 textToClipboard(selectedText);
@@ -161,16 +145,15 @@ Spotfire.initialize(async (mod) => {
             if (e.key === "ArrowDown") {
                 modContainer.scrollBy(0, 100);
             } else {
-                //console.log(e.key, " pressed");
+                return;
             }
         };
 
-        /*
-         * Scroll Event Listener
-         */
+        // scroll event listener
+        // @ts-ignore
         modDiv.addEventListener("scroll", async function (e) {
             if (modDiv.scrollHeight - modDiv.scrollTop <= modDiv.clientHeight + 1) {
-                //Check if old data view
+                // check if dataview is up to date
                 if (await dataView.hasExpired()) {
                     return;
                 }
@@ -186,14 +169,14 @@ Spotfire.initialize(async (mod) => {
                     tooltip,
                     annotationEnabled
                 );
+                // @ts-ignore
                 modDiv.appendChild(returnedObject.fragment);
+                // @ts-ignore
                 prevIndex = returnedObject.startIndex;
             }
         });
 
-        /*
-         * Signal that the mod is ready for export.
-         */
+        // signal that the mod is ready for export.
         context.signalRenderComplete();
     }
 });
