@@ -231,3 +231,38 @@ function createCopyButton(newDiv, buttonColor) {
     newButton.appendChild(svgNode);
     newDiv.appendChild(newButton);
 }
+
+/**
+ *
+ * @param mod the mod
+ * @param width width of mod
+ */
+function showWarning(mod, width) {
+    const { popout } = mod.controls;
+    function showPopout(e) {
+        popout.show(
+            {
+                x: width + 8,
+                y: 8,
+                autoClose: false,
+                alignment: "Right",
+                onChange: popoutChangeHandler
+            },
+            popoutContent
+        );
+    }
+
+    const { section } = popout;
+    const { button } = popout.components;
+    const popoutContent = () => [
+        section({
+            heading: "Not selecting (Row Number) might lead to unwanted behavior",
+            children: [button({ text: "Reset", name: "buttonReset" })]
+        })
+    ];
+    function popoutChangeHandler() {
+        mod.visualization.axis("Card by").setExpression("<baserowid()>");
+    }
+
+    showPopout();
+}

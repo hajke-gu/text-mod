@@ -17,15 +17,18 @@ Spotfire.initialize(async (mod) => {
     const reader = mod.createReader(
         mod.visualization.data(),
         mod.windowSize(),
-        mod.property("myProperty"),
         mod.visualization.axis("Content"),
-        mod.visualization.axis("Sorting")
+        mod.visualization.axis("Sorting"),
+        mod.visualization.axis("Card by")
     );
 
     const modDiv = findElem("#text-card-container");
 
     // store the context
     const context = mod.getRenderContext();
+
+    // Warning boolean
+    var showCardsByWarning = true;
 
     // used to set max number of cards to equal the number of rows of dataset
     mod.visualization.axis("Card by").setExpression("<baserowid()>");
@@ -36,28 +39,32 @@ Spotfire.initialize(async (mod) => {
     /**
      * @param {Spotfire.DataView} dataView
      * @param {Spotfire.Size} windowSize
-     * @param {Spotfire.ModProperty<string>} prop
      * @param {Spotfire.Axis} contentProp
      * @param {Spotfire.Axis} sortingProp
      */
     // @ts-ignore
-    async function render(dataView, windowSize, prop, contentProp, sortingProp) {
+    async function render(dataView, windowSize, contentProp, sortingProp, cardbyProp) {
         /**
          * Check data axes
          * - Check if content empty
          * - Check if content is multiple
          * - Check if sorting is multiple
-         * - Check if card by is Row Number
+         * - Check if card by is empy
          */
 
         if (contentProp.parts.length == 0) {
-            mod.controls.errorOverlay.show("Select a content to get started!");
+            mod.controls.errorOverlay.show("Select the 'Content' of the text cards to get started!");
+            return;
+        } else if (cardbyProp.parts.length == 0) {
+            mod.controls.errorOverlay.show(
+                "Select a 'Card by' to get started! Default value (for non-aggregated data): (Row Number)"
+            );
             return;
         } else if (contentProp.parts.length > 1 || sortingProp.parts.length > 1) {
             if (contentProp.parts.length > 1)
-                mod.controls.errorOverlay.show("Selecting Multiple Content is not allowed.");
+                mod.controls.errorOverlay.show("Selecting multiple columns in 'Content' is not supported.");
             else if (sortingProp.parts.length > 1) {
-                mod.controls.errorOverlay.show("Selecting Multiple Sortings is not allowed.");
+                mod.controls.errorOverlay.show("Selecting multiple columns in 'Sorting' is not supported.");
             } else {
                 mod.controls.errorOverlay.show(
                     "If this text can be seen. Tell Jonatan that he did something very wrong!"
@@ -79,8 +86,8 @@ Spotfire.initialize(async (mod) => {
             mod.controls.errorOverlay.show(errors);
             return;
         }
-
         mod.controls.errorOverlay.hide();
+
         modDiv.style.height = windowSize.height + "px";
 
         // get rows/data from dataview via api
@@ -90,6 +97,13 @@ Spotfire.initialize(async (mod) => {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
             return;
+        }
+
+        // check if "Cards by" is set to another value than "(Row Number)" & warn user
+        if (showCardsByWarning && cardbyProp.parts[0].displayName !== "(Row Number)") {
+            showWarning(mod, windowSize.width);
+            // show warning only once
+            showCardsByWarning = false;
         }
 
         // check if sorting is enabled
