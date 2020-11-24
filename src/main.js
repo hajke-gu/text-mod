@@ -101,7 +101,7 @@ Spotfire.initialize(async (mod) => {
 
         // check if "Cards by" is set to another value than "(Row Number)" & warn user
         if (showCardsByWarning && cardbyProp.parts[0].displayName !== "(Row Number)") {
-            showWarning(mod, windowSize.width);
+            createWarning(mod, windowSize.width);
             // show warning only once
             showCardsByWarning = false;
         }

@@ -237,7 +237,7 @@ function createCopyButton(newDiv, buttonColor) {
  * @param mod the mod
  * @param width width of mod
  */
-function showWarning(mod, width) {
+function createWarning(mod, width) {
     const { popout } = mod.controls;
     function showPopout(e) {
         popout.show(
