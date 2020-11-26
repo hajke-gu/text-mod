@@ -11,9 +11,9 @@ particular page.
 
 <div class="section-index">
     <hr class="panel-line">
-    {% for post in site.docs  %}        
+    {% for doc in site.docs  %}        
     <div class="entry">
-    <h5><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></h5>
-    <p>{{ post.description }}</p>
+    <h5><a href="{{ doc.url | prepend: site.baseurl }}">{{ doc.title }}</a></h5>
+    <p>{{ doc.description }}</p>
     </div>{% endfor %}
 </div>
