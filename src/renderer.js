@@ -74,7 +74,7 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
         let textCardContent = rows[index].categorical("Content").formattedValue();
 
         // textCard not NULL or UNDEFINED
-        if (textCardContent) {
+        if (getDataValue(rows[index], "Content", 0)) {
             // create annotation
             var annotation = null;
             if (annotationEnabled) {

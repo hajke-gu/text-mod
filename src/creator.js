@@ -24,13 +24,8 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
         for (var i = 0; i < annotationLength; i++) {
             var dataValue = annotation[i].formattedValue(); // get annotation value
 
-            if (dataValue !== null) {
+            if (annotation[i].key !== null) {
                 // check if annotation has value
-
-                /*// handle date
-                if (annotation[0]._node.__hierarchy.levels[i].name === "Date") {
-                    dataValue = formatDate(new Date(Number(dataValue)));
-                }*/
 
                 var headerContent = createHeaderContent(dataValue);
 
