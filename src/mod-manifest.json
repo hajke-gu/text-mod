@@ -4,13 +4,7 @@
     "name": "Text Card",
     "id": "text-card-mod",
     "icon": "icon.svg",
-    "properties": [
-        {
-            "name": "myProperty",
-            "type": "string",
-            "defaultValue": "myValue"
-        }
-    ],
+    "properties": [],
     "dataViewDefinition": {
         "colorAxis": {
             "mode": "dual",
@@ -57,5 +51,5 @@
             }
         ]
     },
-    "files": ["index.html", "main.css", "main.js"]
+    "files": ["index.html", "main.css", "main.js", "creator.js", "helper.js"]
 }

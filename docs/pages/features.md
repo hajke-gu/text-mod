@@ -17,3 +17,14 @@ The following features are we planning to implement:
 * Displaying of an additional annotation information for every text field
 * Support "marking" and "detailed visualization" 
 * Seamless integration into the Spotfire environment
+
+
+{% for feature in site.features %}
+    <hr class="panel-line">
+  <h2>
+    <a href="{{ feature.url }}">
+      {{ feature.name }}
+    </a>
+  </h2>
+  <p>{{ feature.content | markdownify }}</p>
+{% endfor %}

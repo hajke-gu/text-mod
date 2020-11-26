@@ -38,9 +38,13 @@ markdown: kramdown
 exclude: [_site, CHANGELOG.md, LICENSE, README.md, vendor]
 
 # Collections
-#collections:
-#  docs:
-#    output: true
+collections:
+  features:
+    output: true
+    order:
+      - theme.md
+      - annotations.md
+
 #    permalink: /:collection/:path
 
 # Defaults
