@@ -18,13 +18,16 @@ The following features are we planning to implement:
 * Support "marking" and "detailed visualization" 
 * Seamless integration into the Spotfire environment
 
-
+<div class="section-index">
 {% for feature in site.features %}
     <hr class="panel-line">
+    <div class="entry">
   <h2>
     <a href="{{ feature.url }}">
       {{ feature.name }}
     </a>
   </h2>
   <p>{{ feature.content | markdownify }}</p>
+  </div>
 {% endfor %}
+</div>

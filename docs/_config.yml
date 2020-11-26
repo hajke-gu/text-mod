@@ -37,9 +37,14 @@ permalink: /:year/:title/
 markdown: kramdown
 exclude: [_site, CHANGELOG.md, LICENSE, README.md, vendor]
 
+# Set direction for collections
+collections_dir: collections
+
 # Collections
 collections:
-  features:
+  - documents:
+    output: true
+  - features:
     output: true
     order:
       - theme.md
