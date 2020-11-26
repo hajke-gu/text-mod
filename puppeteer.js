@@ -209,6 +209,7 @@ async function selectorWithText(page, selector, includedText) {
             let elem = links[i];
             let valueHandle = await elem.getProperty("textContent");
             let linkText = await valueHandle.jsonValue();
+            // @ts-ignore
             if (linkText.includes(includedText)) {
                 let visible = await page.evaluate((e) => e.offsetWidth > 0 && e.offsetHeight > 0, links[0]);
                 if (visible && (await elem.isIntersectingViewport())) {

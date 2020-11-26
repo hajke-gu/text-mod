@@ -1,6 +1,8 @@
-# Text Mod
+# Text Card
 
-Project for Gothenburg University(Course DIT827) and TIBCO Spotfire
+The Text Card product for the TIBCO Spotfire environment is an extension used to visualize text data in an efficient and esthetical way, often alongside other data visualizations. 
+
+Project for Software innovation course at [Gothenburg University](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwjN8vmW55jtAhVkmIsKHQtEBgIQFjAAegQIBBAC&url=https%3A%2F%2Fkursplaner.gu.se%2Fpdf%2Fkurs%2Fen%2FDIT827&usg=AOvVaw3_5kJeDs3_ov4auh2zQxuZ) and [TIBCO Spotfire](https://www.tibco.com/products/tibco-spotfire)
 
 ## Authors
 
@@ -16,4 +18,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
--
+- Thanks to the team at [TIBCO Spotfire](https://www.tibco.com/products/tibco-spotfire) for all the support in the development of this extension as well as for developing the environment in which this extension has been constructed
