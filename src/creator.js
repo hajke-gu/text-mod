@@ -22,15 +22,15 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
         var firstAnnotationCreated = false;
         var annotationLength = annotation[0]._node.__hierarchy.levels.length;
         for (var i = 0; i < annotationLength; i++) {
-            var dataValue = annotation[i].key; // get annotation value
+            var dataValue = annotation[i].formattedValue(); // get annotation value
 
             if (dataValue !== null) {
                 // check if annotation has value
 
-                // handle date
+                /*// handle date
                 if (annotation[0]._node.__hierarchy.levels[i].name === "Date") {
                     dataValue = formatDate(new Date(Number(dataValue)));
-                }
+                }*/
 
                 var headerContent = createHeaderContent(dataValue);
 
