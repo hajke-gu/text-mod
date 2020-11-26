@@ -10,6 +10,7 @@
  * Get access to the Spotfire Mod API by providing a callback to the initialize method.
  * @param {Spotfire.Mod} mod - mod api
  */
+var lastMarkedIndex = 0;
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
 
@@ -129,9 +130,9 @@ Spotfire.initialize(async (mod) => {
             windowSize,
             mod,
             tooltip,
-            annotationEnabled
+            annotationEnabled,
+            dataView
         );
-
         // @ts-ignore
         modDiv.appendChild(returnedObject.fragment);
         // @ts-ignore
@@ -181,7 +182,8 @@ Spotfire.initialize(async (mod) => {
                     windowSize,
                     mod,
                     tooltip,
-                    annotationEnabled
+                    annotationEnabled,
+                    dataView
                 );
                 // @ts-ignore
                 modDiv.appendChild(returnedObject.fragment);

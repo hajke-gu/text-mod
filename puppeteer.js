@@ -122,13 +122,13 @@ async function runTests(page) {
 
 /* AC The text visualization should only display a subset of the data at a time */
 async function test1(page) {
-    var result = false;
+    let result = false;
 
     // wait for render
     await page.waitFor(5000);
 
     // get number of rows in dataset
-    const element = await page.$(".sfx_label_217");
+    const element = await selectorWithText(page, sfx("label"), "rows");
     const text = await page.evaluate((element) => element.textContent, element);
     var dataset = text.substr(0, text.indexOf(" "));
     dataset = dataset.replace(",", "");
