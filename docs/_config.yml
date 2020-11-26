@@ -38,18 +38,17 @@ markdown: kramdown
 exclude: [_site, CHANGELOG.md, LICENSE, README.md, vendor]
 
 # Set direction for collections
-collections_dir: collections
+collections_dir: my_collections
 
 # Collections
 collections:
-  - documents:
+  documents:
     output: true
-  - features:
+  features:
     output: true
     order:
       - theme.md
       - annotations.md
-
 #    permalink: /:collection/:path
 
 # Defaults
