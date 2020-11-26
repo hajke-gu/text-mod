@@ -1,16 +1,13 @@
 - title: Home
   url: index
   links:
-    - title: "Features"
-      url: features
-    - title: "Use Cases"
-      url: use-cases
-    - title: "Documentation"
-      url: docs
-    - title: "Change log"
-      url: change-log
-    - title: About
-      url: about
-  #links:
-  #  - title: "About"
-  #    url: "about"
+      - title: "Features"
+        url: features
+      - title: "Use Cases"
+        url: use-cases
+      - title: "Documentation"
+        url: docs
+      - title: "Change log"
+        url: change-log
+      - title: About
+        url: about
