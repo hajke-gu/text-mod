@@ -85,11 +85,7 @@ function createTooltipString(specificRow, tooltipContent) {
     var i = null;
     for (i = 0; i < nrOfTooltipChoices; i++) {
         var columnName = getColumnName(specificRow, tooltipContent, i);
-        var dataValue = getDataValue(specificRow, tooltipContent, i);
-
-        if (columnName === "Date")
-            // handle date
-            dataValue = formatDate(new Date(Number(dataValue)));
+        var dataValue = specificRow.categorical(tooltipContent).value()[i].formattedValue();
 
         // truncate to a max length of 100 characters per tooltip row
         var maxLength = 100;
