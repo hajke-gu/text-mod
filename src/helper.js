@@ -101,7 +101,6 @@ function sortRows(rows) {
 
         for (let i = 1; i < length; i++) {
             if (sortValueA == sortValueB) {
-                console.log("!");
                 sortValueA = a.categorical("Sorting").value()[i].key;
                 sortValueB = b.categorical("Sorting").value()[i].key;
             } else {
