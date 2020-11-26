@@ -1,3 +1,7 @@
+---
+name: Functions in the different files
+---
+
 ## main.js
 - Spotfire.initialize
   - render((dataView, windowSize, contentProp, sortingProp, cardbyProp)
