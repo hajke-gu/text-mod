@@ -94,9 +94,19 @@ function isAllRowsMarked(rows) {
  * @param {*} rows
  */
 function sortRows(rows) {
+    let length = rows[0].categorical("Sorting").value().length;
     rows.sort(function (a, b) {
         let sortValueA = a.categorical("Sorting").value()[0].key;
         let sortValueB = b.categorical("Sorting").value()[0].key;
+
+        for (let i = 1; i < length; i++) {
+            if (sortValueA == sortValueB) {
+                sortValueA = a.categorical("Sorting").value()[i].key;
+                sortValueB = b.categorical("Sorting").value()[i].key;
+            } else {
+                i = length;
+            }
+        }
 
         if (!isNaN(Number(sortValueA)) && !isNaN(Number(sortValueB))) {
             sortValueA = Number(sortValueA);
