@@ -70,11 +70,8 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             break;
         }
 
-        // get value/content for the specifc card and handle date
-        let textCardContent = getDataValue(rows[index], "Content", 0);
-        if (getColumnName(rows[index], "Content", 0) === "Date")
-            // date handling
-            textCardContent = formatDate(new Date(Number(textCardContent)));
+        // get value/content for the specifc card
+        let textCardContent = rows[index].categorical("Content").formattedValue();
 
         // textCard not NULL or UNDEFINED
         if (textCardContent) {
