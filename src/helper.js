@@ -59,26 +59,6 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
 }
 
 /**
- * Format date in YYYY-MM-DD
- *
- * @param {*} date Date object
- */
-function formatDate(date) {
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-    var day = date.getDate();
-
-    var dateFormat =
-        year.toString() +
-        "-" +
-        (month < 10 ? "0" + month : month).toString() +
-        "-" +
-        (day < 10 ? "0" + day : day).toString();
-
-    return dateFormat;
-}
-
-/**
  * Check if all rows are marked
  * @param {*} rows
  */
