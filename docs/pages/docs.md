@@ -13,7 +13,8 @@ particular page.
     <hr class="panel-line">
     {% for document in site.documents  %}        
     <div class="entry">
-    <h5><a href="{{ doc.url | prepend: site.baseurl }}">{{ document.title }}</a></h5>
-    <p>{{ document.description }}</p>
+    <h2><a href="{{ doc.url | prepend: site.baseurl }}">{{ document.title }}</a></h2>
+    <p>Link: {{ doc.url }} and {{ site.baseurl }} </p>
+    <p>{{ document.content }}</p>
     </div>{% endfor %}
 </div>
