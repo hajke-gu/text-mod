@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Documentation
+permalink: /documents/
 ---
 
 # Documentation
