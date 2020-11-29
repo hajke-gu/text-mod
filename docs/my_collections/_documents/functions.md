@@ -1,12 +1,13 @@
 ---
-name: Functions in the different files
+title: Functions in the different files
 ---
+The following listing shows in which files the different functions, used in main.js, are stored. 
 
-## main.js
+### main.js
 - Spotfire.initialize
-  - render((dataView, windowSize, contentProp, sortingProp, cardbyProp)
+  - render(dataView, windowSize, contentProp, sortingProp, cardbyProp)
 
-## creator.js
+### creator.js
 - createTextCard(content, annotation, windowSize, markObject, fontStyling, lineDividerColor)
 - createTooltipString(specificRow, tooltipContent)
 - createTextCardContentParagraph(windowSize, content, fontStyling) 
@@ -17,7 +18,7 @@ name: Functions in the different files
 - createCopyButton(newDiv, buttonColor) 
 - createWarning(mod, width)
 
-## helper.js
+### helper.js
 - truncateString(dataValue, maxLength)
 - configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod, annotationEnabled) 
 - formatDate(date)
@@ -29,5 +30,5 @@ name: Functions in the different files
 - getColumnName(element, string, index)
 - getDataValue(element, string, index)
 
-## render.js
+### render.js
 - renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled, annotationEnabled)
