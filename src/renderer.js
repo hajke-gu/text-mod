@@ -8,7 +8,18 @@
  * @param {*} mod The mod object that will be used to add a tooltip using the "controls"
  * @returns {HTMLDocument}
  */
-function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod, tooltipEnabled, annotationEnabled) {
+function renderTextCards(
+    rows,
+    prevIndex,
+    cardsToLoad,
+    rerender,
+    windowSize,
+    mod,
+    tooltipEnabled,
+    annotationEnabled,
+    dataView
+) {
+    var tempLastMarked = 0;
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -70,14 +81,11 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
             break;
         }
 
-        // get value/content for the specifc card and handle date
-        let textCardContent = getDataValue(rows[index], "Content", 0);
-        if (getColumnName(rows[index], "Content", 0) === "Date")
-            // date handling
-            textCardContent = formatDate(new Date(Number(textCardContent)));
+        // get value/content for the specifc card
+        let textCardContent = rows[index].categorical("Content").formattedValue();
 
         // textCard not NULL or UNDEFINED
-        if (textCardContent) {
+        if (getDataValue(rows[index], "Content", 0)) {
             // create annotation
             var annotation = null;
             if (annotationEnabled) {
@@ -114,6 +122,10 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
 
             // create on click functionallity, select text and stiling
             newDiv.onmousedown = (event) => {
+                if (event.shiftKey) {
+                    var hello = document.getElementById("text-card-container");
+                    hello.style.userSelect = "none";
+                }
                 var scrolling = true;
                 let width = newDiv.getBoundingClientRect().width + 27;
                 let height = newDiv.getBoundingClientRect().height;
@@ -125,15 +137,60 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
                 }
                 newDiv.onmouseup = function () {
                     if (!scrolling) {
-                        var selectedText = getSelectedText();
-                        if (selectedText === "" && event.button == 0) {
+                        if (!event.shiftKey) {
+                            var selectedText = getSelectedText();
+                            if (selectedText === "" && event.button == 0) {
+                                if (!event.ctrlKey) {
+                                    rows[index].mark("Replace");
+                                    lastMarkedIndex = index;
+                                } else {
+                                    if (event.ctrlKey) {
+                                        rows[index].mark("Toggle");
+                                        lastMarkedIndex = index;
+                                    }
+                                }
+                            }
+                        } else {
                             if (!event.ctrlKey) {
-                                rows[index].mark("Replace");
-                            } else {
-                                rows[index].mark("Toggle");
+                                var markList = [];
+                                if (lastMarkedIndex < index) {
+                                    for (var i = lastMarkedIndex; i <= index; i++) {
+                                        markList.push(rows[i]);
+                                    }
+                                    dataView.mark(markList, "Replace");
+                                }
+                                if (lastMarkedIndex > index) {
+                                    for (var i = index; i <= lastMarkedIndex; i++) {
+                                        markList.push(rows[i]);
+                                    }
+                                    dataView.mark(markList, "Replace");
+                                }
+                            }
+                            if (event.ctrlKey) {
+                                var markList = [];
+                                for (i = 0; i < rows.length; i++) {
+                                    if (rows[i].isMarked()) {
+                                        markList.push(rows[i]);
+                                    }
+                                }
+                                if (lastMarkedIndex < index) {
+                                    for (var i = lastMarkedIndex; i <= index; i++) {
+                                        markList.push(rows[i]);
+                                    }
+                                    dataView.mark(markList, "Replace");
+                                }
+                                if (lastMarkedIndex > index) {
+                                    for (var i = index; i <= lastMarkedIndex; i++) {
+                                        markList.push(rows[i]);
+                                    }
+                                    dataView.mark(markList, "Replace");
+                                }
                             }
                         }
                     }
+                    var hello = document.getElementById("text-card-container");
+                    hello.style.userSelect = "auto";
+                    event.stopPropagation();
                 };
                 event.stopPropagation();
             };
@@ -147,7 +204,6 @@ function renderTextCards(rows, prevIndex, cardsToLoad, rerender, windowSize, mod
     if (!rerender || prevIndex === 0) {
         prevIndex = prevIndex + cardsToLoad;
     }
-
     var returnObject = { fragment, startIndex: prevIndex };
     return returnObject;
 }

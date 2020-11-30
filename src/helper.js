@@ -59,26 +59,6 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
 }
 
 /**
- * Format date in YYYY-MM-DD
- *
- * @param {*} date Date object
- */
-function formatDate(date) {
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-    var day = date.getDate();
-
-    var dateFormat =
-        year.toString() +
-        "-" +
-        (month < 10 ? "0" + month : month).toString() +
-        "-" +
-        (day < 10 ? "0" + day : day).toString();
-
-    return dateFormat;
-}
-
-/**
  * Check if all rows are marked
  * @param {*} rows
  */
@@ -94,9 +74,19 @@ function isAllRowsMarked(rows) {
  * @param {*} rows
  */
 function sortRows(rows) {
+    let length = rows[0].categorical("Sorting").value().length;
     rows.sort(function (a, b) {
         let sortValueA = a.categorical("Sorting").value()[0].key;
         let sortValueB = b.categorical("Sorting").value()[0].key;
+
+        for (let i = 1; i < length; i++) {
+            if (sortValueA == sortValueB) {
+                sortValueA = a.categorical("Sorting").value()[i].key;
+                sortValueB = b.categorical("Sorting").value()[i].key;
+            } else {
+                i = length;
+            }
+        }
 
         if (!isNaN(Number(sortValueA)) && !isNaN(Number(sortValueB))) {
             sortValueA = Number(sortValueA);

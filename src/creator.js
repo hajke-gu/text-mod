@@ -22,15 +22,10 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
         var firstAnnotationCreated = false;
         var annotationLength = annotation[0]._node.__hierarchy.levels.length;
         for (var i = 0; i < annotationLength; i++) {
-            var dataValue = annotation[i].key; // get annotation value
+            var dataValue = annotation[i].formattedValue(); // get annotation value
 
-            if (dataValue !== null) {
+            if (annotation[i].key !== null) {
                 // check if annotation has value
-
-                // handle date
-                if (annotation[0]._node.__hierarchy.levels[i].name === "Date") {
-                    dataValue = formatDate(new Date(Number(dataValue)));
-                }
 
                 var headerContent = createHeaderContent(dataValue);
 
@@ -90,11 +85,7 @@ function createTooltipString(specificRow, tooltipContent) {
     var i = null;
     for (i = 0; i < nrOfTooltipChoices; i++) {
         var columnName = getColumnName(specificRow, tooltipContent, i);
-        var dataValue = getDataValue(specificRow, tooltipContent, i);
-
-        if (columnName === "Date")
-            // handle date
-            dataValue = formatDate(new Date(Number(dataValue)));
+        var dataValue = specificRow.categorical(tooltipContent).value()[i].formattedValue();
 
         // truncate to a max length of 100 characters per tooltip row
         var maxLength = 100;
