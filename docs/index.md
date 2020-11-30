@@ -4,9 +4,9 @@ title: Startpage
 permalink: /
 ---
 
-# Text mod
+# TEXT MOD - Visualize text
 
-![Example Text Card](/assets/images/text-card3.png)
+![Example Text Card](/assets/images/text-card4.png)
 
 ## Purpose
 
