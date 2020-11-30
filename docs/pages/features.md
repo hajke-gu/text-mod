@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Features
-permalink: /features/
+permalink: /features
 ---
 
 # Features
@@ -23,7 +23,6 @@ The following features are we planning to implement:
     <hr class="panel-line">
     <div class="entry">
   <h2>
-    <a href="{{ feature.url }}">
       {{ feature.name }}
     </a>
   </h2>
