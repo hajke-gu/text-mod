@@ -1,13 +1,9 @@
 - title: Home
   url: index
   links:
+      - title: "Getting started"
+        url: getting-started
       - title: "Features"
         url: features
-      - title: "Use Cases"
-        url: use-cases
-      - title: "Documentation"
-        url: docs
-      - title: "Change log"
-        url: change-log
       - title: About
         url: about

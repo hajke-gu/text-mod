@@ -5,7 +5,7 @@ permalink: /about/
 
 # About
 
-A project between 3rd year students of the BA Software Engineering and Management program at Gothenburg University (Course DIT827) and TIBCO® Spotfire.
+A project between 3rd year students of the Bachelor "Software Engineering and Management" program at Gothenburg University (Course DIT827) and TIBCO® Spotfire.
 
 ## Authors
 
@@ -14,3 +14,7 @@ A project between 3rd year students of the BA Software Engineering and Managemen
 * **[Jonatan Vaara](https://github.com/JonatanVaara)** - *Project owner*
 * **[Alexander Strand](https://github.com/strand93)** - *Project owner*
 * **[Emanuel Dellsen](https://github.com/EmanuelDellsen)** - *Project owner*
+
+## Supervisor
+
+**[Miroslaw Staron](https://www.gu.se/en/about/find-staff/miroslawstaron) - *Professor in Software Engineering at University of Gothenburg, IT Faculty*

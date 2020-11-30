@@ -42,8 +42,6 @@ collections_dir: my_collections
 
 # Collections
 collections:
-  documents:
-    output: true
   features:
     output: true
 #    permalink: /:collection/:path
