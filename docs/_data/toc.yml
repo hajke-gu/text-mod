@@ -5,5 +5,8 @@
         url: getting-started
       - title: "Features"
         url: features
+        children:
+            - title: Annotation
+              url: "features#annotation"
       - title: About
         url: about

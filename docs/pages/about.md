@@ -17,4 +17,8 @@ A project between 3rd year students of the Bachelor "Software Engineering and Ma
 
 ## Supervisor
 
-**[Miroslaw Staron](https://www.gu.se/en/about/find-staff/miroslawstaron) - *Professor in Software Engineering at University of Gothenburg, IT Faculty*
+**[Miroslaw Staron](https://www.gu.se/en/about/find-staff/miroslawstaron)** - *Professor in Software Engineering at University of Gothenburg, IT Faculty*
+
+## License
+
+This project is licensed under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).

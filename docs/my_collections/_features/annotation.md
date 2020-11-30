@@ -1,5 +1,6 @@
 ---
 name: Annotation
+permalink: annotation
 ---
 To give your cards an annotation (a header-type text), select the column(s) under “Annotation”.
 It is possible to select multiple annotations. Just press (+) next to “Annotation”.
