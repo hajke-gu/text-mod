@@ -112,10 +112,21 @@ Spotfire.initialize(async (mod) => {
         // check if sorting is enabled
         console.log((await dataView.categoricalAxis("Sorting")) != null);
         console.log(sortOrder.value() != "nosort");
-        if ((await dataView.categoricalAxis("Sorting")) != null && sortOrder.value() != "nosort") {
-            //sortRows(rows);
-            console.log("sorting");
-            sortRows2(rows, sortOrder.value());
+        // render sorter only if there is a value selected in sorting axis
+        if ((await dataView.categoricalAxis("Sorting")) != null) {
+            renderTopbar(sortDiv, mod, rows, sortOrder);
+
+            if (sortOrder.value() != "unordered") {
+                //sortRows(rows);
+                console.log("sorting");
+                sortRows2(rows, sortOrder.value());
+            }
+        } else {
+            // clear sortDiv if Sorting axis is deselected
+            sortDiv.innerHTML = "";
+
+            //set back default value
+            sortOrder.set("asc");
         }
 
         // check if tooltip is enabled
