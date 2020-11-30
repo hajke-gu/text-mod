@@ -6,14 +6,14 @@ permalink: /docs/
 
 # Documentation
 
-Welcome to the {{ site.title }} pages! Here you can quickly jump to a 
-particular page.
+Here we will provide basic documentation of the text mod. For details, check out the github repository. 
 
 <div class="section-index">
     <hr class="panel-line">
-    {% for post in site.docs  %}        
+    {% for document in site.documents  %}        
     <div class="entry">
-    <h5><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></h5>
-    <p>{{ post.description }}</p>
+    <h5><a href="{{ document.url | prepend: site.baseurl }}">{{ document.title }}</a></h5>
+    <p>Link: {{ document.url }} and {{ site.baseurl }} </p>
+    <p>{{ document.content }}</p>
     </div>{% endfor %}
 </div>
