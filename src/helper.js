@@ -105,14 +105,13 @@ function sortRows(rows) {
     });
 }
 
-function sortRows2(rows) {
-    console.log(rows[0].categorical("Sorting").value()[0].key);
-    console.log(rows[0].categorical("Sorting").value()[0].formattedValue());
+function sortRows2(rows, order) {
     rows.sort(function (a, b) {
-        let sortValueA = a.categorical("Sorting").value()[0].formattedValue();
-        let sortValueB = b.categorical("Sorting").value()[0].formattedValue();
+        let sortValueA = a.categorical("Sorting").formattedValue();
+        let sortValueB = b.categorical("Sorting").formattedValue();
 
-        return sortValueA.localeCompare(sortValueB);
+        if (order == "asc") return sortValueA.localeCompare(sortValueB);
+        else return sortValueB.localeCompare(sortValueA);
     });
 }
 

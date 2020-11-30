@@ -20,11 +20,12 @@ Spotfire.initialize(async (mod) => {
         mod.windowSize(),
         mod.visualization.axis("Content"),
         mod.visualization.axis("Sorting"),
-        mod.visualization.axis("Card by")
+        mod.visualization.axis("Card by"),
+        mod.property("sortOrder")
     );
 
     const modDiv = findElem("#text-card-container");
-    const sortDiv = findElem("#sort-symbol");
+    const sortDiv = findElem("#sorter");
 
     // store the context
     const context = mod.getRenderContext();
@@ -45,7 +46,7 @@ Spotfire.initialize(async (mod) => {
      * @param {Spotfire.Axis} sortingProp
      */
     // @ts-ignore
-    async function render(dataView, windowSize, contentProp, sortingProp, cardbyProp) {
+    async function render(dataView, windowSize, contentProp, sortingProp, cardbyProp, sortOrder) {
         /**
          * Check data axes
          * - Check if content empty
@@ -109,9 +110,12 @@ Spotfire.initialize(async (mod) => {
         }
 
         // check if sorting is enabled
-        if ((await dataView.categoricalAxis("Sorting")) != null) {
+        console.log((await dataView.categoricalAxis("Sorting")) != null);
+        console.log(sortOrder.value() != "nosort");
+        if ((await dataView.categoricalAxis("Sorting")) != null && sortOrder.value() != "nosort") {
             //sortRows(rows);
-            sortRows2(rows);
+            console.log("sorting");
+            sortRows2(rows, sortOrder.value());
         }
 
         // check if tooltip is enabled
