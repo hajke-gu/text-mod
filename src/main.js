@@ -25,7 +25,6 @@ Spotfire.initialize(async (mod) => {
     );
 
     const modDiv = findElem("#text-card-container");
-    const sortDiv = findElem("#sorter");
 
     // store the context
     const context = mod.getRenderContext();
@@ -110,21 +109,14 @@ Spotfire.initialize(async (mod) => {
         }
 
         // check if sorting is enabled
-        console.log((await dataView.categoricalAxis("Sorting")) != null);
-        console.log(sortOrder.value() != "nosort");
-        // render sorter only if there is a value selected in sorting axis
+        let sortingEnabled = false;
         if ((await dataView.categoricalAxis("Sorting")) != null) {
-            renderTopbar(sortDiv, mod, rows, sortOrder);
-
+            // create sort button only if there is a value selected in sorting axis
+            sortingEnabled = true;
             if (sortOrder.value() != "unordered") {
-                //sortRows(rows);
-                console.log("sorting");
-                sortRows2(rows, sortOrder.value());
+                sortRows(rows, sortOrder.value());
             }
         } else {
-            // clear sortDiv if Sorting axis is deselected
-            sortDiv.innerHTML = "";
-
             //set back default value
             sortOrder.set("asc");
         }
@@ -208,6 +200,9 @@ Spotfire.initialize(async (mod) => {
                 prevIndex = returnedObject.startIndex;
             }
         });
+
+        //Create SortButton
+        if (sortingEnabled) createSortButton(modDiv, mod.getRenderContext().styling.general.font.color, sortOrder);
 
         // signal that the mod is ready for export.
         context.signalRenderComplete();

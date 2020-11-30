@@ -257,3 +257,53 @@ function createWarning(mod, width) {
 
     showPopout();
 }
+
+/**
+ * Create copy button for the text card
+ * @param newDiv The div / text card to have the new button
+ * @param buttonColor Color of button
+ */
+function createSortButton(newDiv, buttonColor, sortOrder) {
+    // create element
+    var newButton = document.createElement("svg");
+
+    newButton.title = "Sorted in " + sortOrder.value() + "ending order";
+    newButton.setAttribute("id", "img-button-sort");
+
+    // gets and creates svg
+    var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgNode.setAttributeNS(null, "width", "16");
+    svgNode.setAttributeNS(null, "height", "16");
+
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    // set 60% opacity of font color
+    svg.setAttributeNS(null, "fill", buttonColor + "99");
+    svg.setAttributeNS(null, "viewBox", "0 0 16 16");
+    svg.setAttributeNS(null, "d", "M11.259 1H6v3H2v11h10v-3h2V4.094zM8 4h2v1H8zm3 10H3V5h3v7h5zm1-5H8V8h4zm0-2H8V6h4z");
+    // set 80 % opacity of font color
+    newButton.onmouseover = (e) => {
+        svg.setAttributeNS(null, "fill", buttonColor + "CC");
+    };
+
+    newButton.onmousedown = (e) => {
+        svg.setAttributeNS(null, "fill", buttonColor);
+
+        if (sortOrder.value() == "asc") sortOrder.set("desc");
+        else sortOrder.set("asc");
+
+        e.stopPropagation();
+    };
+    // set 80 % opacity of font color
+    newButton.onmouseup = (e) => {
+        svg.setAttributeNS(null, "fill", buttonColor + "CC");
+        e.stopPropagation();
+    };
+    // set60% opacity of font color
+    newButton.onmouseleave = (e) => {
+        svg.setAttributeNS(null, "fill", buttonColor + "99");
+    };
+
+    svgNode.appendChild(svg);
+    newButton.appendChild(svgNode);
+    newDiv.appendChild(newButton);
+}

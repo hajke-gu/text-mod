@@ -19,7 +19,6 @@ function renderTextCards(
     annotationEnabled,
     dataView
 ) {
-    var tempLastMarked = 0;
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }
@@ -206,87 +205,4 @@ function renderTextCards(
     }
     var returnObject = { fragment, startIndex: prevIndex };
     return returnObject;
-}
-
-function renderTopbar(topDiv, mod, rows, sorting) {
-    /**
-     * A helper function to compare a property against a certain value
-     */
-    const is = (property) => (value) => property.value() == value;
-
-    topDiv.innerHTML = "";
-
-    var header = document.createElement("h4");
-    header.textContent = "Sorted by: " + getColumnName(rows[0], "Sorting", 0);
-    header.textContent += " (" + sorting.value() + ")";
-
-    const { popout } = mod.controls;
-    topDiv.onclick = (e) => {
-        popout.show(
-            {
-                x: e.x,
-                y: e.y,
-                autoClose: true,
-                alignment: "bottom",
-                onChange: popoutChangeHandler
-            },
-            popoutContent
-        );
-    };
-
-    const { section } = popout;
-    const { radioButton } = popout.components;
-    /**
-     * Create popout content
-     */
-    const popoutContent = () => [
-        section({
-            heading: "Sorting",
-            children: [
-                radioButton({
-                    name: sorting.name,
-                    text: "Unordered",
-                    value: "unordered",
-                    checked: is(sorting)("unordered")
-                }),
-                radioButton({
-                    name: sorting.name,
-                    text: "Descending",
-                    value: "desc",
-                    checked: is(sorting)("desc")
-                }),
-                radioButton({
-                    name: sorting.name,
-                    text: "Ascending",
-                    value: "asc",
-                    checked: is(sorting)("asc")
-                })
-            ]
-        })
-    ];
-
-    /**
-     * Popout change handler
-     * @param {Spotfire.PopoutComponentEvent} property
-     */
-    function popoutChangeHandler({ name, value }) {
-        /**
-         * Update property
-         */
-        name == sorting.name && sorting.set(value);
-
-        /**
-         * Update topbar
-         */
-        //header
-    }
-
-    topDiv.onmouseover = (e) => {
-        topDiv.style.backgroundColor = "#F5F5F5";
-    };
-    topDiv.onmouseout = (e) => {
-        topDiv.style.backgroundColor = "white";
-    };
-
-    topDiv.appendChild(header);
 }
