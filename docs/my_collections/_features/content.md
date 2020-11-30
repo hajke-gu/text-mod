@@ -1,4 +1,4 @@
 ---
-name: Theme
+name: Content
 ---
 Supercool {{ name }} feature.
