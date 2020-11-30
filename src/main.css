@@ -90,8 +90,8 @@ body {
 
 #img-button-sort {
     position: absolute;
-    top: 6px;
-    right: 12px;
+    top: 2px;
+    right: 16px;
     border: 0;
     cursor: pointer;
 }

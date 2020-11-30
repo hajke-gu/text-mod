@@ -272,14 +272,25 @@ function createSortButton(newDiv, buttonColor, sortOrder) {
 
     // gets and creates svg
     var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svgNode.setAttributeNS(null, "width", "16");
-    svgNode.setAttributeNS(null, "height", "16");
+    svgNode.setAttributeNS(null, "width", "8");
+    svgNode.setAttributeNS(null, "height", "14");
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "path");
     // set 60% opacity of font color
     svg.setAttributeNS(null, "fill", buttonColor + "99");
-    svg.setAttributeNS(null, "viewBox", "0 0 16 16");
-    svg.setAttributeNS(null, "d", "M11.259 1H6v3H2v11h10v-3h2V4.094zM8 4h2v1H8zm3 10H3V5h3v7h5zm1-5H8V8h4zm0-2H8V6h4z");
+    svg.setAttributeNS(null, "viewBox", "0 0 8 14");
+    if (sortOrder.value() == "asc")
+        svg.setAttributeNS(
+            null,
+            "d",
+            "M3.84645 13.3536C4.04171 13.5488 4.35829 13.5488 4.55355 13.3536L7.73553 10.1716C7.9308 9.97631 7.9308 9.65973 7.73553 9.46447C7.54027 9.2692 7.22369 9.2692 7.02843 9.46447L4.2 12.2929L1.37157 9.46447C1.17631 9.2692 0.859728 9.2692 0.664466 9.46447C0.469204 9.65973 0.469204 9.97631 0.664466 10.1716L3.84645 13.3536ZM3.7 0L3.7 13H4.7L4.7 0L3.7 0Z"
+        );
+    else
+        svg.setAttributeNS(
+            null,
+            "d",
+            "M4.55355 0.646447C4.35829 0.451184 4.04171 0.451184 3.84645 0.646447L0.664466 3.82843C0.469204 4.02369 0.469204 4.34027 0.664466 4.53553C0.859728 4.7308 1.17631 4.7308 1.37157 4.53553L4.2 1.70711L7.02843 4.53553C7.22369 4.7308 7.54027 4.7308 7.73553 4.53553C7.9308 4.34027 7.9308 4.02369 7.73553 3.82843L4.55355 0.646447ZM4.7 14L4.7 1H3.7L3.7 14H4.7Z"
+        );
     // set 80 % opacity of font color
     newButton.onmouseover = (e) => {
         svg.setAttributeNS(null, "fill", buttonColor + "CC");
