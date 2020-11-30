@@ -6,7 +6,7 @@ permalink: /
 
 # TEXT CARD mod - Visualize text in TIBCO Spotfire®
 
-![Example Text Card](/assets/images/text-card4_dark.png)
+![Example Text Card](/assets/images/text-card4.png)
 
 ## Purpose
 

@@ -1,6 +1,7 @@
 ---
 name: Annotation
 permalink: annotation
+ordering: 2
 ---
 ## Annotation
 To give your cards an annotation (a header-type text), select the column(s) under “Annotation”.

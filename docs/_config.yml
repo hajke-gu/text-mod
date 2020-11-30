@@ -43,9 +43,10 @@ collections_dir: my_collections
 # Collections
 collections:
   features:
-    output: true
+    sort_by: ordering
     order:
       - copying.md
+      - marking.md
 #    permalink: /:collection/:path
 
 # Defaults
