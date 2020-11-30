@@ -10,5 +10,5 @@ It is possible to select multiple annotations. Just press (+) next to “Annotat
 </video>
 
 <video controls muted width="768" height="512">
-  <source src="../assets/webms/annotation2.webm" type="video/webm">
+  <source src="/assets/webms/annotation2.webm" type="video/webm">
 </video>

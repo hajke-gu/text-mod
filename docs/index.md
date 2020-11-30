@@ -5,9 +5,10 @@ permalink: /
 ---
 
 # Text mod
-# >> Visualize your text data  <<
 
-![Example Text Card](/assets/images/text-card2.png)
+![Example Text Card](/assets/images/text-card3.png)
+
+<img src="assets/images/text-card3.png" width="768" alt="img">
 
 ## Purpose
 

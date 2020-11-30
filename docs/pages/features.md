@@ -22,10 +22,6 @@ The following features are we planning to implement:
 {% for feature in site.features %}
     <hr class="panel-line">
     <div class="entry">
-  <h2>
-      {{ feature.name }}
-    </a>
-  </h2>
   <p>{{ feature.content | markdownify }}</p>
   </div>
 {% endfor %}
