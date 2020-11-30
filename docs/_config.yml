@@ -44,6 +44,8 @@ collections_dir: my_collections
 collections:
   features:
     output: true
+    order:
+      - copying.md
 #    permalink: /:collection/:path
 
 # Defaults
