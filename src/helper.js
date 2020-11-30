@@ -105,6 +105,17 @@ function sortRows(rows) {
     });
 }
 
+function sortRows2(rows) {
+    console.log(rows[0].categorical("Sorting").value()[0].key);
+    console.log(rows[0].categorical("Sorting").value()[0].formattedValue());
+    rows.sort(function (a, b) {
+        let sortValueA = a.categorical("Sorting").value()[0].formattedValue();
+        let sortValueB = b.categorical("Sorting").value()[0].formattedValue();
+
+        return sortValueA.localeCompare(sortValueB);
+    });
+}
+
 /**
  * Get text from text card to clipboard
  * @param text Text is the value that the user has chosen, either through selection or copy entire text card

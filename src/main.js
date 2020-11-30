@@ -24,6 +24,7 @@ Spotfire.initialize(async (mod) => {
     );
 
     const modDiv = findElem("#text-card-container");
+    const sortDiv = findElem("#sort-symbol");
 
     // store the context
     const context = mod.getRenderContext();
@@ -109,7 +110,8 @@ Spotfire.initialize(async (mod) => {
 
         // check if sorting is enabled
         if ((await dataView.categoricalAxis("Sorting")) != null) {
-            sortRows(rows);
+            //sortRows(rows);
+            sortRows2(rows);
         }
 
         // check if tooltip is enabled
