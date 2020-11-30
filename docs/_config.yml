@@ -2,7 +2,7 @@
 remote_theme: vsoch/docsy-jekyll
 
 # Project title
-title: Text Card Mod for TIBCO Spotfire®
+title: Text Card Mod
 description: > # this means to ignore newlines until "baseurl:"
   Text visualization using Spotfire Mods. A project between Gothenburg University (course DIT827) and TIBCO® Spotfire.
 
