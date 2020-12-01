@@ -321,9 +321,7 @@ figure {
 
 img {
     vertical-align: middle;
-    border-style: none;
-    -webkit-filter: drop-shadow(5px 5px 5px #222222);
-  filter: drop-shadow(5px 5px 5px #222222)
+    border-style: none
 }
 
 svg {
@@ -727,6 +725,8 @@ pre code {
     margin-right: auto;
     margin-left: auto
 }
+
+
 
 .row {
     display: -webkit-box;
@@ -9044,6 +9044,10 @@ button.bg-dark:focus {
     overflow: visible;
     clip: auto;
     white-space: normal
+}
+.shadow-new{
+    -webkit-filter: drop-shadow(5px 5px 5px #222222);
+  filter: drop-shadow(5px 5px 5px #222222)
 }
 
 .shadow-sm {

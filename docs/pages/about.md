@@ -5,7 +5,8 @@ permalink: /about/
 
 # About
 
-A project between 3rd year students of the Bachelor "Software Engineering and Management" program at Gothenburg University (Course DIT827) and TIBCO® Spotfire.
+A project between 3rd year students of the Bachelor "Software Engineering and Management" program at Gothenburg University (Course DIT827) and TIBCO® Spotfire. 
+The Text Card mod is a custom visualization and was created using [Spotfire Mods by TIBCO Spotfire®](https://tibcosoftware.github.io/spotfire-mods/){:target="_blank"}.
 
 ## Authors
 

@@ -8,5 +8,14 @@
         children:
             - title: Annotation
               url: "features#annotation"
+      - title: "Spotfire Integration"
+        url: spotfire-integration
+        children:
+            - title: Marking
+              url: "spotfire-integration#marking"
+            - title: Details Visualization
+              url: "spotfire-integration#details-visualization"
+            - title: Theme adaption
+              url: "spotfire-integration#theme-adaption"
       - title: About
         url: about
