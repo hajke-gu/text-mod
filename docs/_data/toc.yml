@@ -8,6 +8,12 @@
         children:
             - title: Annotation
               url: "features#annotation"
+            - title: Color by
+              url: "features#color-by"
+            - title: Copying
+              url: "features#copying"
+            - title: Sorting
+              url: "features#sorting"
       - title: "Spotfire Integration"
         url: spotfire-integration
         children:

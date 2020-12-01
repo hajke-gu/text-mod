@@ -14,7 +14,7 @@ To get started, choose the specific column that you want to visualize in "Conten
 for more functions of the Text-Mod, take a look at the [features](features) section.
 
 To avoid aggreated data, make sure to select (Row Number) in “Card By” on the right-side menu. This is the default setting.
-<video controls muted width="768" height="512">
+<video muted>
   <source src="{{ site.baseurl }}/assets/webms/select-row-number.webm" type="video/webm">
   Your browser does not support webm files.
 </video>
