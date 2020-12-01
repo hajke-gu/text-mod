@@ -25,7 +25,7 @@ If the Text Card mod does not show up in your list for details visualizations, m
 
 <hr class="panel-line">
 ## Theme adaption
-Like the native spotfire visualizations, the Text Card mod supports and adapts to custom themes/canvas stayling.
+Like the native spotfire visualizations, the Text Card mod supports and adapts to custom themes/canvas styling.
 <video controls muted width="768" height="512">
   <source src="{{ site.baseurl }}/assets/webms/themes.webm" type="video/webm">
 </video>
