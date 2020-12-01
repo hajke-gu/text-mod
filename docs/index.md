@@ -4,10 +4,10 @@ title: Text Card mod
 permalink: /
 ---
 
-# TEXT CARD mod 
 # Visualize text data in TIBCO Spotfire®
-
-<span class=".rounded .shadow"><img src="/assets/images/text-card4.png" alt="Text Mod in action"></span>
+# with the
+# TEXT CARD mod 
+<span class=".rounded .shadow"><img src="{{ site.baseurl }}/assets/images/text-card4.png" alt="Text Mod in action"></span>
 
 ## Purpose
 
