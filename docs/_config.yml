@@ -19,7 +19,6 @@ feedback: false
 
 
 # Color of navigation bar
-#logo: "/assets/images/icon.svg"
 logo_pixels: 34
 color: "#4a58c8"
 

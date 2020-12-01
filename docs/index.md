@@ -5,7 +5,7 @@ permalink: /
 ---
 # TEXT CARD mod 
 ### Visualize text data in TIBCO Spotfire®
-<img src="{{ site.baseurl }}/assets/images/text-card4.png" class="rounded shadow-new" alt="Text Mod in action">
+<img src="{{ site.baseurl }}/assets/images/text-card5.png" class="rounded shadow-new" alt="Text Mod in action">
 
 ## Purpose
 
