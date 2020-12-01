@@ -87,3 +87,11 @@ body {
     border: 0;
     cursor: pointer;
 }
+
+#img-button-sort {
+    position: absolute;
+    top: 2px;
+    right: 14px;
+    border: 0;
+    cursor: pointer;
+}

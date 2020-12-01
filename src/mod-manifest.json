@@ -4,7 +4,13 @@
     "name": "Text Card",
     "id": "text-card-mod",
     "icon": "icon.svg",
-    "properties": [],
+    "properties": [
+        {
+            "name": "sortOrder",
+            "type": "string",
+            "defaultValue": "asc"
+        }
+    ],
     "dataViewDefinition": {
         "colorAxis": {
             "mode": "dual",

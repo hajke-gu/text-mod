@@ -257,3 +257,94 @@ function createWarning(mod, width) {
 
     showPopout();
 }
+
+/**
+ * Create copy button for the text card
+ * @param newDiv The div / text card to have the new button
+ * @param buttonColor Color of button
+ */
+function createSortButton(newDiv, buttonColor, sortOrder) {
+    // create element
+    var newButton = document.createElement("svg");
+
+    newButton.title = "Sorted in " + sortOrder.value() + "ending order";
+    newButton.setAttribute("id", "img-button-sort");
+
+    // gets and creates svg
+    var svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svgNode.setAttributeNS(null, "width", "16");
+    svgNode.setAttributeNS(null, "height", "16");
+    svgNode.setAttributeNS(null, "viewBox", "0 0 16 16");
+    // set 60% opacity of font color
+    svgNode.setAttributeNS(null, "fill", buttonColor + "99");
+
+    if (sortOrder.value() == "asc") {
+        // sort symbol for ascending
+        var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttributeNS(
+            null,
+            "d",
+            "M4.34847 0.641433C4.15044 0.44898 3.83389 0.453502 3.64143 0.651533L0.505229 3.87864C0.312776 4.07667 0.317298 4.39322 0.515329 4.58568C0.713361 4.77813 1.02991 4.77361 1.22236 4.57558L4.0101 1.70703L6.87864 4.49477C7.07667 4.68722 7.39322 4.6827 7.58568 4.48467C7.77813 4.28664 7.77361 3.97009 7.57558 3.77764L4.34847 0.641433ZM4.69995 14.9929L4.49995 0.992858L3.50005 1.00714L3.70005 15.0071L4.69995 14.9929Z"
+        );
+        svgNode.appendChild(path);
+
+        for (let i = 0; i < 4; i++) {
+            let widths = ["3", "4", "5", "6"];
+            let ys = ["13.5", "9.5", "5.5", "1.5"];
+            let rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttributeNS(null, "x", "9.5");
+            rect.setAttributeNS(null, "y", ys[i]);
+            rect.setAttributeNS(null, "width", widths[i]);
+            rect.setAttributeNS(null, "height", "1");
+            rect.setAttributeNS(null, "rx", "0.5");
+            svgNode.appendChild(rect);
+        }
+    } else {
+        // sort symbol for descending
+        var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttributeNS(
+            null,
+            "d",
+            "M3.74645 14.3543C3.94171 14.5495 4.25829 14.5495 4.45355 14.3543L7.63553 11.1723C7.8308 10.977 7.8308 10.6604 7.63553 10.4652C7.44027 10.2699 7.12369 10.2699 6.92843 10.4652L4.1 13.2936L1.27157 10.4652C1.07631 10.2699 0.759729 10.2699 0.564466 10.4652C0.369204 10.6604 0.369204 10.977 0.564466 11.1723L3.74645 14.3543ZM3.6 -0.000714123L3.6 14.0007H4.6L4.6 -0.000714123L3.6 -0.000714123Z"
+        );
+        svgNode.appendChild(path);
+
+        for (let i = 0; i < 4; i++) {
+            let widths = ["3", "4", "5", "6"];
+            //let ys = ["13.5", "9.5", "5.5", "1.5"];
+            let ys = ["1.5", "5.5", "9.5", "13.5"];
+            let rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttributeNS(null, "x", "9.5");
+            rect.setAttributeNS(null, "y", ys[i]);
+            rect.setAttributeNS(null, "width", widths[i]);
+            rect.setAttributeNS(null, "height", "1");
+            rect.setAttributeNS(null, "rx", "0.5");
+            svgNode.appendChild(rect);
+        }
+    }
+    // set 80 % opacity of font color
+    newButton.onmouseover = (e) => {
+        svgNode.setAttributeNS(null, "fill", buttonColor + "CC");
+    };
+
+    newButton.onmousedown = (e) => {
+        svgNode.setAttributeNS(null, "fill", buttonColor);
+
+        if (sortOrder.value() == "asc") sortOrder.set("desc");
+        else sortOrder.set("asc");
+
+        e.stopPropagation();
+    };
+    // set 80 % opacity of font color
+    newButton.onmouseup = (e) => {
+        svgNode.setAttributeNS(null, "fill", buttonColor + "CC");
+        e.stopPropagation();
+    };
+    // set60% opacity of font color
+    newButton.onmouseleave = (e) => {
+        svgNode.setAttributeNS(null, "fill", buttonColor + "99");
+    };
+
+    newButton.appendChild(svgNode);
+    newDiv.appendChild(newButton);
+}
