@@ -9,7 +9,6 @@ permalink: /spotfire-integration
 The Text Card mod integrates seamless in the TIBCO Spotfire environment. The following videos show how the Text Card mod supports the common functions/features of visualizations and interaction between visualizations: 
 Marking, Details visualization and Canvas Styling/Theme adaption.
 
-<hr class="panel-line">
 ## Marking
 Just as in other Spotfire visualizations, you can mark your content, and have the markings being applied in your other related visualizations.
 <video controls muted width="768" height="512">

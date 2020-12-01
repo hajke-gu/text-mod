@@ -3,11 +3,9 @@ layout: page
 title: Text Card mod
 permalink: /
 ---
-
-# Visualize text data in TIBCO Spotfire®
-# with the
 # TEXT CARD mod 
-<span class=".rounded .shadow"><img src="{{ site.baseurl }}/assets/images/text-card4.png" alt="Text Mod in action"></span>
+# Visualize text data in TIBCO Spotfire®
+<img src="{{ site.baseurl }}/assets/images/text-card4.png" class=".rounded .shadow-new" alt="Text Mod in action">
 
 ## Purpose
 
