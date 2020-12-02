@@ -15,7 +15,8 @@ For more functions and how the Text Card mod integrades into the Spotfire enviro
 
 <hr class="panel-line">
 ## The text card
-Here you can see the different elements of the actual text card. Hover over the image to see more functions and explanations. 
+Here you can see the different elements of the actual text card. Hover over the image to see more functions and explanations.
+
 <img src='{{ site.baseurl }}/assets/images/text-card-commented1.png' onmouseover="this.src='{{ site.baseurl }}/assets/images/text-card-commented2.png';" onmouseout="this.src='{{ site.baseurl }}/assets/images/text-card-commented1.png';" class="rounded shadow-new" alt="Text Card with comments"/>
 
 <hr class="panel-line">
