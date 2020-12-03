@@ -7,9 +7,7 @@ permalink: /
 <h2 class="display-1 mt-0 mt-md-5 pb-4" style="color: white;">Text Card mod</h2>
 <h4 style="color: white;">Visualize your text data in Spotfire®</h4>
 <p>&nbsp;</p>
-<p>&nbsp;</p>
 <img src="{{ site.baseurl }}/assets/images/startpage.png" class="rounded shadow-new" alt="Text Mod in action">
-<p>&nbsp;</p>
 <p>&nbsp;</p>
 <div class="pt-3 lead">
 <div class="mx-auto">
