@@ -9,15 +9,15 @@ permalink: /home
 
 ## Purpose
 
-Text Card mod for the [TIBCO Spotfire®](https://www.tibco.com/products/tibco-spotfire){:target="_blank"} environment is an extension used to visualize text data in an efficient and esthetical-appealing way, often alongside other data visualizations.
+Text Card mod for the [TIBCO Spotfire®](https://www.tibco.com/products/tibco-spotfire){:target="_blank"} environment is an extension used to visualize text data in an efficient and esthetical-appealing way.
 
 ## Getting started
 
 You want to start directly? Look [here](getting-started).
 
-## Features
+## Features & Spotfire® Integration
 
-More details about the features can be found [here](features)
+A complete list of the features of the Text Card mod's features can be found [here](features). How the Text Card mod integrates in the Spotfire® environment can be seen [here](spotfire-integration).
 
 
 

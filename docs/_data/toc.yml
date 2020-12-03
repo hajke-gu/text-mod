@@ -3,6 +3,11 @@
   links:
       - title: "Getting started"
         url: getting-started
+        children:
+            - title: Select content
+              url: "getting-started#select-the-content-of-the-text-cards"
+            - title: Text card in a nutshell
+              url: "getting-started#the-text-card-in-a-nutshell"
       - title: "Features"
         url: features
         children:
@@ -14,7 +19,7 @@
               url: "features#copying"
             - title: Sorting
               url: "features#sorting"
-      - title: "Spotfire Integration"
+      - title: "Spotfire® Integration"
         url: spotfire-integration
         children:
             - title: Marking
