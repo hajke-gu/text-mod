@@ -573,7 +573,11 @@ mark,
 }
 
 .background-grad{
-        background-image: linear-gradient(180deg, #4a58c8, #403f4c);
+    margin: 0;
+    background-image: linear-gradient(180deg, #4a58c8, #403f4c);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
 }
 
 .list-unstyled {
