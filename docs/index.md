@@ -1,25 +1,15 @@
 ---
-layout: page
+layout: startpage
 title: Text Card mod
 permalink: /
 ---
-# TEXT CARD mod 
-### Visualize text data in TIBCO Spotfire®
-<img src="{{ site.baseurl }}/assets/images/text-card5.png" class="rounded shadow-new" alt="Text Mod in action">
+ <div class="text-center">
+<h1 style="color: white;"> Text Card mod </h1>
+<img src="{{ site.baseurl }}/assets/images/startpage.png" class="rounded shadow-white" alt="Text Mod in action">
 
-## Purpose
+<button class="btn btn-success" href="{{ site.baseurl }}/pages/home.md">Getting started</button><button class="btn btn-success" href="https://github.com/hajke-gu/text-mod">Github</button>
 
-Text Card mod for the [TIBCO Spotfire®](https://www.tibco.com/products/tibco-spotfire){:target="_blank"} environment is an extension used to visualize text data in an efficient and esthetical-appealing way, often alongside other data visualizations.
-
-## Getting started
-
-You want to start directly? Look [here](getting-started).
-
-## Features
-
-More details about the features can be found [here](features)
-
-
-
+<h2 style="color: white;"> Visualize your text data</h2>
+</div>
 
 
