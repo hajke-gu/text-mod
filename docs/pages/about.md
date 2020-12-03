@@ -16,7 +16,7 @@ The Text Card mod is a custom visualization and was created using [Spotfire Mods
 * [Jonatan Vaara](https://github.com/JonatanVaara){:target="_blank"} - *Project owner*
 * [Karl Westgårdh](https://github.com/Synoecism){:target="_blank"} - *Project owner*
 
-## Supervisor
+## Academic supervisor
 
 [Miroslaw Staron](https://www.gu.se/en/about/find-staff/miroslawstaron){:target="_blank"} - *Professor in Software Engineering at University of Gothenburg, IT Faculty*
 
