@@ -9,11 +9,9 @@ permalink: /features
 * Visualization of text data in a space efficient manner
 * Viewing of text data entries with large amount of text
 * Copying of specific text data to the clipboard
-* Sorting of text data
-* Categorial and continuous coloring of text data
+* Sorting
+* Coloring of text cards by specific criteria
 * Displaying of an additional annotation information for every text field
-* Support "marking" and "detailed visualization" 
-* Seamless integration into the Spotfire environment
 
 <hr class="panel-line">
 ## Annotation
