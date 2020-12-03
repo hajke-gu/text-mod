@@ -3161,8 +3161,8 @@ fieldset:disabled a.btn {
 
 .btn-warning:hover {
     color: #fff;
-    background-color: #30638e;
-    border-color: #30638e;
+    background-color: {{ site.color }};
+    border-color: {{ site.color }};
 }
 
 .btn-warning:focus,

@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Text Card mod
-permalink: /
+permalink: /home
 ---
 # TEXT CARD mod 
 ### Visualize text data in TIBCO Spotfire®

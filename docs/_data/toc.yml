@@ -1,5 +1,5 @@
 - title: Home
-  url: pages/home
+  url: home
   links:
       - title: "Getting started"
         url: getting-started
