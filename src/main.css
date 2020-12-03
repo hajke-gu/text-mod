@@ -78,6 +78,10 @@ body {
     padding-right: 24px;
     overflow-y: auto;
     overflow-x: hidden;
+    overflow-wrap: break-word;
+    /*-webkit-hyphens: auto;
+    -moz-hyphens: auto;
+         hyphens: auto; */
 }
 
 #img-button {
