@@ -11,8 +11,8 @@
       - title: "Features"
         url: features
         children:
-            - title: Annotation
-              url: "features#annotation"
+            - title: Annotations
+              url: "features#annotations"
             - title: Color by
               url: "features#color-by"
             - title: Copying

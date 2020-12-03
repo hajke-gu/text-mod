@@ -14,9 +14,11 @@ permalink: /features
 * Displaying of an additional annotation information for every text field
 
 <hr class="panel-line">
-## Annotation
+## Annotations
 To give your cards an annotation (a header-type text), select the column(s) under “Annotation”.
 It is possible to select multiple annotations. Just press (+) next to “Annotation”.
+Hovering over the annotation area of the text card will show a tooltip with your chosen annotations including the respective column name.
+Please note: If no annotations are choosen or the respective card does not have a value in the chosen annotation column, the annotation field will not be shown.
 <video controls muted width="768" height="512">
   <source src="{{ site.baseurl }}/assets/webms/annotation1.webm" type="video/webm">
 </video>
@@ -42,7 +44,7 @@ If you only want to copy certain parts, mark it and press Ctrl/CMD+C to copy it.
 
 <hr class="panel-line">
 ## Tooltip
-You need some extra information? Add additional information in a tooltip. The tooltip will be shown when hoovering with the mouse over the "Content" area of the text card. Choose the favoured information by selecting the respective column in "Tooltip".
+You need some extra information? Add additional information in a tooltip. The tooltip will be shown when hoovering with the mouse over the "Content" area of the text card. Choose the favoured information by selecting the respective column(s) in "Tooltip". The annotations area will show a tooltip for chosen annotations.
 <video controls muted width="768" height="512">
   <source src="{{ site.baseurl }}/assets/webms/tooltip.webm" type="video/webm">
 </video>
