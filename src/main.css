@@ -14,7 +14,8 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     padding-left: 24px;
-    padding-right: 24px;
+    padding-right: 28px;
+    padding-top: 4px;
 }
 
 #text-card-border {
@@ -94,8 +95,8 @@ body {
 
 #img-button-sort {
     position: absolute;
-    top: 2px;
-    right: 14px;
+    top: 0px;
+    right: 12px;
     border: 0;
     cursor: pointer;
 }
