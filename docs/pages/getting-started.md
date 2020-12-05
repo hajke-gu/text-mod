@@ -6,10 +6,13 @@ permalink: /getting-started
 
 # Getting started
 
+Text Card mod is available on TIBCO Spotfire® labs / TIBCO community.
+To run the Text Card mod locally (with the possibility to make changes on the code), please visit [GitHub](https://github.com/hajke-gu/text-mod) and follow the instructions in the readme file.
+
 ## Select the content of the text cards
 To get started, choose the specific column that you want to visualize in "Content" in the menu on the right side. 
 
-Please note: 
+<p><span class="badge badge-info">Note</span></p>
 In "Content" only one column can be chosen.
 <video controls muted width="768">
   <source src="{{ site.baseurl }}/assets/webms/select-content.webm" type="video/webm">
@@ -24,7 +27,7 @@ Here you can see the different elements of the text card. Hover over the image t
 
 <p> </p><p> </p>
 
-Please note:
+<p><span class="badge badge-info">Note</span></p>
 To avoid aggreated data, make sure to select (Row Number) in “Card By” on the right-side menu. This is the default setting.
 <video controls muted width="768">
   <source src="{{ site.baseurl }}/assets/webms/select-row-number.webm" type="video/webm">
