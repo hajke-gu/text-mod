@@ -19,7 +19,7 @@ To give your cards an annotation (a header-type text), select the column(s) unde
 It is possible to select multiple annotations. Just press (+) next to “Annotation”.
 Hovering over the annotation area of the text card will show a tooltip with your chosen annotations including the respective column name.
 <p><span class="badge badge-warning">Notice</span><br>
-If no annotations are choosen or the respective card does not have a value in the chosen annotation column, the annotation field will not be shown.</p>
+If no annotation column is choosen or the respective row does not have a value in the chosen annotation column, the annotation field will not be shown.</p>
 <video controls muted width="768">
   <source src="{{ site.baseurl }}/assets/webms/annotation1.webm" type="video/webm">
   <p>Your browser does not support webm files.</p>
