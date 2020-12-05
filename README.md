@@ -14,8 +14,10 @@ Visit the project's [website](https://hajke-gu.github.io/text-mod/) for a user g
 
 To run (and modify) the Text Card mod locally, please follow these steps:
 
+
 ### Prerequisites
 These instructions assume that you have [Node.js](https://nodejs.org/en/) (which includes npm) installed.
+
 
 ### How to get started (with development server)
 - Open a terminal at the location of the downloaded/cloned Text Card mod repository.
@@ -32,10 +34,10 @@ These instructions assume that you have [Node.js](https://nodejs.org/en/) (which
 -   **Alexander Strand** - _Project owner_ - [strand93](https://github.com/strand93)
 -   **Emanuel Dellsen** - _Project owner_ - [EmanuelDellsen](https://github.com/EmanuelDellsen)
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
 ## Acknowledgments
 
 Thanks to the team at [TIBCO Spotfire](https://www.tibco.com/products/tibco-spotfire) for all the support in the development of this extension as well as for developing the environment in which this extension has been constructed and to our academic supervisor [Miroslaw Staron](https://www.gu.se/en/about/find-staff/miroslawstaron) from Gothenburg University.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details
