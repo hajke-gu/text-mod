@@ -18,7 +18,8 @@ permalink: /features
 To give your cards an annotation (a header-type text), select the column(s) under “Annotation”.
 It is possible to select multiple annotations. Just press (+) next to “Annotation”.
 Hovering over the annotation area of the text card will show a tooltip with your chosen annotations including the respective column name.
-Please note: If no annotations are choosen or the respective card does not have a value in the chosen annotation column, the annotation field will not be shown.
+<p><span class="badge badge-warning">Notice</span><br>
+If no annotations are choosen or the respective card does not have a value in the chosen annotation column, the annotation field will not be shown.</p>
 <video controls muted width="768">
   <source src="{{ site.baseurl }}/assets/webms/annotation1.webm" type="video/webm">
   <p>Your browser does not support webm files.</p>
@@ -31,7 +32,7 @@ Please note: If no annotations are choosen or the respective card does not have 
 
 <hr class="panel-line">
 ## Color by
-Choose what color the cards should be grouped by, selecting data in “Color By”. This will change the color of the text cards' sidebar on the left.
+Choose what color the cards should be grouped by, selecting the column in “Color By”. This will change the color of the text cards' sidebar on the left.
 <video controls muted width="768">
   <source src="{{ site.baseurl }}/assets/webms/color-by.webm" type="video/webm">
   <p>Your browser does not support webm files.</p>
@@ -40,7 +41,8 @@ Choose what color the cards should be grouped by, selecting data in “Color By�
 <hr class="panel-line">
 ## Copying
 You can easily copy the complete text inside a text card by pressing the “Copy to Clipboard”-button in the top right corner. 
-If you only want to copy certain parts, mark it and press Ctrl/CMD+C to copy it.
+<p><span class="badge badge-warning">Notice</span><br>
+It is also possible to copy certain parts of the content. Mark the parts and copy to clipboard by pressing Ctrl/CMD + C.</p>
 <video controls muted width="768">
   <source src="{{ site.baseurl }}/assets/webms/copy-to-clipboard.webm" type="video/webm">
   <p>Your browser does not support webm files.</p>
@@ -48,7 +50,9 @@ If you only want to copy certain parts, mark it and press Ctrl/CMD+C to copy it.
 
 <hr class="panel-line">
 ## Tooltip
-You need some extra information? Add additional information in a tooltip. The tooltip will be shown when hoovering with the mouse over the "Content" area of the text card. Choose the favoured information by selecting the respective column(s) in "Tooltip". The annotations area will show a tooltip for chosen annotations.
+You need some extra information? Add additional information in a tooltip. The tooltip will be shown when hoovering with the mouse over the "Content" area of the text card. Choose the favoured information by selecting the respective column(s) in "Tooltip". 
+<p><span class="badge badge-warning">Notice</span><br>
+The annotations area will show a tooltip for chosen annotations.</p>
 <video controls muted width="768">
   <source src="{{ site.baseurl }}/assets/webms/tooltip.webm" type="video/webm">
   <p>Your browser does not support webm files.</p>
