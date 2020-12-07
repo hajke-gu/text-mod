@@ -247,7 +247,8 @@ function createWarning(mod, width) {
     const { button } = popout.components;
     const popoutContent = () => [
         section({
-            heading: "Not selecting (Row Number) might lead to unwanted behavior",
+            heading:
+                "The Text Card Mod is made to show unaggregated data. Not selecting (Row Number) might lead to unwanted behavior.",
             children: [button({ text: "Reset", name: "buttonReset" })]
         })
     ];

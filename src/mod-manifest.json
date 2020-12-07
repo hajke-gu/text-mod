@@ -25,7 +25,10 @@
         "axes": [
             {
                 "name": "Card by",
-                "mode": "categorical"
+                "mode": "categorical",
+                "legendItem": {
+                    "defaultVisibility": "hidden"
+                }
             },
             {
                 "name": "Content",

@@ -29,9 +29,6 @@ Spotfire.initialize(async (mod) => {
     // store the context
     const context = mod.getRenderContext();
 
-    // Warning boolean
-    var showCardsByWarning = true;
-
     // used to set max number of cards to equal the number of rows of dataset
     mod.visualization.axis("Card by").setExpression("<baserowid()>");
 
@@ -102,10 +99,8 @@ Spotfire.initialize(async (mod) => {
         }
 
         // check if "Cards by" is set to another value than "(Row Number)" & warn user
-        if (showCardsByWarning && cardbyProp.parts[0].displayName !== "(Row Number)") {
+        if (cardbyProp.parts[0].displayName !== "(Row Number)") {
             createWarning(mod, windowSize.width);
-            // show warning only once
-            showCardsByWarning = false;
         }
 
         // check if sorting is enabled
