@@ -28,6 +28,9 @@
                 "mode": "categorical",
                 "legendItem": {
                     "defaultVisibility": "hidden"
+                },
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
                 }
             },
             {
