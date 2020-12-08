@@ -28,6 +28,14 @@ If the Text Card mod does not show up in your list for details visualizations, m
 <hr class="panel-line">
 ## Theme adaption
 Like the native Spotfire® visualizations, the Text Card mod supports and adapts to custom themes/canvas styling.
+<p><span class="badge badge-warning">Notice</span><br>
+The Text Card mod uses the follwoing styling elements:<br>
+<ul>
+<li>General font: Annotations and content font styling, mouse-over border line, buttons and scrollbars adapt to it</li>
+<li>Scales line color: Frame of text card</li>
+<li>Tick marks color: Seperation line between annotation and content, seperation line between annotations (if not set, scales line color is used)</li>
+</ul>
+</p>
 <video controls muted width="768">
   <source src="{{ site.baseurl }}/assets/webms/themes.webm" type="video/webm">
   <p>Your browser does not support webm files.</p>
