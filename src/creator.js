@@ -229,10 +229,15 @@ function createCopyButton(newDiv, buttonColor) {
  * @param warningDiv The div / text card to have the new button
  * @param textColor textColor
  */
-function createWarning(mod, modDiv, textColor) {
-    modDiv.style.display = "none";
-
+function createWarning(mod, modDiv, textColor, cardbyProp) {
+    // get warning div
     var warningDiv = findElem("#warning-message");
+
+    // hide text card and show warning
+    modDiv.style.display = "none";
+    warningDiv.style.display = "block";
+    warningDiv.innerHTML = "";
+
     var errorLayout = document.createElement("div");
     errorLayout.setAttribute("class", "error-layout");
 
@@ -248,13 +253,16 @@ function createWarning(mod, modDiv, textColor) {
 
     var buttonRow = document.createElement("div");
     buttonRow.setAttribute("class", "warning-row");
+
+    // create 'Continue' button
     var continueButton = document.createElement("div");
     continueButton.setAttribute("class", "spotfire-button-flex spotfire-button-white");
     var continueButtonText = document.createElement("div");
     continueButtonText.setAttribute("class", "spotfire-button-text");
     continueButtonText.textContent = "Continue";
     continueButton.onclick = (e) => {
-        warningDiv.innerHTML = "";
+        // hide warning and show text cards
+        warningDiv.style.display = "none";
         modDiv.style.display = "block";
         e.stopPropagation();
     };
@@ -265,17 +273,21 @@ function createWarning(mod, modDiv, textColor) {
     buttonSpace.setAttribute("class", "spotfire-button-spacer");
     buttonRow.appendChild(buttonSpace);
 
+    // create 'Reset' button
     var resetButton = document.createElement("div");
     resetButton.setAttribute("class", "spotfire-button-flex spotfire-button-blue");
     var resetButtonText = document.createElement("div");
     resetButtonText.setAttribute("class", "spotfire-button-text");
     resetButtonText.textContent = "Reset";
     resetButton.onclick = (e) => {
-        warningDiv.innerHTML = "";
+        // hide warning and show text cards
+        warningDiv.style.display = "none";
         modDiv.style.display = "block";
+
         // used to set max number of cards to equal the number of rows of dataset
         confirmedCardByChange = true;
-        mod.visualization.axis("Card by").setExpression("<baserowid()>");
+        cardbyProp.setExpression("<baserowid()>");
+        //mod.visualization.axis("Card by").setExpression("<baserowid()>");
         e.stopPropagation();
     };
 

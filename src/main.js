@@ -78,11 +78,12 @@ Spotfire.initialize(async (mod) => {
             if (cardbyProp.parts[0].displayName === prevCardBy) {
             } //Do nothing
             else {
-                createWarning(mod, modDiv, context.styling.general.font.color);
+                console.log("WARNING");
+                createWarning(mod, modDiv, context.styling.general.font.color, cardbyProp);
                 prevCardBy = cardbyProp.parts[0].displayName;
             }
         } else {
-            //Do nothing
+            prevCardBy = "(Row Number)";
         }
 
         // non-global value
@@ -108,11 +109,6 @@ Spotfire.initialize(async (mod) => {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
             return;
-        }
-
-        // check if "Cards by" is set to another value than "(Row Number)" & warn user
-        if (cardbyProp.parts[0].displayName !== "(Row Number)") {
-            createWarning(mod, windowSize.width);
         }
 
         // check if sorting is enabled
