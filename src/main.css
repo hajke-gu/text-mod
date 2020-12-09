@@ -100,3 +100,92 @@ body {
     border: 0;
     cursor: pointer;
 }
+
+.error-layout {
+    display: flex;
+    width: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    text-align: center;
+}
+
+.error-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.error-text {
+    margin: auto;
+    padding: 8px;
+    white-space: pre;
+}
+
+.warning-row {
+    margin-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    white-space: pre-line;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.spotfire-button-spacer {
+    width: 16px;
+}
+.spotfire-button-blue {
+    background-color: #7289f9;
+    color: #ffffff;
+}
+.spotfire-button-blue:hover {
+    background-color: #5d6efa;
+}
+
+.spotfire-button-blue:active {
+    background-color: #3050ef;
+}
+
+.spotfire-button-white {
+    color: #313336;
+    background-color: #ffffff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #d1d4de;
+}
+
+.spotfire-button-white:hover {
+    background-color: #edf0f7;
+    border-color: #edf0f7;
+}
+.spotfire-button-white:active {
+    background-color: #ebefff;
+    border-color: #ebefff;
+    color: #3050ef;
+}
+
+.spotfire-button-flex {
+    height: 32px;
+    min-width: 112px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    border-radius: 32px;
+    cursor: pointer;
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+}
+
+.spotfire-button-text {
+    font: bold 13px "Roboto";
+    display: inline;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

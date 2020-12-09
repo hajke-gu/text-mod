@@ -224,39 +224,67 @@ function createCopyButton(newDiv, buttonColor) {
 }
 
 /**
- *
- * @param mod the mod
- * @param width width of mod
+ * Create a Spotfire-style warning when "Cards by" gets changed from default value.
+ * @param mod The mod to change "Cards by" to default
+ * @param warningDiv The div / text card to have the new button
+ * @param textColor textColor
  */
-function createWarning(mod, width) {
-    const { popout } = mod.controls;
-    function showPopout(e) {
-        popout.show(
-            {
-                x: width + 8,
-                y: 8,
-                autoClose: false,
-                alignment: "Right",
-                onChange: popoutChangeHandler
-            },
-            popoutContent
-        );
-    }
+function createWarning(mod, modDiv, textColor) {
+    modDiv.style.display = "none";
 
-    const { section } = popout;
-    const { button } = popout.components;
-    const popoutContent = () => [
-        section({
-            heading:
-                "The Text Card Mod is made to show unaggregated data. Not selecting (Row Number) might lead to unwanted behavior.",
-            children: [button({ text: "Reset", name: "buttonReset" })]
-        })
-    ];
-    function popoutChangeHandler() {
+    var warningDiv = findElem("#warning-message");
+    var errorLayout = document.createElement("div");
+    errorLayout.setAttribute("class", "error-layout");
+
+    var errorContainer = document.createElement("div");
+    errorContainer.setAttribute("class", "error-container");
+
+    var errorText = document.createElement("div");
+    errorText.setAttribute("class", "error-text");
+    errorText.style.fontColor = textColor;
+    errorText.textContent = "The Text Card Mod is made to show unaggregated data.\r\n";
+    errorText.textContent += "Not selecting (Row Number) might lead to unwanted behavior.";
+    errorContainer.appendChild(errorText);
+
+    var buttonRow = document.createElement("div");
+    buttonRow.setAttribute("class", "warning-row");
+    var continueButton = document.createElement("div");
+    continueButton.setAttribute("class", "spotfire-button-flex spotfire-button-white");
+    var continueButtonText = document.createElement("div");
+    continueButtonText.setAttribute("class", "spotfire-button-text");
+    continueButtonText.textContent = "Continue";
+    continueButton.onclick = (e) => {
+        warningDiv.innerHTML = "";
+        modDiv.style.display = "block";
+        e.stopPropagation();
+    };
+    continueButton.appendChild(continueButtonText);
+    buttonRow.appendChild(continueButton);
+
+    var buttonSpace = document.createElement("div");
+    buttonSpace.setAttribute("class", "spotfire-button-spacer");
+    buttonRow.appendChild(buttonSpace);
+
+    var resetButton = document.createElement("div");
+    resetButton.setAttribute("class", "spotfire-button-flex spotfire-button-blue");
+    var resetButtonText = document.createElement("div");
+    resetButtonText.setAttribute("class", "spotfire-button-text");
+    resetButtonText.textContent = "Reset";
+    resetButton.onclick = (e) => {
+        warningDiv.innerHTML = "";
+        modDiv.style.display = "block";
+        // used to set max number of cards to equal the number of rows of dataset
+        confirmedCardByChange = true;
         mod.visualization.axis("Card by").setExpression("<baserowid()>");
-    }
+        e.stopPropagation();
+    };
 
-    showPopout();
+    resetButton.appendChild(resetButtonText);
+    buttonRow.appendChild(resetButton);
+
+    errorContainer.appendChild(buttonRow);
+    errorLayout.appendChild(errorContainer);
+    warningDiv.appendChild(errorLayout);
 }
 
 /**

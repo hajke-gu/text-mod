@@ -10,9 +10,10 @@
  * Get access to the Spotfire Mod API by providing a callback to the initialize method.
  * @param {Spotfire.Mod} mod - mod api
  */
-var lastMarkedIndex = 0;
 Spotfire.initialize(async (mod) => {
+    var lastMarkedIndex = 0;
     var prevIndex = 0;
+    var prevCardBy = "(Row Number)";
 
     // create the read function
     const reader = mod.createReader(
@@ -72,6 +73,17 @@ Spotfire.initialize(async (mod) => {
             return;
         }
         mod.controls.errorOverlay.hide();
+
+        if (cardbyProp.parts[0].displayName !== "(Row Number)") {
+            if (cardbyProp.parts[0].displayName === prevCardBy) {
+            } //Do nothing
+            else {
+                createWarning(mod, modDiv, context.styling.general.font.color);
+                prevCardBy = cardbyProp.parts[0].displayName;
+            }
+        } else {
+            //Do nothing
+        }
 
         // non-global value
         const cardsToLoad = 100;
