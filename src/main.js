@@ -75,10 +75,7 @@ Spotfire.initialize(async (mod) => {
         mod.controls.errorOverlay.hide();
 
         if (cardbyProp.parts[0].displayName !== "(Row Number)") {
-            if (cardbyProp.parts[0].displayName === prevCardBy) {
-            } //Do nothing
-            else {
-                console.log("WARNING");
+            if (cardbyProp.parts[0].displayName !== prevCardBy) {
                 createWarning(modDiv, context.styling.general.font.color, cardbyProp);
                 prevCardBy = cardbyProp.parts[0].displayName;
             }
