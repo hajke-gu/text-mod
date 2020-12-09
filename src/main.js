@@ -13,6 +13,7 @@
 var lastMarkedIndex = 0;
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
+    var prevCardBy = "(Row Number)";
 
     // create the read function
     const reader = mod.createReader(
@@ -73,6 +74,15 @@ Spotfire.initialize(async (mod) => {
         }
         mod.controls.errorOverlay.hide();
 
+        if (cardbyProp.parts[0].displayName !== "(Row Number)") {
+            if (cardbyProp.parts[0].displayName !== prevCardBy) {
+                createWarning(modDiv, context.styling.general.font.color, cardbyProp);
+                prevCardBy = cardbyProp.parts[0].displayName;
+            }
+        } else {
+            prevCardBy = "(Row Number)";
+        }
+
         // non-global value
         const cardsToLoad = 100;
 
@@ -97,11 +107,6 @@ Spotfire.initialize(async (mod) => {
             // User interaction caused the data view to expire.
             // Don't clear the mod content here to avoid flickering.
             return;
-        }
-
-        // check if "Cards by" is set to another value than "(Row Number)" & warn user
-        if (cardbyProp.parts[0].displayName !== "(Row Number)") {
-            createWarning(mod, windowSize.width);
         }
 
         // check if sorting is enabled
