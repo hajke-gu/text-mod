@@ -19,7 +19,6 @@ function renderTextCards(
     annotationEnabled,
     dataView
 ) {
-    var tempLastMarked = 0;
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
     }

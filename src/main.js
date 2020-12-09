@@ -10,9 +10,10 @@
  * Get access to the Spotfire Mod API by providing a callback to the initialize method.
  * @param {Spotfire.Mod} mod - mod api
  */
-var lastMarkedIndex = 0;
 Spotfire.initialize(async (mod) => {
+    var lastMarkedIndex = 0;
     var prevIndex = 0;
+    var prevCardBy = "(Row Number)";
 
     // create the read function
     const reader = mod.createReader(
@@ -20,16 +21,14 @@ Spotfire.initialize(async (mod) => {
         mod.windowSize(),
         mod.visualization.axis("Content"),
         mod.visualization.axis("Sorting"),
-        mod.visualization.axis("Card by")
+        mod.visualization.axis("Card by"),
+        mod.property("sortOrder")
     );
 
     const modDiv = findElem("#text-card-container");
 
     // store the context
     const context = mod.getRenderContext();
-
-    // Warning boolean
-    var showCardsByWarning = true;
 
     // used to set max number of cards to equal the number of rows of dataset
     mod.visualization.axis("Card by").setExpression("<baserowid()>");
@@ -44,7 +43,7 @@ Spotfire.initialize(async (mod) => {
      * @param {Spotfire.Axis} sortingProp
      */
     // @ts-ignore
-    async function render(dataView, windowSize, contentProp, sortingProp, cardbyProp) {
+    async function render(dataView, windowSize, contentProp, sortingProp, cardbyProp, sortOrder) {
         /**
          * Check data axes
          * - Check if content empty
@@ -75,6 +74,18 @@ Spotfire.initialize(async (mod) => {
         }
         mod.controls.errorOverlay.hide();
 
+        if (cardbyProp.parts[0].displayName !== "(Row Number)") {
+            if (cardbyProp.parts[0].displayName === prevCardBy) {
+            } //Do nothing
+            else {
+                console.log("WARNING");
+                createWarning(mod, modDiv, context.styling.general.font.color, cardbyProp);
+                prevCardBy = cardbyProp.parts[0].displayName;
+            }
+        } else {
+            prevCardBy = "(Row Number)";
+        }
+
         // non-global value
         const cardsToLoad = 100;
 
@@ -100,16 +111,17 @@ Spotfire.initialize(async (mod) => {
             return;
         }
 
-        // check if "Cards by" is set to another value than "(Row Number)" & warn user
-        if (showCardsByWarning && cardbyProp.parts[0].displayName !== "(Row Number)") {
-            createWarning(mod, windowSize.width);
-            // show warning only once
-            showCardsByWarning = false;
-        }
-
         // check if sorting is enabled
+        let sortingEnabled = false;
         if ((await dataView.categoricalAxis("Sorting")) != null) {
-            sortRows(rows);
+            // create sort button only if there is a value selected in sorting axis
+            sortingEnabled = true;
+            if (sortOrder.value() != "unordered") {
+                sortRows(rows, sortOrder.value());
+            }
+        } else {
+            //set back default value
+            sortOrder.set("asc");
         }
 
         // check if tooltip is enabled
@@ -191,6 +203,9 @@ Spotfire.initialize(async (mod) => {
                 prevIndex = returnedObject.startIndex;
             }
         });
+
+        //Create SortButton
+        if (sortingEnabled) createSortButton(modDiv, mod.getRenderContext().styling.general.font.color, sortOrder);
 
         // signal that the mod is ready for export.
         context.signalRenderComplete();

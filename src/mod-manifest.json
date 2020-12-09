@@ -4,7 +4,13 @@
     "name": "Text Card",
     "id": "text-card-mod",
     "icon": "icon.svg",
-    "properties": [],
+    "properties": [
+        {
+            "name": "sortOrder",
+            "type": "string",
+            "defaultValue": "asc"
+        }
+    ],
     "dataViewDefinition": {
         "colorAxis": {
             "mode": "dual",
@@ -19,7 +25,13 @@
         "axes": [
             {
                 "name": "Card by",
-                "mode": "categorical"
+                "mode": "categorical",
+                "legendItem": {
+                    "defaultVisibility": "hidden"
+                },
+                "automaticConfiguration": {
+                    "expressionHeuristics": "none"
+                }
             },
             {
                 "name": "Content",
