@@ -279,16 +279,17 @@ function createWarning(mod, modDiv, textColor, cardbyProp) {
     var resetButtonText = document.createElement("div");
     resetButtonText.setAttribute("class", "spotfire-button-text");
     resetButtonText.textContent = "Reset";
-    resetButton.onclick = (e) => {
-        // hide warning and show text cards
-        warningDiv.style.display = "none";
-        modDiv.style.display = "block";
-
-        // used to set max number of cards to equal the number of rows of dataset
-        confirmedCardByChange = true;
+    resetButton.onclick = async (e) => {
+        // setexp to baserow
         cardbyProp.setExpression("<baserowid()>");
-        //mod.visualization.axis("Card by").setExpression("<baserowid()>");
-        e.stopPropagation();
+        setTimeout(() => {
+            warningDiv.style.display = "none";
+            modDiv.style.display = "block";
+
+            // used to set max number of cards to equal the number of rows of dataset
+            confirmedCardByChange = true;
+            e.stopPropagation();
+        }, 1000); // hide warning and show text cards
     };
 
     resetButton.appendChild(resetButtonText);
