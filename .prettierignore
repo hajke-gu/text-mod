@@ -3,3 +3,4 @@
 
 # ignore jekyll config file
 docs/_config.yml
+docs/assets/css/main.css

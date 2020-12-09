@@ -555,9 +555,9 @@ h6,
 
 hr {
     margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     border: 0;
-    border-top: 1px solid rgba(0, 0, 0, .1)
+    border-top: 1px solid rgba(0, 0, 0, 0.25)
 }
 
 small,
@@ -570,6 +570,14 @@ mark,
 .mark {
     padding: .2em;
     background-color: #fcf8e3
+}
+
+.background-grad{
+    margin: 0;
+    background-image: linear-gradient(180deg, #4a58c8, #403f4c);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
 }
 
 .list-unstyled {
@@ -725,6 +733,8 @@ pre code {
     margin-right: auto;
     margin-left: auto
 }
+
+
 
 .row {
     display: -webkit-box;
@@ -2989,13 +2999,13 @@ fieldset:disabled a.btn {
 
 .btn-primary {
     color: #fff;
-    background-color: #30638e;
+    background-color: {{ site.color }};
 }
 
 .btn-primary:hover {
     color: #fff;
-    background-color: {{ site.color }};
-    border-color: {{ site.color }};
+    background-color: #30638e;
+    border-color: #30638e;
 }
 
 .btn-primary:focus,
@@ -9042,6 +9052,15 @@ button.bg-dark:focus {
     overflow: visible;
     clip: auto;
     white-space: normal
+}
+.shadow-new{
+    -webkit-filter: drop-shadow(5px 5px 5px #222222);
+  filter: drop-shadow(5px 5px 5px #222222)
+}
+
+.shadow-white{
+    -webkit-filter: drop-shadow(0 1rem 3rem #ebebebe7);
+  filter: drop-shadow(0 1rem 3rem #ebebebe7)
 }
 
 .shadow-sm {

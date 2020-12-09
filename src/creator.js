@@ -280,12 +280,14 @@ function createWarning(modDiv, textColor, cardbyProp) {
     resetButtonText.setAttribute("class", "spotfire-button-text");
     resetButtonText.textContent = "Reset";
     resetButton.onclick = (e) => {
-        // hide warning and show text cards
-        warningDiv.style.display = "none";
-        modDiv.style.display = "block";
-
-        // used to set max number of cards to equal the number of rows of dataset
+        // setexp to baserow
         cardbyProp.setExpression("<baserowid()>");
+        setTimeout(() => {
+            // hide warning and show text cards
+            warningDiv.style.display = "none";
+            modDiv.style.display = "block";
+        }, 1000);
+
         e.stopPropagation();
     };
 
