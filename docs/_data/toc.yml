@@ -1,13 +1,32 @@
 - title: Home
-  url: index
+  url: home
   links:
+      - title: "Getting started"
+        url: getting-started
+        children:
+            - title: Select content
+              url: "getting-started#select-the-content-of-the-text-cards"
+            - title: Text card in a nutshell
+              url: "getting-started#the-text-card-in-a-nutshell"
       - title: "Features"
         url: features
-      - title: "Use Cases"
-        url: use-cases
-      - title: "Documentation"
-        url: docs
-      - title: "Change log"
-        url: change-log
+        children:
+            - title: Annotations
+              url: "features#annotations"
+            - title: Color by
+              url: "features#color-by"
+            - title: Copying
+              url: "features#copying"
+            - title: Sorting
+              url: "features#sorting"
+      - title: "Spotfire® Integration"
+        url: spotfire-integration
+        children:
+            - title: Marking
+              url: "spotfire-integration#marking"
+            - title: Details Visualization
+              url: "spotfire-integration#details-visualization"
+            - title: Theme adaption
+              url: "spotfire-integration#theme-adaption"
       - title: About
         url: about

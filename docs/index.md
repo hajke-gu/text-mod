@@ -1,29 +1,18 @@
 ---
-layout: page
-title: Startpage
+layout: startpage
+title: Text Card mod
 permalink: /
 ---
+<div class="text-center">
+<h2 class="display-1 mt-0 mt-md-5 pb-4" style="color: white;">Text Card mod</h2>
+<h4 style="color: white;">Visualize your text data in Spotfire®</h4>
+<p>&nbsp;</p>
+<a href="{{ site.baseurl }}/home"><img src="{{ site.baseurl }}/assets/images/startpage.png" class="rounded shadow-new" style="max-width: 700px;" alt="Text card mod startpage"></a>
+<p>&nbsp;</p>
+<div class="pt-3 lead">
+<div class="mx-auto">
+<a class="btn btn-info btn-lg shadow-sm" href="{{ site.baseurl }}/getting-started">Getting started<i class="fas fa-arrow-alt-circle-right ml-2"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-warning btn-lg shadow-sm" href="https://github.com/hajke-gu/text-mod">Visit on GitHub<i class="fab fa-github ml-2 "></i></a>
+</div></div>
+</div>
 
-# >> Visualize your text data  <<
-
-Visualization of text data in an easily readable and customizable way.
-
-## Purpose
-
-Text visualization is useful to make sense of text data that might contain many words and long sentences. Through the use of visualization, text data can become more focused and applicable for the use case at hand. Text data is not possible to work with statistical approaches like with numerical data but text data can contain useful information for business decisions.
-
-
-## Features
-
-More details about the features can be found [here](features)
-
-
-## The project
-
-More details about the project and the authors can be found [here](about).
-
-
-## License
-
-This project is licensed under the [MIT License](https://en.wikipedia.org/wiki/MIT_License).
 

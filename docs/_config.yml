@@ -2,9 +2,9 @@
 remote_theme: vsoch/docsy-jekyll
 
 # Project title
-title: Text Mod
+title: Text Card Mod
 description: > # this means to ignore newlines until "baseurl:"
-  Text visualization using Spotfire Mods. A project between Gothenburg University (course DIT827) and TIBCO® Spotfire.
+  Text visualization for TIBCO® Spotfire. A project between students of Gothenburg University and TIBCO® Spotfire.
 
 baseurl: "/text-mod"
 url: "https://hajke-gu.github.io"
@@ -19,7 +19,6 @@ feedback: false
 
 
 # Color of navigation bar
-#logo: "/assets/images/icon.svg"
 logo_pixels: 34
 color: "#4a58c8"
 
@@ -36,17 +35,6 @@ fixedNav: true # true or false
 permalink: /:year/:title/
 markdown: kramdown
 exclude: [_site, CHANGELOG.md, LICENSE, README.md, vendor]
-
-# Set direction for collections
-collections_dir: my_collections
-
-# Collections
-collections:
-  documents:
-    output: true
-  features:
-    output: true
-#    permalink: /:collection/:path
 
 # Defaults
 defaults:
