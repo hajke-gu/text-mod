@@ -87,7 +87,8 @@ Spotfire.initialize(async (mod) => {
         }
         mod.controls.errorOverlay.hide();
 
-        modDiv.style.height = windowSize.height + "px";
+        // Remove 4px to level out top-padding (Math.max to avoid less than 0)
+        modDiv.style.height = Math.max(windowSize.height - 4, 0) + "px";
 
         // get rows/data from dataview via api
         var rows = await dataView.allRows();
