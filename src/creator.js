@@ -229,7 +229,7 @@ function createCopyButton(newDiv, buttonColor) {
  * @param warningDiv The div / text card to have the new button
  * @param textColor textColor
  */
-function createWarning(mod, modDiv, textColor, cardbyProp) {
+function createWarning(modDiv, textColor, cardbyProp) {
     // get warning div
     var warningDiv = findElem("#warning-message");
 
@@ -285,9 +285,7 @@ function createWarning(mod, modDiv, textColor, cardbyProp) {
         modDiv.style.display = "block";
 
         // used to set max number of cards to equal the number of rows of dataset
-        confirmedCardByChange = true;
         cardbyProp.setExpression("<baserowid()>");
-        //mod.visualization.axis("Card by").setExpression("<baserowid()>");
         e.stopPropagation();
     };
 

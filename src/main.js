@@ -10,8 +10,8 @@
  * Get access to the Spotfire Mod API by providing a callback to the initialize method.
  * @param {Spotfire.Mod} mod - mod api
  */
+var lastMarkedIndex = 0;
 Spotfire.initialize(async (mod) => {
-    var lastMarkedIndex = 0;
     var prevIndex = 0;
     var prevCardBy = "(Row Number)";
 
@@ -79,7 +79,7 @@ Spotfire.initialize(async (mod) => {
             } //Do nothing
             else {
                 console.log("WARNING");
-                createWarning(mod, modDiv, context.styling.general.font.color, cardbyProp);
+                createWarning(modDiv, context.styling.general.font.color, cardbyProp);
                 prevCardBy = cardbyProp.parts[0].displayName;
             }
         } else {
