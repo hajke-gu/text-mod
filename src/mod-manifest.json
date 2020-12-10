@@ -29,6 +29,9 @@
                 "legendItem": {
                     "defaultVisibility": "hidden"
                 },
+                "propertyControl": {
+                    "visibility": "hidden"
+                },
                 "automaticConfiguration": {
                     "expressionHeuristics": "none"
                 }
@@ -60,5 +63,12 @@
             }
         ]
     },
-    "files": ["index.html", "main.css", "main.js", "creator.js", "helper.js", "renderer.js"]
+    "files": [
+        "index.html",
+        "main.css",
+        "main.js",
+        "creator.js",
+        "helper.js",
+        "renderer.js"
+    ]
 }
