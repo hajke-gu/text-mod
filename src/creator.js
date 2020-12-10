@@ -254,20 +254,20 @@ function createWarning(modDiv, textColor, cardbyProp) {
     var buttonRow = document.createElement("div");
     buttonRow.setAttribute("class", "warning-row");
 
-    // create 'Continue' button
-    var continueButton = document.createElement("div");
-    continueButton.setAttribute("class", "spotfire-button-flex spotfire-button-white");
-    var continueButtonText = document.createElement("div");
-    continueButtonText.setAttribute("class", "spotfire-button-text");
-    continueButtonText.textContent = "Continue";
-    continueButton.onclick = (e) => {
+    // create 'Ignore' button
+    var ignoreButton = document.createElement("div");
+    ignoreButton.setAttribute("class", "spotfire-button-flex spotfire-button-white");
+    var ignoreButtonText = document.createElement("div");
+    ignoreButtonText.setAttribute("class", "spotfire-button-text");
+    ignoreButtonText.textContent = "Ignore";
+    ignoreButton.onclick = (e) => {
         // hide warning and show text cards
         warningDiv.style.display = "none";
         modDiv.style.display = "block";
         e.stopPropagation();
     };
-    continueButton.appendChild(continueButtonText);
-    buttonRow.appendChild(continueButton);
+    ignoreButton.appendChild(ignoreButtonText);
+    buttonRow.appendChild(ignoreButton);
 
     var buttonSpace = document.createElement("div");
     buttonSpace.setAttribute("class", "spotfire-button-spacer");

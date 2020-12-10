@@ -57,7 +57,7 @@ Spotfire.initialize(async (mod) => {
             return;
         } else if (cardbyProp.parts.length == 0) {
             mod.controls.errorOverlay.show(
-                "Select a 'Card by' to get started! Default value (for non-aggregated data): (Row Number)"
+                "Select a column in 'Card by' to get started! Default value (for non-aggregated data): (Row Number)"
             );
             return;
         } else if (contentProp.parts.length > 1 || sortingProp.parts.length > 1) {
@@ -66,9 +66,7 @@ Spotfire.initialize(async (mod) => {
             else if (sortingProp.parts.length > 1) {
                 mod.controls.errorOverlay.show("Selecting multiple columns in 'Sorting' is not supported.");
             } else {
-                mod.controls.errorOverlay.show(
-                    "If this text can be seen. Tell Jonatan that he did something very wrong!"
-                );
+                mod.controls.errorOverlay.show("Something went wrong. Please reload the mod.");
             }
             return;
         }
