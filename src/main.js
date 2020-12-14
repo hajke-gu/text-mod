@@ -70,8 +70,6 @@ Spotfire.initialize(async (mod) => {
             }
             return;
         }
-        mod.controls.errorOverlay.hide();
-
         if (cardbyProp.parts[0].displayName !== "(Row Number)") {
             if (cardbyProp.parts[0].displayName !== prevCardBy) {
                 createWarning(modDiv, context.styling.general.font.color, cardbyProp);
@@ -80,7 +78,7 @@ Spotfire.initialize(async (mod) => {
         } else {
             prevCardBy = "(Row Number)";
         }
-
+        mod.controls.errorOverlay.hide();
         // non-global value
         const cardsToLoad = 100;
 
@@ -106,6 +104,16 @@ Spotfire.initialize(async (mod) => {
             // Don't clear the mod content here to avoid flickering.
             return;
         }
+        // Checks if there is content to display
+        console.log(rows.length)
+        let contentToDisplay = false;
+        for (let i = 0; i < rows.length; i++) {
+            if (getDataValue(rows[i], "Content", 0) !== null) {
+                contentToDisplay = true;
+            }
+        }
+        // Dsiplay error if there is no content to display
+        if (!contentToDisplay) { mod.controls.errorOverlay.show("No available text cards."); }
 
         // check if sorting is enabled
         let sortingEnabled = false;
