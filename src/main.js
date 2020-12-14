@@ -106,6 +106,16 @@ Spotfire.initialize(async (mod) => {
             // Don't clear the mod content here to avoid flickering.
             return;
         }
+        // Checks if there is content to display
+        console.log(rows.length)
+        let contentToDisplay = false;
+        for (let i = 0; i < rows.length; i++) {
+            if (getDataValue(rows[i], "Content", 0) !== null) {
+                contentToDisplay = true;
+            }
+        }
+        // Dsiplay error if there is no content to display
+        if (!contentToDisplay) { mod.controls.errorOverlay.show("No available text cards."); }
 
         // check if sorting is enabled
         let sortingEnabled = false;
