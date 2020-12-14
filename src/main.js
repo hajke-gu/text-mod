@@ -70,6 +70,8 @@ Spotfire.initialize(async (mod) => {
             }
             return;
         }
+        mod.controls.errorOverlay.hide();
+
         if (cardbyProp.parts[0].displayName !== "(Row Number)") {
             if (cardbyProp.parts[0].displayName !== prevCardBy) {
                 createWarning(modDiv, context.styling.general.font.color, cardbyProp);
@@ -78,7 +80,7 @@ Spotfire.initialize(async (mod) => {
         } else {
             prevCardBy = "(Row Number)";
         }
-        mod.controls.errorOverlay.hide();
+
         // non-global value
         const cardsToLoad = 100;
 
