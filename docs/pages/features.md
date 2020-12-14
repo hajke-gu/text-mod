@@ -62,7 +62,7 @@ The annotations area will show a tooltip for chosen annotations.</p>
 ## Sorting
 You can choose what column to sort by.
 Do this by pressing “Sort By”.
-To reverse sorting order, simply press the button on top righ. This button is only available after sorting has been selected.
+To reverse sorting order, simply press the button in the top-right corner. This button is only available after sorting has been selected.
 <video controls muted width="768">
   <source src="{{ site.baseurl }}/assets/webms/sorting.webm" type="video/webm">
   <p>Your browser does not support webm files.</p>
