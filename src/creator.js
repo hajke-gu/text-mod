@@ -11,7 +11,6 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
     var textCardDiv = createTextCardDiv(fontStyling);
 
     // check if row is marked and check if all rows are marked. If row is not marked and all rows are not marked, decrease opacity (= add 99 to hexcolor => 60% opacity)
-    // https://gist.github.com/lopspower/03fb1cc0ac9f32ef38f4
     if (!markObject.row && !markObject.allRows) textCardDiv.style.color = fontStyling.fontColor + "99";
 
     // add annotation to text card
@@ -341,7 +340,6 @@ function createSortButton(newDiv, buttonColor, sortOrder) {
             rect.setAttributeNS(null, "rx", "0.5");
             svgNode.appendChild(rect);
         }
-
     } else {
         // sort symbol for descending
         var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
