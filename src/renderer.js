@@ -46,8 +46,6 @@ function renderTextCards(
     };
     // additional styling for scales
     const scalesStyling = {
-        modBackgroundColor: styling.general.backgroundColor,
-        fontColor: styling.scales.font.color,
         lineColor: styling.scales.line.stroke,
         tickMarkColor: styling.scales.tick.stroke
     };
@@ -122,8 +120,7 @@ function renderTextCards(
             // create on click functionallity, select text and stiling
             newDiv.onmousedown = (event) => {
                 if (event.shiftKey) {
-                    var hello = document.getElementById("text-card-container");
-                    hello.style.userSelect = "none";
+                    document.getElementById("text-card-container").style.userSelect = "none";
                 }
                 var scrolling = true;
                 let width = newDiv.getBoundingClientRect().width + 27;
@@ -187,8 +184,7 @@ function renderTextCards(
                             }
                         }
                     }
-                    var hello = document.getElementById("text-card-container");
-                    hello.style.userSelect = "auto";
+                    document.getElementById("text-card-container").style.userSelect = "auto";
                     event.stopPropagation();
                 };
                 event.stopPropagation();
