@@ -27,6 +27,11 @@ These instructions assume that you have [Node.js](https://nodejs.org/en/) (which
 
 ## Descriptions
 
+### Architecture
+The text card mod is created inside a sandboxed iframe within the Spotfire® environment. It communicates solely with the Spotfire® API. More information can be found in the Spotfire® Mods documentation.
+The code is split in three files roughly according to the tasks.
+<img width="500" alt="architecture" src="https://user-images.githubusercontent.com/43996812/102020133-78155a80-3d77-11eb-8f59-acebebb2d9f7.png">
+
 ### Custom theme adaption
 The text card mod uses the following styling elements supplied by the Spotfire® Mods API:
 - general.font: Annotation and content font styling, text-card-border mouse-over line, buttons and scrollbars adapt to it (using different opacity levels)
@@ -47,4 +52,4 @@ Thanks to the team at [TIBCO Spotfire®](https://www.tibco.com/products/tibco-sp
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details
+This project is licensed under the [MIT License](LICENSE.md).
