@@ -30,6 +30,7 @@ These instructions assume that you have [Node.js](https://nodejs.org/en/) (which
 ### Architecture
 The text card mod is created inside a sandboxed iframe within the Spotfire® environment. It communicates solely with the Spotfire® API. More information can be found in the Spotfire® Mods documentation.
 The code is split in three files roughly according to the tasks.
+</br>
 <img width="500" alt="architecture" src="https://user-images.githubusercontent.com/43996812/102020133-78155a80-3d77-11eb-8f59-acebebb2d9f7.png">
 
 ### Custom theme adaption
