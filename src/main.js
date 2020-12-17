@@ -13,6 +13,7 @@
 var lastMarkedIndex = 0;
 Spotfire.initialize(async (mod) => {
     var prevIndex = 0;
+    var prevCardBy = "(Row Number)";
 
     // create the read function
     const reader = mod.createReader(
@@ -20,16 +21,14 @@ Spotfire.initialize(async (mod) => {
         mod.windowSize(),
         mod.visualization.axis("Content"),
         mod.visualization.axis("Sorting"),
-        mod.visualization.axis("Card by")
+        mod.visualization.axis("Card by"),
+        mod.property("sortOrder")
     );
 
     const modDiv = findElem("#text-card-container");
 
     // store the context
     const context = mod.getRenderContext();
-
-    // Warning boolean
-    var showCardsByWarning = true;
 
     // used to set max number of cards to equal the number of rows of dataset
     mod.visualization.axis("Card by").setExpression("<baserowid()>");
@@ -44,7 +43,7 @@ Spotfire.initialize(async (mod) => {
      * @param {Spotfire.Axis} sortingProp
      */
     // @ts-ignore
-    async function render(dataView, windowSize, contentProp, sortingProp, cardbyProp) {
+    async function render(dataView, windowSize, contentProp, sortingProp, cardbyProp, sortOrder) {
         /**
          * Check data axes
          * - Check if content empty
@@ -58,7 +57,7 @@ Spotfire.initialize(async (mod) => {
             return;
         } else if (cardbyProp.parts.length == 0) {
             mod.controls.errorOverlay.show(
-                "Select a 'Card by' to get started! Default value (for non-aggregated data): (Row Number)"
+                "Select a column in 'Card by' to get started! Default value (for non-aggregated data): (Row Number)"
             );
             return;
         } else if (contentProp.parts.length > 1 || sortingProp.parts.length > 1) {
@@ -67,13 +66,20 @@ Spotfire.initialize(async (mod) => {
             else if (sortingProp.parts.length > 1) {
                 mod.controls.errorOverlay.show("Selecting multiple columns in 'Sorting' is not supported.");
             } else {
-                mod.controls.errorOverlay.show(
-                    "If this text can be seen. Tell Jonatan that he did something very wrong!"
-                );
+                mod.controls.errorOverlay.show("Something went wrong. Please reload the mod.");
             }
             return;
         }
         mod.controls.errorOverlay.hide();
+
+        if (cardbyProp.parts[0].displayName !== "(Row Number)") {
+            if (cardbyProp.parts[0].displayName !== prevCardBy) {
+                createWarning(modDiv, context.styling.general.font.color, cardbyProp);
+                prevCardBy = cardbyProp.parts[0].displayName;
+            }
+        } else {
+            prevCardBy = "(Row Number)";
+        }
 
         // non-global value
         const cardsToLoad = 100;
@@ -89,7 +95,8 @@ Spotfire.initialize(async (mod) => {
         }
         mod.controls.errorOverlay.hide();
 
-        modDiv.style.height = windowSize.height + "px";
+        // Remove 4px to level out top-padding (Math.max to avoid less than 0)
+        modDiv.style.height = Math.max(windowSize.height - 4, 0) + "px";
 
         // get rows/data from dataview via api
         var rows = await dataView.allRows();
@@ -99,17 +106,29 @@ Spotfire.initialize(async (mod) => {
             // Don't clear the mod content here to avoid flickering.
             return;
         }
-
-        // check if "Cards by" is set to another value than "(Row Number)" & warn user
-        if (showCardsByWarning && cardbyProp.parts[0].displayName !== "(Row Number)") {
-            createWarning(mod, windowSize.width);
-            // show warning only once
-            showCardsByWarning = false;
+        // Checks if there is content to display
+        let contentToDisplay = false;
+        for (let i = 0; i < rows.length; i++) {
+            if (getDataValue(rows[i], "Content", 0) !== null) {
+                contentToDisplay = true;
+            }
+        }
+        // Dsiplay error if there is no content to display
+        if (!contentToDisplay) {
+            mod.controls.errorOverlay.show("No available text cards.");
         }
 
         // check if sorting is enabled
+        let sortingEnabled = false;
         if ((await dataView.categoricalAxis("Sorting")) != null) {
-            sortRows(rows);
+            // create sort button only if there is a value selected in sorting axis
+            sortingEnabled = true;
+            if (sortOrder.value() != "unordered") {
+                sortRows(rows, sortOrder.value());
+            }
+        } else {
+            //set back default value
+            sortOrder.set("asc");
         }
 
         // check if tooltip is enabled
@@ -191,6 +210,9 @@ Spotfire.initialize(async (mod) => {
                 prevIndex = returnedObject.startIndex;
             }
         });
+
+        //Create SortButton
+        if (sortingEnabled) createSortButton(modDiv, mod.getRenderContext().styling.general.font.color, sortOrder);
 
         // signal that the mod is ready for export.
         context.signalRenderComplete();

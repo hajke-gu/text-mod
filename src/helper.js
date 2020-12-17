@@ -73,7 +73,7 @@ function isAllRowsMarked(rows) {
  * Sort rows
  * @param {*} rows
  */
-function sortRows(rows) {
+function sortRows(rows, sortOrder) {
     let length = rows[0].categorical("Sorting").value().length;
     rows.sort(function (a, b) {
         let sortValueA = a.categorical("Sorting").value()[0].key;
@@ -92,15 +92,17 @@ function sortRows(rows) {
             sortValueA = Number(sortValueA);
             sortValueB = Number(sortValueB);
 
-            if (sortValueA < sortValueB) return -1;
+            if (sortValueA < sortValueB) return sortOrder == "asc" ? -1 : 1;
 
-            if (sortValueA > sortValueB) return 1;
+            if (sortValueA > sortValueB) return sortOrder == "asc" ? 1 : -1;
 
             return 0;
         } else {
             if (sortValueA == null) sortValueA = "";
             if (sortValueB == null) sortValueB = "";
-            return sortValueA.localeCompare(sortValueB);
+
+            if (sortOrder == "asc") return sortValueA.localeCompare(sortValueB);
+            else return sortValueB.localeCompare(sortValueA);
         }
     });
 }
