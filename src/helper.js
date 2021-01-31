@@ -149,12 +149,15 @@ function getSelectedText() {
     return selectedText;
 }
 
+
 /**
+ * NEW WAY OF RETRIEVING COLUMN NAME
+ * 
  * Get name of column from data table
  * @param element The row that will be used to get the specific column name
  * @param {*} string String that represent the axis where the column name will come from
  * @param {*} index Index of the column within the chosen axis to get the column name from
- */
+ 
 function getColumnName(element, string, index) {
     var result = null;
     try {
@@ -170,6 +173,7 @@ function getColumnName(element, string, index) {
     }
     return result;
 }
+*/
 
 /**
  * Get data value from row

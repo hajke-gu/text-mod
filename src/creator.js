@@ -77,8 +77,6 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
  * @returns {String}
  */
 function createTooltipString(specificRow, hierarchy) {
-    console.log(hierarchy.name);
-    console.log(specificRow.categorical(hierarchy.name).value().length);
     var nrOfTooltipChoices = specificRow.categorical(hierarchy.name).value().length;
     var tooltipCollection = [];
     var tooltipString = "";
