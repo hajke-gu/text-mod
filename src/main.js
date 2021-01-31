@@ -100,6 +100,12 @@ Spotfire.initialize(async (mod) => {
 
         // get rows/data from dataview via api
         var rows = await dataView.allRows();
+        let ha = await dataView.hierarchy("Annotation");
+        let ht = await dataView.hierarchy("Tooltip");
+        let hierarchy = {
+            annotation: ha,
+            tooltip: ht
+        };
 
         if (rows == null) {
             // User interaction caused the data view to expire.
@@ -150,7 +156,8 @@ Spotfire.initialize(async (mod) => {
             mod,
             tooltip,
             annotationEnabled,
-            dataView
+            dataView,
+            hierarchy
         );
         // @ts-ignore
         modDiv.appendChild(returnedObject.fragment);
@@ -202,7 +209,8 @@ Spotfire.initialize(async (mod) => {
                     mod,
                     tooltip,
                     annotationEnabled,
-                    dataView
+                    dataView,
+                    hierarchy
                 );
                 // @ts-ignore
                 modDiv.appendChild(returnedObject.fragment);

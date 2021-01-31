@@ -18,7 +18,8 @@ function truncateString(dataValue, maxLength) {
  * @param {*} mod
  * @param {*} annotationEnabled
  */
-function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod, annotationEnabled) {
+function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabled, mod, annotationEnabled, hierarchy) {
+
     // mouse over text card event listener
     divObject.textCardDiv.onmouseenter = (e) => {
         borderDiv.style.boxShadow = "0 0 0 1px " + fontStyling.fontColor;
@@ -36,7 +37,7 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
     // mouse over text card content event listener
     divObject.content.onmouseenter = (e) => {
         if (tooltipEnabled) {
-            var tooltipString = createTooltipString(row, "Tooltip");
+            var tooltipString = createTooltipString(row, hierarchy.tooltip);
             mod.controls.tooltip.show(tooltipString);
         }
     };
@@ -48,7 +49,7 @@ function configureMouseOver(divObject, borderDiv, fontStyling, row, tooltipEnabl
     // mouse over for annotation event listener
     if (annotationEnabled) {
         divObject.header.onmouseenter = (e) => {
-            var tooltipString = createTooltipString(row, "Annotation");
+            var tooltipString = createTooltipString(row, hierarchy.annotation);
             mod.controls.tooltip.show(tooltipString);
         };
 

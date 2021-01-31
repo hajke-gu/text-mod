@@ -73,17 +73,19 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
 /**
  * Create a tooltip string
  * @param specificRow Row of dataset
- * @param tooltipContent Content of tooltip
+ * @param hierarchy Content of tooltip
  * @returns {String}
  */
-function createTooltipString(specificRow, tooltipContent) {
-    var nrOfTooltipChoices = specificRow.categorical(tooltipContent).value()[0]._node.__hierarchy.levels.length;
+function createTooltipString(specificRow, hierarchy) {
+    console.log(hierarchy.name);
+    console.log(specificRow.categorical(hierarchy.name).value().length);
+    var nrOfTooltipChoices = specificRow.categorical(hierarchy.name).value().length;
     var tooltipCollection = [];
     var tooltipString = "";
     var i = null;
     for (i = 0; i < nrOfTooltipChoices; i++) {
-        var columnName = getColumnName(specificRow, tooltipContent, i);
-        var dataValue = specificRow.categorical(tooltipContent).value()[i].formattedValue();
+        var columnName = hierarchy.levels[i].name;
+        var dataValue = specificRow.categorical(hierarchy.name).value()[i].formattedValue();
 
         // truncate to a max length of 100 characters per tooltip row
         var maxLength = 100;

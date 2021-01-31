@@ -17,7 +17,8 @@ function renderTextCards(
     mod,
     tooltipEnabled,
     annotationEnabled,
-    dataView
+    dataView,
+    hierarchy
 ) {
     if (rerender) {
         document.querySelector("#text-card-container").innerHTML = "";
@@ -57,14 +58,14 @@ function renderTextCards(
     styleElement.appendChild(
         document.createTextNode(
             "::-webkit-scrollbar {width: 8px;} ::-webkit-scrollbar-track {border-radius: 16px; background-color: " +
-                scalesStyling.lineColor +
-                "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
-                fontStyling.fontColor +
-                "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
-                fontStyling.fontColor +
-                "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
-                fontStyling.fontColor +
-                "BF;}"
+            scalesStyling.lineColor +
+            "4d;} ::-webkit-scrollbar-thumb {border-radius: 16px; background-color: " +
+            fontStyling.fontColor +
+            "4d;} ::-webkit-scrollbar-thumb:hover {background-color: " +
+            fontStyling.fontColor +
+            "BF;} ::-webkit-scrollbar-thumb:active {background-color: " +
+            fontStyling.fontColor +
+            "BF;}"
         )
     );
     document.getElementsByTagName("head")[0].appendChild(styleElement);
@@ -190,7 +191,7 @@ function renderTextCards(
                 event.stopPropagation();
             };
             // create mouse over functionallity & Border around card and tooltip
-            configureMouseOver(divObject, borderDiv, fontStyling, rows[index], tooltipEnabled, mod, annotationEnabled);
+            configureMouseOver(divObject, borderDiv, fontStyling, rows[index], tooltipEnabled, mod, annotationEnabled, hierarchy);
 
             borderDiv.appendChild(newDiv);
             fragment.appendChild(borderDiv);
