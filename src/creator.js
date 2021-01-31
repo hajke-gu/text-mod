@@ -19,8 +19,7 @@ function createTextCard(content, annotation, windowSize, markObject, fontStyling
         var header = createTextCardHeader();
 
         var firstAnnotationCreated = false;
-        var annotationLength = annotation[0]._node.__hierarchy.levels.length;
-        for (var i = 0; i < annotationLength; i++) {
+        for (var i = 0; i < annotation.length; i++) {
             var dataValue = annotation[i].formattedValue(); // get annotation value
 
             if (annotation[i].key !== null) {
